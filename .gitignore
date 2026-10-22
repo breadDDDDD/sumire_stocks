@@ -1,0 +1,28 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+TestResults/
+
+# web
+node_modules/
+web/dist/
+src/Sumire.Api/wwwroot/
+
+# local-only assets and runtime folders
+web/public/assets/sumire/
+research-workspace/
+models/
+*.onnx
+
+# tooling
+.tazzyronth/
+.idea/
+.vscode/
+*.log
