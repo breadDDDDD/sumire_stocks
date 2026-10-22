@@ -1,0 +1,1 @@
+{"error": {"type": "Error", "message": "Quota exceeded for quota metric 'Gemini requests per day' (429 RESOURCE_EXHAUSTED)", "code": 429}}
