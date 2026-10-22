@@ -121,17 +121,18 @@ export default function GP({ ticker }: FunctionProps) {
     const price = quotePrice(live)
     const b = built.current
     const last = lastBar.current
-    if (!live || price == null || !b || !last) return
+    if (!live?.time || price == null || !b || !last) return
+    const qTime = live.time
     let next: Bar | null = null
     if (daily) {
-      const time = dayTime(live.time.slice(0, 10))
+      const time = dayTime(qTime.slice(0, 10))
       if (time === last.time) {
         next = { ...last, high: Math.max(last.high, live.high ?? price), low: Math.min(last.low, live.low ?? price), close: price, volume: live.volume || last.volume }
       } else if (time > last.time) {
-        next = { time, date: live.time.slice(0, 10), open: live.open ?? price, high: live.high ?? price, low: live.low ?? price, close: price, volume: live.volume ?? 0 }
+        next = { time, date: qTime.slice(0, 10), open: live.open ?? price, high: live.high ?? price, low: live.low ?? price, close: price, volume: live.volume ?? 0 }
       }
     } else {
-      const qt = Math.floor(Date.parse(live.time) / 1000) + WIB_OFFSET
+      const qt = Math.floor(Date.parse(qTime) / 1000) + WIB_OFFSET
       const prev = data && data.length > 1 ? data[data.length - 2] : null
       const step = prev ? last.time - prev.time : 300
       if (qt >= last.time && qt < last.time + step) {

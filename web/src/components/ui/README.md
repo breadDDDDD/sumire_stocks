@@ -61,7 +61,7 @@ interactive area focusable with `tabIndex={0}`: Tab / Alt+1..4 focus the first `
 
 - `api<T>(path, init)` from `api/client.ts`: JSON fetch under `/api`, throws `ApiError { status, message, body }`.
   `body` in init is JSON-encoded. Query defaults: staleTime 30s, retry 1, no refetch on focus.
-- `useQuotes(codes)` from `api/signalr.ts`: live quotes `{ [code]: { code, last, change, changePct, volume, time } }`
+- `useQuotes(codes)` from `api/signalr.ts`: live quotes `{ [code]: { code, name, price, change, changePct, prevClose, open, high, low, volume, value, time, source } }` (the `/api/quotes` shape)
   from `/hubs/quotes` (Subscribe/Unsubscribe are ref-counted). `useHubEvent(name, handler)` for other events,
   `useHubStatus()` for the connection state. Never throws when the hub is down; it keeps retrying.
 
