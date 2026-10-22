@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sumire insight",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "drivers", "connections", "catalysts", "risks", "sentiment", "confidence", "whatWouldChangeThisView", "sources"],
+  "properties": {
+    "summary": { "type": "string", "description": "2-3 plain-language sentences." },
+    "drivers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "evidence", "linked", "sourceIds"],
+        "properties": {
+          "claim": { "type": "string" },
+          "evidence": { "type": "string", "description": "Facts behind the claim; numbers only from the fact packet or a cited source." },
+          "linked": { "type": "array", "items": { "type": "string" }, "description": "IDX tickers (e.g. ADRO) or factors (e.g. COAL, USDIDR, BI_RATE)." },
+          "sourceIds": { "type": "array", "items": { "type": "string" }, "description": "ids from sources[]." }
+        }
+      }
+    },
+    "connections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "text"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "array", "items": { "type": "string" } },
+          "text": { "type": "string" }
+        }
+      }
+    },
+    "catalysts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["date", "event"],
+        "properties": {
+          "date": { "type": "string", "description": "YYYY-MM-DD, or YYYY-MM when only the month is known." },
+          "event": { "type": "string" }
+        }
+      }
+    },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "sentiment": { "type": "number", "minimum": -1, "maximum": 1 },
+    "confidence": { "type": "string", "enum": ["low", "med", "high"] },
+    "whatWouldChangeThisView": { "type": "string" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "url", "publisher", "publishedAt"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "publisher": { "type": "string" },
+          "publishedAt": { "type": "string", "description": "YYYY-MM-DD (ISO date) of publication." }
+        }
+      }
+    }
+  }
+}
