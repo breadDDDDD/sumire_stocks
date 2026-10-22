@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEve
 import type { Column } from '../../components/ui'
 import s from '../../components/ui/Table.module.css'
 
-const ROW_H = 25
+const DEFAULT_ROW_H = 25
 const WINDOW_FROM = 200
 const OVERSCAN = 10
 
@@ -40,6 +40,7 @@ export function GridTable<T>({
   const [activeKey, setActiveKey] = useState<string | null>(null)
   const [scrollTop, setScrollTop] = useState(0)
   const [viewH, setViewH] = useState(600)
+  const [rowH, setRowH] = useState(DEFAULT_ROW_H)
   const wrapRef = useRef<HTMLDivElement>(null)
 
   const sorted = useMemo(() => {
@@ -75,15 +76,21 @@ export function GridTable<T>({
     return () => ro.disconnect()
   }, [])
 
+  // rows can be taller than the default (badges): measure one so windowing and scrolling line up
+  useLayoutEffect(() => {
+    const tr = wrapRef.current?.querySelector<HTMLElement>('tbody tr[data-row]')
+    if (tr && tr.offsetHeight && tr.offsetHeight !== rowH) setRowH(tr.offsetHeight)
+  }, [rowH, sorted])
+
   // keep the active row in view
   useEffect(() => {
     const el = wrapRef.current
     if (!el || !sorted.length) return
-    const top = active * ROW_H
-    const head = ROW_H
+    const head = el.querySelector('thead')?.clientHeight ?? rowH
+    const top = active * rowH
     if (top < el.scrollTop) el.scrollTop = top
-    else if (top + ROW_H + head > el.scrollTop + el.clientHeight) el.scrollTop = top + ROW_H + head - el.clientHeight
-  }, [active, sorted.length])
+    else if (top + rowH + head > el.scrollTop + el.clientHeight) el.scrollTop = top + rowH + head - el.clientHeight
+  }, [active, sorted.length, rowH])
 
   const move = (i: number) => {
     const r = sorted[Math.max(0, Math.min(sorted.length - 1, i))]
@@ -93,12 +100,14 @@ export function GridTable<T>({
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (!sorted.length || e.ctrlKey || e.metaKey) return
     const row = sorted[active]
+    // pin the active row by key so it follows the row through a reorder
+    if (activeKey !== rowKey(row)) setActiveKey(rowKey(row))
     if (onRowKey?.(e, row, active)) {
       e.preventDefault()
       return
     }
     if (e.altKey) return
-    const page = Math.max(1, Math.floor(viewH / ROW_H) - 2)
+    const page = Math.max(1, Math.floor(viewH / rowH) - 2)
     switch (e.key) {
       case 'j':
       case 'ArrowDown':
@@ -140,8 +149,8 @@ export function GridTable<T>({
   let from = 0
   let to = sorted.length
   if (windowed) {
-    from = Math.max(0, Math.floor(scrollTop / ROW_H) - OVERSCAN)
-    to = Math.min(sorted.length, Math.ceil((scrollTop + viewH) / ROW_H) + OVERSCAN)
+    from = Math.max(0, Math.floor(scrollTop / rowH) - OVERSCAN)
+    to = Math.min(sorted.length, Math.ceil((scrollTop + viewH) / rowH) + OVERSCAN)
   }
   const alignCls = (a?: string) => (a === 'right' ? s.right : a === 'center' ? s.center : undefined)
 
@@ -175,13 +184,13 @@ export function GridTable<T>({
           </tr>
         </thead>
         <tbody>
-          {from > 0 && <tr style={{ height: from * ROW_H }} aria-hidden="true" />}
+          {from > 0 && <tr style={{ height: from * rowH }} aria-hidden="true" />}
           {sorted.slice(from, to).map((row, j) => {
             const i = from + j
             return (
               <tr
                 key={rowKey(row)}
-                style={{ height: ROW_H }}
+                data-row={i}
                 className={[s.row, onOpen && s.clickable, i === active && s.active].filter(Boolean).join(' ')}
                 onClick={() => {
                   setActiveKey(rowKey(row))
@@ -196,7 +205,7 @@ export function GridTable<T>({
               </tr>
             )
           })}
-          {to < sorted.length && <tr style={{ height: (sorted.length - to) * ROW_H }} aria-hidden="true" />}
+          {to < sorted.length && <tr style={{ height: (sorted.length - to) * rowH }} aria-hidden="true" />}
         </tbody>
       </table>
       {!sorted.length && empty}

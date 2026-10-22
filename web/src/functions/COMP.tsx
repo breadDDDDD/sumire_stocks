@@ -88,6 +88,7 @@ export default function COMP({ ticker, args }: FunctionProps) {
             <input
               className={`${f.input} ${f.code}`}
               placeholder="Add ticker"
+              style={{ width: 110 }}
               value={input}
               onChange={(e) => setInput(e.target.value.toUpperCase())}
               autoFocus={codes.length === 0}

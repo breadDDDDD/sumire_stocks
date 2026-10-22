@@ -232,6 +232,7 @@ export default function EQS({ args }: FunctionProps) {
             columns={columns}
             rows={res.data.rows}
             rowKey={(r) => r.code}
+            autoFocus
             onOpen={(r) => pane.open({ code: 'DES', ticker: r.code, args: [] })}
             onRowKey={(e, r) => {
               if (e.altKey || e.shiftKey) return false
