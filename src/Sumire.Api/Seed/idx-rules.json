@@ -1,0 +1,85 @@
+{
+  "updated": "2026-10-22",
+  "currency": "IDR",
+  "lotSize": 100,
+  "minPrice": 1,
+  "minPriceNote": "Minimum price lowered from Rp50 to Rp1 effective 2026-09-28 (media reports of the IDX announcement).",
+  "fees": { "buy": 0.0015, "sell": 0.0025 },
+  "feesNote": "Typical retail broker fees incl. levy and VAT; sell includes 0.1% final income tax. Brokers differ, adjust to yours.",
+  "tickSizes": {
+    "verified": true,
+    "note": "Fraksi harga, Kep-00071/BEI/11-2016. A band applies while price < below; the last band has no upper limit.",
+    "bands": [
+      { "below": 200, "tick": 1 },
+      { "below": 500, "tick": 2 },
+      { "below": 2000, "tick": 5 },
+      { "below": 5000, "tick": 10 },
+      { "below": null, "tick": 25 }
+    ]
+  },
+  "autoRejection": [
+    {
+      "from": "2025-04-08",
+      "to": "2026-09-27",
+      "verified": false,
+      "note": "Asymmetric: ARB 15% for all price groups, ARA by previous close. Minimum price Rp50 in this period.",
+      "bands": [
+        { "upTo": 200, "araPct": 0.35, "arbPct": 0.15 },
+        { "upTo": 5000, "araPct": 0.25, "arbPct": 0.15 },
+        { "upTo": null, "araPct": 0.20, "arbPct": 0.15 }
+      ]
+    },
+    {
+      "from": "2026-09-28",
+      "to": "2026-10-18",
+      "verified": true,
+      "note": "Transition with Rp1 minimum price: Rp1-Rp10 move by Rp1 nominal; above Rp10 ARB 15%.",
+      "bands": [
+        { "upTo": 10, "araAbs": 1, "arbAbs": 1 },
+        { "upTo": 200, "araPct": 0.35, "arbPct": 0.15 },
+        { "upTo": 5000, "araPct": 0.25, "arbPct": 0.15 },
+        { "upTo": null, "araPct": 0.20, "arbPct": 0.15 }
+      ]
+    },
+    {
+      "from": "2026-10-19",
+      "to": "2026-12-31",
+      "verified": true,
+      "note": "Kep-00157/BEI/10-2026: ARB cut to 7% for prices above Rp10 until year end; ARA unchanged.",
+      "bands": [
+        { "upTo": 10, "araAbs": 1, "arbAbs": 1 },
+        { "upTo": 200, "araPct": 0.35, "arbPct": 0.07 },
+        { "upTo": 5000, "araPct": 0.25, "arbPct": 0.07 },
+        { "upTo": null, "araPct": 0.20, "arbPct": 0.07 }
+      ]
+    },
+    {
+      "from": "2027-01-01",
+      "to": null,
+      "verified": false,
+      "note": "Announced return to symmetric ARA/ARB per price group from 2027; confirm against the IDX announcement.",
+      "bands": [
+        { "upTo": 10, "araAbs": 1, "arbAbs": 1 },
+        { "upTo": 200, "araPct": 0.35, "arbPct": 0.35 },
+        { "upTo": 5000, "araPct": 0.25, "arbPct": 0.25 },
+        { "upTo": null, "araPct": 0.20, "arbPct": 0.20 }
+      ]
+    }
+  ],
+  "sessions": {
+    "verified": true,
+    "note": "WIB, regular market. Times are [start, end) local. Post-trading 16:01-16:15 counts as closed.",
+    "monThu": {
+      "preOpen": ["08:45", "09:00"],
+      "session1": ["09:00", "12:00"],
+      "session2": ["13:30", "15:50"],
+      "preClose": ["15:50", "16:00"]
+    },
+    "fri": {
+      "preOpen": ["08:45", "09:00"],
+      "session1": ["09:00", "11:30"],
+      "session2": ["14:00", "15:50"],
+      "preClose": ["15:50", "16:00"]
+    }
+  }
+}
