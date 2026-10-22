@@ -1,0 +1,241 @@
+.body {
+  padding: 6px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 6px;
+  align-items: stretch;
+}
+.card {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.hero {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.breadth,
+.fcst {
+  grid-column: span 1;
+}
+.macro {
+  grid-column: 1 / -1;
+}
+.movers {
+  padding: 8px 0 0;
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+.movers > div {
+  flex: 1;
+  min-height: 0;
+}
+.movers .h {
+  padding: 0 10px;
+}
+@media (max-width: 720px) {
+  .hero {
+    grid-column: 1 / -1;
+  }
+}
+.h {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hint {
+  float: right;
+  color: var(--faint);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.label {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.1em;
+}
+.heroTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.heroPrice {
+  color: var(--text);
+  font-size: 34px;
+  line-height: 1.05;
+}
+.heroChange {
+  font-size: var(--fs-lg);
+}
+.sub {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.regime {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  max-width: 55%;
+}
+.reasons {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  text-align: right;
+}
+.spark {
+  min-height: 56px;
+}
+
+.breadthBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.advdec {
+  display: flex;
+  height: 10px;
+  overflow: hidden;
+  background: var(--border);
+}
+.up {
+  background: var(--up);
+}
+.down {
+  background: var(--down);
+}
+.amber {
+  background: var(--amber);
+}
+.flatSeg {
+  background: var(--faint);
+}
+.advdecLegend {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-sm);
+}
+.barRow {
+  display: grid;
+  grid-template-columns: 90px 1fr 40px;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-sm);
+}
+.barLabel {
+  color: var(--muted);
+}
+.barTrack {
+  position: relative;
+  height: 8px;
+  background: var(--border);
+}
+.barTrack::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  border-left: 1px dashed var(--faint);
+}
+.barFill {
+  display: block;
+  height: 100%;
+}
+.barValue {
+  color: var(--text);
+  text-align: right;
+}
+.hilo {
+  display: flex;
+  gap: 12px;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+
+.cone {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.coneRow {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-sm);
+}
+.coneH {
+  color: var(--muted);
+}
+.coneTrack {
+  position: relative;
+  height: 12px;
+  background: var(--border);
+}
+.coneBand {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(255, 176, 0, 0.3);
+  border-left: 1px solid var(--amber);
+  border-right: 1px solid var(--amber);
+}
+.coneMid {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--amber);
+}
+.coneLast {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--text);
+}
+.coneNums {
+  white-space: nowrap;
+}
+.coneNote {
+  margin: 0;
+  color: var(--faint);
+  font-size: var(--fs-xs);
+}
+
+.macroStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.macroItem {
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  font-size: var(--fs-sm);
+}
+.macroItem:hover {
+  border-color: var(--crimson);
+}
+.macroCode {
+  color: var(--amber);
+}

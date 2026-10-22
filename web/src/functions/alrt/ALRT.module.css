@@ -1,0 +1,49 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.list {
+  flex: 1;
+  min-height: 120px;
+}
+.code {
+  color: var(--amber);
+}
+.toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.hint {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}
+.recent {
+  max-height: 34%;
+  overflow: auto;
+  padding: 6px 10px;
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-sm);
+}
+.recent p {
+  margin: 0;
+}
+.h {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.fired {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text);
+}
+.fired li {
+  padding: 2px 0;
+  border-bottom: 1px solid var(--border);
+}

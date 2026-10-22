@@ -1,0 +1,28 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.results {
+  flex: 1;
+  min-height: 0;
+}
+.desc {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}
+.keys {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: var(--fs-xs);
+}
+.code {
+  color: var(--amber);
+}
+.name {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
