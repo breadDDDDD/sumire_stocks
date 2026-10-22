@@ -1,0 +1,67 @@
+.tape {
+  height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.track {
+  display: inline-flex;
+  height: 100%;
+  animation: scroll linear infinite;
+}
+.tape:hover .track,
+.tape:focus-within .track {
+  animation-play-state: paused;
+}
+.group {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  padding-right: 22px;
+}
+.static {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  height: 100%;
+  padding: 0 12px;
+  overflow: hidden;
+}
+.item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+.item:hover .code {
+  text-decoration: underline;
+}
+.sep {
+  padding-left: 22px;
+  border-left: 1px solid var(--border-strong);
+}
+.code {
+  color: var(--amber);
+}
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tape {
+    overflow-x: auto;
+  }
+  .track {
+    animation: none;
+  }
+  .group[aria-hidden='true'] {
+    display: none;
+  }
+}

@@ -1,0 +1,88 @@
+.body {
+  display: flex;
+  flex-direction: column;
+}
+.content {
+  padding: 8px 10px;
+}
+.spacer {
+  flex: 1;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding-left: 8px;
+  border: 1px solid;
+  background: var(--panel);
+}
+.tagCode {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--fs-sm);
+}
+.chartWrap {
+  margin-bottom: 10px;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 4px;
+  font-size: var(--fs-sm);
+}
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 340px;
+  cursor: crosshair;
+}
+.axis {
+  fill: var(--muted);
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+.lower {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.h {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.stats,
+.corr {
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+.stats th,
+.stats td,
+.corr th,
+.corr td {
+  padding: 3px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  white-space: nowrap;
+}
+.stats tbody th,
+.corr tbody th {
+  color: var(--muted);
+  font-weight: 400;
+  text-align: left;
+}
+.corr td {
+  min-width: 56px;
+  color: var(--text);
+}
+.note {
+  margin: 4px 0 0;
+  color: var(--faint);
+  font-size: var(--fs-xs);
+}
