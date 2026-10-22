@@ -1,0 +1,160 @@
+.panelBody {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.toolbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 3px 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.group {
+  display: flex;
+  gap: 2px;
+}
+
+.chartWrap {
+  position: relative;
+  flex: 1;
+  min-height: 160px;
+  outline: none;
+}
+
+.chartWrap:focus-visible {
+  box-shadow: inset var(--focus-ring);
+}
+
+.chart {
+  position: absolute;
+  inset: 0;
+}
+
+.legends {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  max-width: calc(100% - 90px);
+  pointer-events: none;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 2px 6px;
+  background: rgba(18, 18, 24, 0.8);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.k {
+  color: var(--amber);
+}
+
+.seriesLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  padding: 1px 6px;
+  background: rgba(18, 18, 24, 0.8);
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  pointer-events: none;
+}
+
+.swatch {
+  display: inline-block;
+  width: 14px;
+  margin-right: 5px;
+  vertical-align: middle;
+  border-top-width: 2px;
+}
+
+.note {
+  position: absolute;
+  right: 70px;
+  bottom: 30px;
+  z-index: 2;
+  padding: 1px 6px;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 18, 24, 0.75);
+}
+
+.loading {
+  color: var(--amber);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  right: 6px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  padding: 4px 0;
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  border-top: 2px solid var(--crimson);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuItem:hover,
+.menuItem:focus-visible {
+  background: var(--panel-hover);
+  outline: none;
+  color: var(--amber);
+}
+
+.check {
+  width: 10px;
+  height: 10px;
+  border: 1px solid;
+}
+
+.menuHint {
+  padding: 4px 10px 2px;
+  border-top: 1px solid var(--border);
+  color: var(--faint);
+  font-size: var(--fs-xs);
+}
