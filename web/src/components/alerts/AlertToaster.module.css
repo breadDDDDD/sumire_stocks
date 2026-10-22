@@ -1,0 +1,67 @@
+.stack {
+  position: fixed;
+  top: calc(var(--topbar-h) + 8px);
+  right: 12px;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 320px;
+  max-width: calc(100vw - 24px);
+}
+.toast {
+  display: flex;
+  border: 1px solid #8b5cf6;
+  border-left: 4px solid #8b5cf6;
+  background: var(--panel);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
+  animation: slide 0.18s var(--ease);
+}
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 10px;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+}
+.brand {
+  color: #a78bfa;
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.time {
+  color: var(--muted);
+}
+.msg {
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+.close {
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--faint);
+}
+.close:hover {
+  color: var(--text);
+}
+@keyframes slide {
+  from {
+    transform: translateX(16px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
