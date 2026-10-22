@@ -85,11 +85,8 @@ export function useTechnicals(code: string, series = '', enabled = true) {
   })
 }
 
-/** Hub pushes the /api/quotes shape (`price`); older typings call it `last`. */
 export function quotePrice(q: QuoteTick | undefined): number | null {
-  if (!q) return null
-  const p = (q as unknown as { price?: number }).price ?? q.last
-  return typeof p === 'number' && Number.isFinite(p) ? p : null
+  return q?.price != null && Number.isFinite(q.price) ? q.price : null
 }
 
-export type LiveQuote = QuoteTick & { price?: number; open?: number; high?: number; low?: number }
+export type LiveQuote = QuoteTick

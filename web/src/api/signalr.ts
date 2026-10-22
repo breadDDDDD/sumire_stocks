@@ -1,13 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr'
 
+/** Same shape as GET /api/quotes (docs/api/market.md). `changePct` is in percent. */
 export interface QuoteTick {
   code: string
-  last: number
-  change: number
-  changePct: number
-  volume: number
-  time: string
+  name: string | null
+  price: number | null
+  change: number | null
+  changePct: number | null
+  prevClose: number | null
+  open: number | null
+  high: number | null
+  low: number | null
+  volume: number | null
+  /** price x volume in Rupiah; null for indexes and macro */
+  value: number | null
+  /** ISO-8601 in WIB */
+  time: string | null
+  /** 'live' (delayed intraday) or 'close' (last daily close) */
+  source: string
 }
 
 let connection: HubConnection | null = null
