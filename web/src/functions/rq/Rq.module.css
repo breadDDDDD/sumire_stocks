@@ -1,0 +1,113 @@
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  font-size: var(--fs-sm);
+}
+
+.grow {
+  flex: 1;
+  min-width: 260px;
+}
+
+.h {
+  margin: 0;
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meterWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.meter {
+  display: inline-block;
+  width: 90px;
+  height: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  overflow: hidden;
+}
+
+.meterFill {
+  display: block;
+  height: 100%;
+  background: var(--up);
+}
+
+.meterFill.high {
+  background: var(--warn);
+}
+
+.meterFill.full {
+  background: var(--down);
+}
+
+.runners,
+.batches {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.runners li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.runnerName {
+  min-width: 200px;
+  color: var(--text);
+}
+
+.dim .runnerName {
+  color: var(--muted);
+}
+
+.batches li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.batchKind {
+  text-transform: capitalize;
+}
+
+.warn {
+  color: var(--warn);
+}
+
+.subject {
+  display: inline-block;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  color: var(--text);
+}

@@ -1,0 +1,198 @@
+.graphWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px 0;
+}
+
+.graph {
+  width: 100%;
+  max-width: 1000px;
+  height: auto;
+  max-height: calc(100% - 40px);
+}
+
+.center polygon {
+  fill: var(--crimson);
+}
+
+.centerCode {
+  fill: #fff;
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.06em;
+  text-anchor: middle;
+}
+
+.centerPct {
+  font-size: 15px;
+  text-anchor: middle;
+  font-variant-numeric: tabular-nums;
+}
+
+.node rect {
+  fill: var(--panel-2);
+  stroke-width: 1.2;
+}
+
+.clickable {
+  cursor: pointer;
+  outline: none;
+}
+
+.clickable:hover rect,
+.clickable:focus-visible rect {
+  fill: var(--panel-hover);
+  stroke: var(--crimson-bright) !important;
+  stroke-width: 2;
+}
+
+.nodeLabel {
+  fill: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.nodePct {
+  font-size: 13px;
+  text-anchor: middle;
+  font-variant-numeric: tabular-nums;
+}
+
+/* svg text color comes from fill, map the global up/down classes */
+.graph :global(.up) {
+  fill: var(--up);
+}
+.graph :global(.down) {
+  fill: var(--down);
+}
+.graph :global(.flat) {
+  fill: var(--muted);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  padding: 4px 0;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  vertical-align: -1px;
+}
+
+.legend b {
+  display: inline-block;
+  width: 22px;
+  margin-right: 5px;
+  vertical-align: middle;
+  border-top: 2px solid var(--muted);
+}
+
+.legend .dashed {
+  border-top-style: dashed;
+}
+
+.footnote {
+  margin: 0;
+  padding: 2px 12px 10px;
+  color: var(--faint);
+  font-size: var(--fs-xs);
+  text-align: center;
+}
+
+/* list view */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px 12px;
+}
+
+.list section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.list p {
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+
+.h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.row {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+}
+
+.rowHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: var(--fs-sm);
+}
+
+.note {
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.stages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stages li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-left: 8px;
+  border-left: 2px solid var(--border-strong);
+}
+
+.selfStage {
+  border-left-color: var(--crimson) !important;
+}
+
+.stageName {
+  min-width: 180px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}

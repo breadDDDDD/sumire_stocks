@@ -1,0 +1,22 @@
+.publisher {
+  color: var(--amber);
+  white-space: nowrap;
+}
+
+.title {
+  color: var(--text);
+}
+
+.chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.hint {
+  margin: 0;
+  padding: 4px 12px;
+  border-top: 1px solid var(--border);
+  color: var(--faint);
+  font-size: var(--fs-xs);
+}
