@@ -1,0 +1,104 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100%;
+  padding: 10px 12px 14px;
+  outline: none;
+}
+
+.body:focus-visible {
+  box-shadow: inset var(--focus-ring);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.h {
+  margin: 0;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--border);
+  color: var(--amber);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.table th {
+  padding: 3px 8px;
+  border-bottom: 1px solid var(--border-strong);
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 3px 8px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table tbody tr:hover {
+  background: var(--panel-hover);
+}
+
+.num {
+  text-align: right !important;
+}
+
+.metric {
+  color: var(--amber);
+}
+
+.na {
+  color: var(--faint);
+}
+
+.good td:first-child {
+  box-shadow: inset 2px 0 0 var(--up);
+}
+
+.bad td:first-child {
+  box-shadow: inset 2px 0 0 var(--down);
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+}
+
+.period {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.warn {
+  margin: 0;
+  color: var(--warn);
+  font-size: var(--fs-sm);
+}
+
+.scroll {
+  overflow-x: auto;
+}
