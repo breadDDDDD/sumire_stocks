@@ -1,0 +1,38 @@
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 1px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  line-height: 18px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.code {
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.clickable {
+  cursor: pointer;
+  transition:
+    border-color 0.12s,
+    background 0.12s;
+}
+
+.clickable:hover,
+.clickable:focus-visible {
+  border-color: var(--crimson);
+  background: var(--panel-hover);
+}
+
+.highlight {
+  border-color: var(--crimson);
+  box-shadow: inset 3px 0 0 var(--crimson);
+}

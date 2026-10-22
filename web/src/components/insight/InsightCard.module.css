@@ -1,0 +1,288 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 920px;
+  padding: 12px 14px 10px;
+  color: var(--text);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.metaActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.warnBtn {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.warnings {
+  margin: 0;
+  padding: 6px 10px 6px 24px;
+  border-left: 3px solid var(--warn);
+  background: rgba(255, 176, 0, 0.06);
+  color: var(--amber);
+  font-size: var(--fs-sm);
+}
+
+.summary {
+  margin: 0;
+  font-size: var(--fs-lg);
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.brief .summary {
+  font-size: 17px;
+  border-left: 4px solid var(--crimson);
+  padding-left: 12px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.heading {
+  margin: 0;
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heading::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 4px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background: var(--crimson);
+  transform: skewX(-24deg);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.connections,
+.drivers,
+.risks,
+.sources,
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.connection {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+}
+
+.chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.arrow {
+  color: var(--crimson-bright);
+  font-weight: 700;
+}
+
+.connText,
+.evidence {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+.driver {
+  counter-increment: driver;
+  padding-left: 10px;
+  border-left: 2px solid var(--border-strong);
+}
+
+.claim {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.driver .chips {
+  margin-top: 4px;
+}
+
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  line-height: 18px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.source:hover,
+.source:focus-visible {
+  border-color: var(--crimson);
+}
+
+.sourceIdx {
+  display: inline-block;
+  min-width: 14px;
+  margin-right: 4px;
+  color: var(--crimson-bright);
+  font-weight: 700;
+  text-align: center;
+}
+
+.sources li {
+  font-size: var(--fs-sm);
+}
+
+.sources a {
+  color: var(--text);
+}
+
+.timeline li {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding-left: 16px;
+  font-size: var(--fs-sm);
+}
+
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  background: var(--crimson);
+  transform: rotate(45deg);
+}
+
+.timeline li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: -10px;
+  width: 1px;
+  background: var(--border-strong);
+}
+
+.date {
+  flex: none;
+  min-width: 56px;
+  color: var(--amber);
+}
+
+.past {
+  opacity: 0.5;
+}
+
+.risks li {
+  padding-left: 14px;
+  position: relative;
+  font-size: var(--fs-sm);
+}
+
+.risks li::before {
+  content: '▲';
+  position: absolute;
+  left: 0;
+  color: var(--down);
+  font-size: 9px;
+  top: 3px;
+}
+
+.footer {
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  color: var(--faint);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* sentiment meter */
+.sentiment {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-sm);
+}
+
+.meter {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+}
+
+.fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  opacity: 0.75;
+}
+
+.fill.up {
+  background: var(--up);
+}
+.fill.down {
+  background: var(--down);
+}
+.fill.flat {
+  background: var(--flat);
+}
+
+.mid {
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: var(--muted);
+}
+
+.marker {
+  position: absolute;
+  top: -4px;
+  width: 4px;
+  height: 14px;
+  margin-left: -2px;
+  background: var(--text);
+}

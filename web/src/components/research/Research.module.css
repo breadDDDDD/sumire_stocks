@@ -1,0 +1,77 @@
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 176, 0, 0.06);
+  color: var(--amber);
+  font-size: var(--fs-sm);
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  font-size: var(--fs-sm);
+}
+
+.progressLabel {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.usage {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+.usage:hover,
+.usage:focus-visible {
+  border-color: var(--crimson);
+  color: var(--text);
+}
+
+.usage b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.usage .warn {
+  color: var(--warn);
+}
+
+.usage .bad {
+  color: var(--down);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
+}
