@@ -1,0 +1,100 @@
+.sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 18px;
+  padding: 12px 14px 16px;
+}
+@container (max-width: 640px) {
+  .sheet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.heading {
+  margin: 0 0 6px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.heading::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  background: var(--crimson);
+  transform: skewX(-20deg);
+}
+.syntax {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.syntax code {
+  color: var(--amber);
+}
+.fnList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fn {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  padding: 3px 6px;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+.fn:hover,
+.fn:focus-visible {
+  background: var(--panel-hover);
+}
+.code {
+  color: var(--amber);
+  font-weight: 700;
+}
+.desc {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.example {
+  color: var(--faint);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+.fn:hover .example {
+  color: var(--muted);
+}
+.group {
+  margin-bottom: 12px;
+}
+.groupName {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.key {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 0;
+  color: var(--text);
+}
+.combos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+  color: var(--faint);
+  white-space: nowrap;
+}

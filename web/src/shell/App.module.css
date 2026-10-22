@@ -1,0 +1,108 @@
+.app {
+  display: grid;
+  grid-template-rows: var(--topbar-h) minmax(0, 1fr) var(--tape-h);
+  height: 100vh;
+  min-width: 900px;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: var(--rail-w) minmax(0, 1fr);
+  min-height: 0;
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid var(--border-strong);
+  background: var(--panel);
+}
+
+.grid {
+  display: grid;
+  gap: 4px;
+  min-height: 0;
+  padding: 4px;
+}
+.layout1 {
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+}
+.layout2 {
+  grid-template: minmax(0, 1fr) / repeat(2, minmax(0, 1fr));
+}
+.layout4 {
+  grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr));
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border-top: 1px solid var(--border-strong);
+  background: var(--bg);
+  font-size: var(--fs-sm);
+}
+.tape {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+.mascot {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0 4px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(5, 5, 8, 0.78);
+  backdrop-filter: blur(2px);
+  animation: fade 0.12s var(--ease);
+}
+.dialog {
+  width: min(980px, 100%);
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--crimson);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+  animation: pop 0.16s var(--ease);
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  from {
+    transform: translateY(8px) scale(0.99);
+    opacity: 0;
+  }
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tape-h) + 12px);
+  z-index: 90;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border: 1px solid var(--crimson);
+  background: var(--panel);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  animation: pop 0.16s var(--ease);
+}
