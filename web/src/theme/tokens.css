@@ -1,0 +1,44 @@
+:root {
+  /* surfaces */
+  --bg: #0b0b0f;
+  --panel: #121218;
+  --panel-2: #17171f;
+  --panel-hover: #1d1d27;
+  --border: #26262f;
+  --border-strong: #3a3a46;
+
+  /* text */
+  --amber: #ffb000;
+  --amber-dim: #b37c00;
+  --text: #f2f2f5;
+  --muted: #8a8a99;
+  --faint: #55555f;
+
+  /* brand + market colors (crimson is brand only, never up/down) */
+  --crimson: #c8102e;
+  --crimson-bright: #e8203f;
+  --crimson-dim: #5c0a17;
+  --up: #22c55e;
+  --down: #f43f5e;
+  --flat: #8a8a99;
+  --warn: #ffb000;
+  --danger: #f43f5e;
+
+  --focus-ring: 0 0 0 2px var(--crimson);
+
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --font-display: 'Anton', 'Bebas Neue', 'Impact', sans-serif;
+
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-lg: 15px;
+
+  --radius: 2px;
+  --gap: 6px;
+  --topbar-h: 44px;
+  --tape-h: 28px;
+  --rail-w: 220px;
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
