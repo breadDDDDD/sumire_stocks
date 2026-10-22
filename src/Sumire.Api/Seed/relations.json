@@ -1,0 +1,285 @@
+{
+  "updated": "2026-10-22",
+  "groups": [
+    {
+      "name": "Djarum",
+      "tickers": ["BBCA", "TOWR", "BELI"],
+      "note": "Hartono family. BCA, Sarana Menara (towers, owns Protelindo/iForte) and Blibli.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Salim",
+      "tickers": ["INDF", "ICBP", "SIMP", "LSIP", "IMAS", "FAST", "DNET", "BINA", "AMMN", "BUMI"],
+      "note": "Anthoni Salim. Indofood complex (INDF > ICBP, SIMP > LSIP), Indomobil, Fast Food (KFC), Indoritel, Bank Ina. Co-owner of Amman Mineral with Medco and joint controller of BUMI with Bakrie since 2025.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Astra",
+      "tickers": ["ASII", "UNTR", "AALI", "AUTO", "ACST", "ASGR"],
+      "note": "Jardine Matheson via Jardine Cycle & Carriage. ASII is the parent; United Tractors (heavy equipment, Pamapersada coal contracting, gold, nickel), Astra Agro (CPO), Astra Otoparts, Acset, Astra Graphia.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Barito (Prajogo Pangestu)",
+      "tickers": ["BRPT", "TPIA", "BREN", "CDIA", "CUAN", "PTRO"],
+      "note": "BRPT is the parent of TPIA (Chandra Asri) and BREN (geothermal). CDIA is TPIA's infrastructure arm listed Jul 2025. CUAN (Petrindo) is Prajogo's coal/mining vehicle and parent of PTRO (Petrosea). Often traded as a basket.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Sinar Mas",
+      "tickers": ["DSSA", "SMMA", "BSDE", "DMAS", "DUTI", "SMAR", "INKP", "TKIM", "GEMS", "LIFE", "EXCL"],
+      "note": "Widjaja family. DSSA (energy, data centers, telco stake in XLSmart), SMMA (financial holding), Sinar Mas Land (BSDE, DMAS, DUTI), SMART (CPO), APP pulp and paper (INKP, TKIM), Golden Energy Mines (coal). Smartfren merged into XL in 2025; EXCL (XLSmart) is co-controlled with Axiata.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Lippo",
+      "tickers": ["LPKR", "LPCK", "MLPL", "MLPT", "MPPA", "NOBU", "SILO"],
+      "note": "Riady family. Lippo Karawaci and Cikarang (property), Multipolar and Multipolar Technology, Matahari Putra Prima (Hypermart), Bank Nobu. Lippo has been selling down Siloam (SILO), so treat SILO as a weak link.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "MNC",
+      "tickers": ["BHIT", "BMTR", "MNCN", "IPTV", "MSIN", "KPIG", "BABP", "BCAP"],
+      "note": "Hary Tanoesoedibjo. BHIT is the top holding; BMTR > MNCN (TV) and IPTV (pay TV); MSIN (content); KPIG (Lido resort/land); MNC Bank and MNC Kapital.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Bakrie",
+      "tickers": ["BNBR", "BUMI", "BRMS", "ENRG", "DEWA", "UNSP", "VKTR", "ELTY"],
+      "note": "Bakrie family. BUMI (coal, now jointly controlled with Salim), Bumi Resources Minerals (gold), Energi Mega Persada (oil and gas), Darma Henwa (coal contracting), Bakrie Sumatera Plantations, VKTR (EV), Bakrieland.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Adaro (Thohir)",
+      "tickers": ["ADRO", "AADI", "ESSA"],
+      "note": "Garibaldi (Boy) Thohir and partners. Adaro Energy was renamed AlamTri Resources (ADRO, metallurgical coal, minerals, green energy) after spinning off thermal coal into Adaro Andalan (AADI, listed 5 Dec 2024). Boy Thohir is also a key ESSA shareholder.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Saratoga / Provident",
+      "tickers": ["SRTG", "MDKA", "MBMA", "TBIG", "MPMX", "ADRO"],
+      "note": "Edwin Soeryadjaya and Sandiaga Uno (Saratoga) with Provident (Boy Thohir, Winato Kartono). Merdeka Copper Gold and its nickel arm Merdeka Battery, Tower Bersama, Mitra Pinasthika; Saratoga also holds ADRO.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "CT Corp",
+      "tickers": ["MEGA", "BBHI", "GIAA"],
+      "note": "Chairul Tanjung. Bank Mega, Allo Bank; CT Corp is the largest non-state shareholder of Garuda (GIAA).",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Emtek",
+      "tickers": ["EMTK", "SCMA", "BUKA", "SAME"],
+      "note": "Sariaatmadja family. Emtek > Surya Citra Media (SCTV/Indosiar, Vidio); large stake in Bukalapak; Sarana Meditama (EMC hospitals).",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Indika",
+      "tickers": ["INDY"],
+      "note": "Sjamsul Nursalim and Arsjad Rasjid families. Indika Energy (Kideco coal, logistics, EV, gold). Sold Petrosea to CUAN in 2022.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Medco (Panigoro)",
+      "tickers": ["MEDC", "AMMN"],
+      "note": "Panigoro family. Medco Energi (oil, gas, power) and its stake in Amman Mineral (copper/gold), co-owned with Salim.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Triputra",
+      "tickers": ["TAPG", "DRMA"],
+      "note": "T.P. Rachmat. Triputra Agro Persada (CPO) and Dharma Polimetal (auto parts).",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Happy Hapsoro",
+      "tickers": ["RAJA", "RATU", "BUVA", "MINA"],
+      "note": "Happy Hapsoro. Rukun Raharja (gas, energy services) and its upstream arm Raharja Energi Cepu; stakes in Bukit Uluwatu Villa and Sanurhasta Mitra (28%). Highly speculative, retail-driven names.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Haji Isam (Jhonlin)",
+      "tickers": ["JARR", "PGUN"],
+      "note": "Andi Syamsuddin Arsyad (Haji Isam). Jhonlin Agro Raya (CPO, biodiesel) and Pradiksi Gunatama (plantation that sells to JARR). Both were multibaggers in 2025 with suspensions and FCA board placement; expect thin liquidity.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "Danantara: state banks",
+      "tickers": ["BBRI", "BMRI", "BBNI", "BBTN", "BRIS"],
+      "note": "Series B shares of the state banks moved to Danantara's operating holding (PT BKI) in March 2025; the state keeps control via the Series A Dwiwarna share. BRIS is owned by BMRI, BBNI and BBRI. Moves together on foreign flow, dividend and policy news.",
+      "asOf": "2025-03"
+    },
+    {
+      "name": "Danantara: SOEs",
+      "tickers": ["TLKM", "MTEL", "SMGR", "SMBR", "JSMR", "PGAS", "PGEO", "ELSA", "GIAA", "KRAS", "PTPP", "WIKA", "ADHI"],
+      "note": "Non-bank SOEs under Danantara. Telkom > Mitratel; Semen Indonesia > Semen Baturaja; Pertamina subsidiaries PGAS, PGEO, ELSA; toll roads, steel and SOE contractors.",
+      "asOf": "2025-12"
+    },
+    {
+      "name": "MIND ID (state mining)",
+      "tickers": ["ANTM", "PTBA", "TINS", "INCO"],
+      "note": "State mining holding under Danantara. Controls ANTM, PTBA and TINS; holds about 34% of Vale Indonesia (INCO) alongside Vale.",
+      "asOf": "2025-12"
+    }
+  ],
+  "commodities": [
+    {
+      "factor": "COAL",
+      "proxySymbol": null,
+      "tickers": ["AADI", "ADRO", "PTBA", "ITMG", "HRUM", "BUMI", "INDY", "GEMS", "BSSR", "MBAP", "DSSA", "ABMM", "TOBA", "DOID", "UNTR"],
+      "direction": "positive",
+      "note": "Newcastle/ICI thermal coal. No Yahoo proxy; UNTR is linked through Pamapersada contracting, DOID through BUMA contracting."
+    },
+    {
+      "factor": "NICKEL",
+      "proxySymbol": null,
+      "tickers": ["INCO", "ANTM", "MBMA", "NCKL", "HRUM", "NICL", "DKFT"],
+      "direction": "positive",
+      "note": "LME nickel. HRUM has grown nickel smelting next to its coal business."
+    },
+    {
+      "factor": "CPO",
+      "proxySymbol": null,
+      "tickers": ["AALI", "LSIP", "SIMP", "DSNG", "TAPG", "SSMS", "SGRO", "SMAR", "TBLA", "JARR", "PGUN", "STAA"],
+      "direction": "positive",
+      "note": "Malaysian palm oil futures (FCPO). Also sensitive to export levy and B40/B50 biodiesel policy."
+    },
+    {
+      "factor": "GOLD",
+      "proxySymbol": "GOLD",
+      "tickers": ["ANTM", "MDKA", "BRMS", "ARCI", "PSAB", "AMMN", "UNTR", "HRTA"],
+      "direction": "positive",
+      "note": "HRTA is a gold jewellery maker; UNTR via Agincourt (Martabe)."
+    },
+    {
+      "factor": "OIL",
+      "proxySymbol": "BRENT",
+      "tickers": ["MEDC", "ENRG", "ELSA", "RAJA", "RATU", "AKRA", "SURE"],
+      "direction": "positive",
+      "note": "Brent drives Indonesian crude price (ICP)."
+    },
+    {
+      "factor": "OIL",
+      "proxySymbol": "BRENT",
+      "tickers": ["GIAA", "TPIA", "BIRD"],
+      "direction": "negative",
+      "note": "Fuel and naphtha cost: airline, petrochemicals, taxis."
+    },
+    {
+      "factor": "COPPER",
+      "proxySymbol": null,
+      "tickers": ["AMMN", "MDKA"],
+      "direction": "positive",
+      "note": "LME copper. AMMN (Batu Hijau) is the main pure play; MDKA via Tujuh Bukit."
+    },
+    {
+      "factor": "TIN",
+      "proxySymbol": null,
+      "tickers": ["TINS"],
+      "direction": "positive",
+      "note": "LME tin; Indonesian export quotas matter as much as price."
+    },
+    {
+      "factor": "GAS",
+      "proxySymbol": null,
+      "tickers": ["PGAS", "MEDC", "ENRG", "RAJA", "ESSA", "AKRA"],
+      "direction": "positive",
+      "note": "LNG and domestic gas pricing. ESSA produces ammonia from gas."
+    }
+  ],
+  "macro": [
+    {
+      "factor": "BI_RATE",
+      "tickers": ["BBRI", "BMRI", "BBNI", "BBTN", "BBCA", "ARTO", "BRIS"],
+      "direction": "negative",
+      "note": "Rate hikes raise funding costs and slow loan growth; cuts are read as positive, mostly for BBTN (mortgages) and BBRI (micro)."
+    },
+    {
+      "factor": "BI_RATE",
+      "tickers": ["BSDE", "CTRA", "PWON", "SMRA", "LPKR", "DMAS", "PANI"],
+      "direction": "negative",
+      "note": "Property demand is mortgage-driven; developers rally on rate cuts."
+    },
+    {
+      "factor": "USDIDR",
+      "tickers": ["KLBF", "KAEF", "SIDO", "ASII", "AUTO", "ICBP", "INDF", "UNVR", "MYOR", "GIAA", "TPIA"],
+      "direction": "negative",
+      "note": "A weaker rupiah hurts importers: pharma raw materials, auto components, wheat (ICBP/INDF), USD fuel and leases (GIAA), USD feedstock (TPIA)."
+    },
+    {
+      "factor": "USDIDR",
+      "tickers": ["AADI", "ADRO", "PTBA", "ITMG", "AALI", "LSIP", "INCO", "ANTM", "AMMN", "MEDC"],
+      "direction": "positive",
+      "note": "USD-earning exporters gain from a weaker rupiah (when reporting in IDR or on IDR costs)."
+    },
+    {
+      "factor": "US10Y",
+      "tickers": ["BBCA", "BBRI", "BMRI", "BBNI", "TLKM", "ASII"],
+      "direction": "negative",
+      "note": "Higher US yields pull foreign money out of the most liquid large caps; these lead foreign net sell days."
+    },
+    {
+      "factor": "CHINA",
+      "tickers": ["AADI", "ADRO", "PTBA", "ITMG", "HRUM", "INCO", "MBMA", "NCKL", "ANTM"],
+      "direction": "positive",
+      "note": "China is the largest buyer of Indonesian coal and the main investor/offtaker for nickel (stainless steel, batteries). Watch China PMI and steel output."
+    },
+    {
+      "factor": "DOMESTIC_CONSUMPTION",
+      "tickers": ["ICBP", "INDF", "UNVR", "MYOR", "AMRT", "MIDI", "ACES", "MAPI", "MAPA", "ERAA", "CMRY", "HMSP", "GGRM"],
+      "direction": "positive",
+      "note": "Retail sales, consumer confidence and government cash transfers drive staples and retail."
+    }
+  ],
+  "supplyChains": [
+    {
+      "name": "Nickel to EV battery",
+      "steps": [
+        { "stage": "Nickel ore mining", "tickers": ["ANTM", "INCO", "MBMA", "NCKL", "NICL", "DKFT"] },
+        { "stage": "Smelting (NPI, matte, HPAL/MHP)", "tickers": ["INCO", "MBMA", "NCKL", "HRUM", "ANTM"] },
+        { "stage": "Battery and EV", "tickers": ["ANTM", "VKTR", "ASII", "IMAS"] }
+      ]
+    },
+    {
+      "name": "Coal to power",
+      "steps": [
+        { "stage": "Mining contractors", "tickers": ["UNTR", "DOID", "PTRO", "DEWA", "MYOH"] },
+        { "stage": "Coal producers", "tickers": ["AADI", "PTBA", "ITMG", "BUMI", "INDY", "GEMS", "HRUM"] },
+        { "stage": "Shipping and logistics", "tickers": ["TPMA", "HITS", "SMDR", "ADRO"] },
+        { "stage": "Power generation", "tickers": ["AADI", "PTBA", "BREN", "PGEO", "KEEN"] }
+      ]
+    },
+    {
+      "name": "Telco towers and fiber",
+      "steps": [
+        { "stage": "Tower and fiber owners", "tickers": ["TOWR", "TBIG", "MTEL"] },
+        { "stage": "Mobile operators (tenants)", "tickers": ["TLKM", "EXCL", "ISAT"] },
+        { "stage": "Data centers", "tickers": ["DCII", "TLKM", "DSSA"] }
+      ]
+    },
+    {
+      "name": "Palm oil to biodiesel and food",
+      "steps": [
+        { "stage": "Plantations", "tickers": ["AALI", "LSIP", "SIMP", "DSNG", "TAPG", "SSMS", "JARR"] },
+        { "stage": "Refining and biodiesel", "tickers": ["SMAR", "TBLA", "JARR"] },
+        { "stage": "Consumer foods", "tickers": ["INDF", "ICBP", "MYOR"] }
+      ]
+    },
+    {
+      "name": "Petrochemicals",
+      "steps": [
+        { "stage": "Oil and gas feedstock", "tickers": ["MEDC", "PGAS", "AKRA"] },
+        { "stage": "Cracker and polymers", "tickers": ["TPIA"] },
+        { "stage": "Plastics and packaging", "tickers": ["IMPC", "TRST"] }
+      ]
+    },
+    {
+      "name": "Construction and cement",
+      "steps": [
+        { "stage": "Cement", "tickers": ["SMGR", "INTP", "SMBR"] },
+        { "stage": "Contractors", "tickers": ["PTPP", "WIKA", "ADHI", "ACST", "TOTL"] },
+        { "stage": "Toll roads and property", "tickers": ["JSMR", "BSDE", "CTRA", "PWON"] }
+      ]
+    }
+  ]
+}
