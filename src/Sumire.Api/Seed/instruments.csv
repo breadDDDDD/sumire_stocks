@@ -1,0 +1,123 @@
+code,yahoo_symbol,name,sector,industry,board,is_index,index_memberships,group_name,core
+AADI,AADI.JK,PT Adaro Andalan Indonesia Tbk,Energy,Coal,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Adaro/Boy Thohir,true
+ACES,ACES.JK,PT Aspirasi Hidup Indonesia Tbk,Consumer Cyclicals,Retailing,Utama,false,IDX80|KOMPAS100,Kawan Lama,true
+ADMR,ADMR.JK,PT Alamtri Minerals Indonesia Tbk,Energy,Coal,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Adaro/Boy Thohir,true
+ADRO,ADRO.JK,PT Alamtri Resources Indonesia Tbk,Energy,Coal,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Adaro/Boy Thohir,true
+AKRA,AKRA.JK,PT AKR Corporindo Tbk,Energy,"Oil, Gas & Coal Distribution",Utama,false,LQ45|IDX80|KOMPAS100,,true
+AMMN,AMMN.JK,PT Amman Mineral Internasional Tbk,Basic Materials,Metals & Minerals,Utama,false,LQ45|IDX80|KOMPAS100,,true
+AMRT,AMRT.JK,PT Sumber Alfaria Trijaya Tbk,Consumer Non-Cyclicals,Food & Staples Retailing,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,,true
+ANTM,ANTM.JK,PT Aneka Tambang Tbk,Basic Materials,Metals & Minerals,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Danantara/BUMN,true
+ARCI,ARCI.JK,PT Archi Indonesia Tbk,Basic Materials,Metals & Minerals,Utama,false,KOMPAS100,Rajawali,true
+ARTO,ARTO.JK,PT Bank Jago Tbk,Financials,Banks,Utama,false,IDX80|KOMPAS100,,true
+ASII,ASII.JK,PT Astra International Tbk,Industrials,Multi-sector Holdings,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Astra,true
+BBCA,BBCA.JK,PT Bank Central Asia Tbk,Financials,Banks,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Djarum,true
+BBNI,BBNI.JK,PT Bank Negara Indonesia (Persero) Tbk,Financials,Banks,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Danantara/BUMN,true
+BBRI,BBRI.JK,PT Bank Rakyat Indonesia (Persero) Tbk,Financials,Banks,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Danantara/BUMN,true
+BBTN,BBTN.JK,PT Bank Tabungan Negara (Persero) Tbk,Financials,Banks,Utama,false,LQ45|IDX80|KOMPAS100,Danantara/BUMN,true
+BBYB,BBYB.JK,PT Bank Neo Commerce Tbk,Financials,Banks,,false,KOMPAS100,,true
+BFIN,BFIN.JK,PT BFI Finance Indonesia Tbk,Financials,Financing Service,Utama,false,IDX80|KOMPAS100,,true
+BIPI,BIPI.JK,PT Astrindo Nusantara Infrastruktur Tbk,Energy,Coal,,false,KOMPAS100,,true
+BKSL,BKSL.JK,PT Sentul City Tbk,Properties & Real Estate,Real Estate Management & Development,Utama,false,IDX80|KOMPAS100,,true
+BMRI,BMRI.JK,PT Bank Mandiri (Persero) Tbk,Financials,Banks,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Danantara/BUMN,true
+BNBR,BNBR.JK,PT Bakrie & Brothers Tbk,Industrials,Multi-sector Holdings,Utama,false,KOMPAS100,Bakrie,true
+BREN,BREN.JK,PT Barito Renewables Energy Tbk,Infrastructures,Utilities,Utama,false,,Barito/Prajogo,true
+BRIS,BRIS.JK,PT Bank Syariah Indonesia Tbk,Financials,Banks,Utama,false,KOMPAS100,Danantara/BUMN,true
+BRMS,BRMS.JK,PT Bumi Resources Minerals Tbk,Basic Materials,Metals & Minerals,Utama,false,IDX80|KOMPAS100,Bakrie,true
+BRPT,BRPT.JK,PT Barito Pacific Tbk,Basic Materials,Chemicals,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Barito/Prajogo,true
+BSDE,BSDE.JK,PT Bumi Serpong Damai Tbk,Properties & Real Estate,Real Estate Management & Development,Utama,false,IDX80|KOMPAS100,Sinar Mas,true
+BTPS,BTPS.JK,PT Bank BTPN Syariah Tbk,Financials,Banks,Utama,false,,,true
+BUKA,BUKA.JK,PT Bukalapak.com Tbk,Technology,Software & IT Services,Utama,false,IDX80|KOMPAS100,Emtek,true
+BULL,BULL.JK,PT Buana Lintas Lautan Tbk,Energy,Oil & Gas Storage & Distribution,,false,KOMPAS100,,true
+BUMI,BUMI.JK,PT Bumi Resources Tbk,Energy,Coal,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Bakrie,true
+BUVA,BUVA.JK,PT Bukit Uluwatu Villa Tbk,Consumer Cyclicals,Tourism & Recreation,,false,KOMPAS100,,true
+BYAN,BYAN.JK,PT Bayan Resources Tbk,Energy,Coal,Utama,false,,,true
+CBDK,CBDK.JK,PT Bangun Kosambi Sukses Tbk,Properties & Real Estate,Real Estate Management & Development,,false,IDX80|KOMPAS100,Agung Sedayu,true
+CMRY,CMRY.JK,PT Cisarua Mountain Dairy Tbk,Consumer Non-Cyclicals,Food & Beverage,Utama,false,IDX80|KOMPAS100,,true
+COIN,COIN.JK,PT Indokripto Koin Semesta Tbk,Financials,Investment Service,,false,KOMPAS100,,true
+CPIN,CPIN.JK,PT Charoen Pokphand Indonesia Tbk,Consumer Non-Cyclicals,Food & Beverage,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Charoen Pokphand,true
+CTRA,CTRA.JK,PT Ciputra Development Tbk,Properties & Real Estate,Real Estate Management & Development,Utama,false,IDX80|KOMPAS100,Ciputra,true
+CUAN,CUAN.JK,PT Petrindo Jaya Kreasi Tbk,Energy,Coal,,false,LQ45|IDX80|KOMPAS100,Barito/Prajogo,true
+DEWA,DEWA.JK,PT Darma Henwa Tbk,Energy,Coal,,false,LQ45|IDX30|IDX80|KOMPAS100,Bakrie,true
+DSNG,DSNG.JK,PT Dharma Satya Nusantara Tbk,Consumer Non-Cyclicals,Agricultural Products,Utama,false,IDX80|KOMPAS100,,true
+DSSA,DSSA.JK,PT Dian Swastatika Sentosa Tbk,Energy,Coal,Utama,false,,Sinar Mas,true
+ELSA,ELSA.JK,PT Elnusa Tbk,Energy,Oil & Gas Services,Utama,false,IDX80|KOMPAS100,Danantara/BUMN,true
+EMAS,EMAS.JK,PT Merdeka Gold Resources Tbk,Basic Materials,Metals & Minerals,,false,KOMPAS100,Merdeka,true
+EMTK,EMTK.JK,PT Elang Mahkota Teknologi Tbk,Technology,Software & IT Services,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Emtek,true
+ENRG,ENRG.JK,PT Energi Mega Persada Tbk,Energy,Oil & Gas,,false,IDX80|KOMPAS100,Bakrie,true
+ERAA,ERAA.JK,PT Erajaya Swasembada Tbk,Consumer Cyclicals,Retailing,Utama,false,IDX80|KOMPAS100,,true
+ESSA,ESSA.JK,PT ESSA Industries Indonesia Tbk,Basic Materials,Chemicals,,false,LQ45|IDX80|KOMPAS100,,true
+EXCL,EXCL.JK,PT XLSMART Telecom Sejahtera Tbk,Infrastructures,Telecommunication,Utama,false,LQ45|IDX80|KOMPAS100,Sinar Mas,true
+FILM,FILM.JK,PT MD Entertainment Tbk,Consumer Cyclicals,Media & Entertainment,,false,,,true
+GGRM,GGRM.JK,PT Gudang Garam Tbk,Consumer Non-Cyclicals,Tobacco,Utama,false,IDX80|KOMPAS100,,true
+GOTO,GOTO.JK,PT GoTo Gojek Tokopedia Tbk,Technology,Software & IT Services,,false,LQ45|IDX30|IDX80|KOMPAS100,,true
+HEAL,HEAL.JK,PT Medikaloka Hermina Tbk,Healthcare,Healthcare Providers,Utama,false,IDX80|KOMPAS100,,true
+HMSP,HMSP.JK,PT H.M. Sampoerna Tbk,Consumer Non-Cyclicals,Tobacco,Utama,false,,,true
+HRTA,HRTA.JK,PT Hartadinata Abadi Tbk,Consumer Cyclicals,Apparel & Luxury Goods,,false,LQ45|IDX80|KOMPAS100,,true
+HRUM,HRUM.JK,PT Harum Energy Tbk,Energy,Coal,Utama,false,IDX80|KOMPAS100,,true
+ICBP,ICBP.JK,PT Indofood CBP Sukses Makmur Tbk,Consumer Non-Cyclicals,Food & Beverage,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Salim,true
+IMPC,IMPC.JK,PT Impack Pratama Industri Tbk,Industrials,Building Products,,false,KOMPAS100,,true
+INCO,INCO.JK,PT Vale Indonesia Tbk,Basic Materials,Metals & Minerals,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Danantara/BUMN,true
+INDF,INDF.JK,PT Indofood Sukses Makmur Tbk,Consumer Non-Cyclicals,Food & Beverage,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Salim,true
+INDY,INDY.JK,PT Indika Energy Tbk,Energy,Coal,Utama,false,LQ45|IDX80|KOMPAS100,,true
+INET,INET.JK,PT Sinergi Inti Andalan Prima Tbk,Infrastructures,Telecommunication,,false,KOMPAS100,,true
+INKP,INKP.JK,PT Indah Kiat Pulp & Paper Tbk,Basic Materials,Forestry & Paper,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Sinar Mas,true
+INTP,INTP.JK,PT Indocement Tunggal Prakarsa Tbk,Basic Materials,Construction Materials,Utama,false,,,true
+ISAT,ISAT.JK,PT Indosat Tbk,Infrastructures,Telecommunication,Utama,false,LQ45|IDX80|KOMPAS100,,true
+ITMG,ITMG.JK,PT Indo Tambangraya Megah Tbk,Energy,Coal,Utama,false,LQ45|IDX80|KOMPAS100,,true
+JPFA,JPFA.JK,PT Japfa Comfeed Indonesia Tbk,Consumer Non-Cyclicals,Food & Beverage,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,,true
+JSMR,JSMR.JK,PT Jasa Marga (Persero) Tbk,Infrastructures,Transport Infrastructure,Utama,false,IDX80|KOMPAS100,Danantara/BUMN,true
+KIJA,KIJA.JK,PT Kawasan Industri Jababeka Tbk,Properties & Real Estate,Real Estate Management & Development,Utama,false,IDX80|KOMPAS100,,true
+KLBF,KLBF.JK,PT Kalbe Farma Tbk,Healthcare,Pharmaceuticals,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,,true
+KPIG,KPIG.JK,PT MNC Tourism Indonesia Tbk,Consumer Cyclicals,Tourism & Recreation,,false,IDX80|KOMPAS100,MNC,true
+LSIP,LSIP.JK,PT PP London Sumatra Indonesia Tbk,Consumer Non-Cyclicals,Agricultural Products,Utama,false,IDX80|KOMPAS100,Salim,true
+MAPA,MAPA.JK,PT Map Aktif Adiperkasa Tbk,Consumer Cyclicals,Retailing,Utama,false,IDX80|KOMPAS100,MAP,true
+MAPI,MAPI.JK,PT Mitra Adiperkasa Tbk,Consumer Cyclicals,Retailing,Utama,false,LQ45|IDX80|KOMPAS100,MAP,true
+MBMA,MBMA.JK,PT Merdeka Battery Materials Tbk,Basic Materials,Metals & Minerals,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Merdeka,true
+MDKA,MDKA.JK,PT Merdeka Copper Gold Tbk,Basic Materials,Metals & Minerals,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Merdeka,true
+MEDC,MEDC.JK,PT Medco Energi Internasional Tbk,Energy,Oil & Gas,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Medco,true
+MIKA,MIKA.JK,PT Mitra Keluarga Karyasehat Tbk,Healthcare,Healthcare Providers,Utama,false,IDX80|KOMPAS100,,true
+MINA,MINA.JK,PT Sanurhasta Mitra Tbk,Properties & Real Estate,Real Estate Management & Development,,false,KOMPAS100,,true
+MTEL,MTEL.JK,PT Dayamitra Telekomunikasi Tbk,Infrastructures,Telecommunication,Utama,false,,Danantara/BUMN,true
+MYOR,MYOR.JK,PT Mayora Indah Tbk,Consumer Non-Cyclicals,Food & Beverage,Utama,false,IDX80|KOMPAS100,,true
+NCKL,NCKL.JK,PT Trimegah Bangun Persada Tbk,Basic Materials,Metals & Minerals,Utama,false,LQ45|IDX80|KOMPAS100,Harita,true
+PANI,PANI.JK,PT Pantai Indah Kapuk Dua Tbk,Properties & Real Estate,Real Estate Management & Development,Utama,false,KOMPAS100,Agung Sedayu,true
+PGAS,PGAS.JK,PT Perusahaan Gas Negara Tbk,Energy,Oil & Gas Storage & Distribution,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Danantara/BUMN,true
+PGEO,PGEO.JK,PT Pertamina Geothermal Energy Tbk,Infrastructures,Utilities,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Danantara/BUMN,true
+PNLF,PNLF.JK,PT Panin Financial Tbk,Financials,Insurance,Utama,false,IDX80|KOMPAS100,Panin,true
+PSAB,PSAB.JK,PT J Resources Asia Pasifik Tbk,Basic Materials,Metals & Minerals,,false,KOMPAS100,,true
+PTBA,PTBA.JK,PT Bukit Asam Tbk,Energy,Coal,Utama,false,LQ45|IDX80|KOMPAS100,Danantara/BUMN,true
+PTRO,PTRO.JK,PT Petrosea Tbk,Energy,Coal,Utama,false,IDX80|KOMPAS100,Barito/Prajogo,true
+PWON,PWON.JK,PT Pakuwon Jati Tbk,Properties & Real Estate,Real Estate Management & Development,Utama,false,IDX80|KOMPAS100,,true
+RAJA,RAJA.JK,PT Rukun Raharja Tbk,Energy,Oil & Gas Storage & Distribution,,false,IDX80|KOMPAS100,,true
+RATU,RATU.JK,PT Raharja Energi Cepu Tbk,Energy,Oil & Gas,,false,IDX80|KOMPAS100,,true
+RMKE,RMKE.JK,PT RMK Energy Tbk,Energy,Coal,,false,KOMPAS100,,true
+SCMA,SCMA.JK,PT Surya Citra Media Tbk,Consumer Cyclicals,Media & Entertainment,Utama,false,LQ45|IDX80|KOMPAS100,Emtek,true
+SGER,SGER.JK,PT Sumber Global Energy Tbk,Energy,Coal,,false,KOMPAS100,,true
+SIDO,SIDO.JK,PT Industri Jamu dan Farmasi Sido Muncul Tbk,Healthcare,Pharmaceuticals,Utama,false,,,true
+SMGR,SMGR.JK,PT Semen Indonesia (Persero) Tbk,Basic Materials,Construction Materials,Utama,false,IDX80|KOMPAS100,Danantara/BUMN,true
+SMIL,SMIL.JK,PT Sarana Mitra Luas Tbk,Industrials,Industrial Services,,false,KOMPAS100,,true
+SMRA,SMRA.JK,PT Summarecon Agung Tbk,Properties & Real Estate,Real Estate Management & Development,Utama,false,IDX80|KOMPAS100,,true
+SSIA,SSIA.JK,PT Surya Semesta Internusa Tbk,Infrastructures,Heavy Constructions & Civil Engineering,Utama,false,IDX80|KOMPAS100,,true
+TAPG,TAPG.JK,PT Triputra Agro Persada Tbk,Consumer Non-Cyclicals,Agricultural Products,Utama,false,IDX80|KOMPAS100,Triputra,true
+TCPI,TCPI.JK,PT Transcoal Pacific Tbk,Transportation & Logistic,Logistics & Deliveries,,false,,Barito/Prajogo,true
+TINS,TINS.JK,PT Timah Tbk,Basic Materials,Metals & Minerals,Utama,false,KOMPAS100,Danantara/BUMN,true
+TLKM,TLKM.JK,PT Telkom Indonesia (Persero) Tbk,Infrastructures,Telecommunication,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Danantara/BUMN,true
+TOBA,TOBA.JK,PT TBS Energi Utama Tbk,Energy,Coal,Utama,false,KOMPAS100,,true
+TOWR,TOWR.JK,PT Sarana Menara Nusantara Tbk,Infrastructures,Telecommunication,Utama,false,IDX80|KOMPAS100,Djarum,true
+TPIA,TPIA.JK,PT Chandra Asri Pacific Tbk,Basic Materials,Chemicals,Utama,false,IDX80|KOMPAS100,Barito/Prajogo,true
+UNTR,UNTR.JK,PT United Tractors Tbk,Industrials,Machinery,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,Astra,true
+UNVR,UNVR.JK,PT Unilever Indonesia Tbk,Consumer Non-Cyclicals,Household Products,Utama,false,LQ45|IDX30|IDX80|KOMPAS100,,true
+WIFI,WIFI.JK,PT Solusi Sinergi Digital Tbk,Infrastructures,Telecommunication,,false,LQ45|IDX80|KOMPAS100,,true
+WIRG,WIRG.JK,PT WIR Asia Tbk,Technology,Software & IT Services,,false,KOMPAS100,,true
+IHSG,^JKSE,IDX Composite (IHSG),Index,Indonesia,,true,,,true
+LQ45,^JKLQ45,IDX LQ45,Index,Indonesia,,true,,,true
+SPX,^GSPC,S&P 500,Index,Global Equity,,true,,,true
+N225,^N225,Nikkei 225,Index,Global Equity,,true,,,true
+HSI,^HSI,Hang Seng Index,Index,Global Equity,,true,,,true
+STI,^STI,Straits Times Index,Index,Global Equity,,true,,,true
+SSE,000001.SS,SSE Composite Index,Index,Global Equity,,true,,,true
+USDIDR,IDR=X,USD/IDR,Macro,Currency,,true,,,true
+WTI,CL=F,WTI Crude Oil Futures,Macro,Commodity,,true,,,true
+BRENT,BZ=F,Brent Crude Oil Futures,Macro,Commodity,,true,,,true
+GOLD,GC=F,Gold Futures,Macro,Commodity,,true,,,true
+US10Y,^TNX,US 10-Year Treasury Yield,Macro,Rates,,true,,,true
