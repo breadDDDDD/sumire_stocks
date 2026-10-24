@@ -98,17 +98,20 @@ export default function Mascot({ hidden }: { hidden: boolean }) {
   return (
     <div className={s.wrap}>
       {showBubble && (
-        <button
-          type="button"
-          className={s.bubble}
-          onClick={() => {
-            setDismissed(bubble.key)
-            if (event) setEvent(null)
-          }}
-          title="Dismiss"
-        >
-          {bubble.text}
-        </button>
+        <div className={s.plate}>
+          <button
+            type="button"
+            className={`${s.bubble} ${bubble.key.startsWith('alert-') ? s.alert : ''}`}
+            onClick={() => {
+              setDismissed(bubble.key)
+              if (event) setEvent(null)
+            }}
+            title="Dismiss"
+          >
+            {bubble.key.startsWith('alert-') && <span className={s.tag}>Violet</span>}
+            {bubble.text}
+          </button>
+        </div>
       )}
       <div className={s.figure} title={`Sumire (${mood}${ihsgText}) · press m to hide`}>
         <Portrait outfit={outfit} mood={mood} size={120} />

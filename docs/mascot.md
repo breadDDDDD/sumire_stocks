@@ -10,11 +10,11 @@ The bottom-right bust-up (`web/src/components/mascot/`) reacts to the market:
 | `worried` | IHSG is down 1% or more |
 | `neutral` | otherwise |
 
-Outfit: `auto` (gym clothes during the IDX session and lunch break, school uniform otherwise), or fixed `uniform` / `gym`. Hover the portrait and click the small label to cycle; the choice is kept in localStorage. `m` hides or shows her. The speech bubble shows the first sentence of the latest brief, or the latest alert or insight message; click it to dismiss. Animations stop under `prefers-reduced-motion`.
+Outfit: `auto` (gym clothes during the IDX session and lunch break, school uniform otherwise), or fixed `uniform` / `gym`. Hover the portrait and click the small label to cycle; the choice is kept in localStorage. `m` hides or shows her. The speech bubble shows the first sentence of the latest brief, or the latest alert or insight message; click it to dismiss. Alert messages show in a crimson bubble tagged "Violet". Animations stop under `prefers-reduced-motion`.
 
 ## Portrait files
 
-No game art ships with the repo. Without images the app draws an original SVG placeholder (crimson hair, round glasses, blazer or track jacket). To use real portraits, put PNGs in `web/public/assets/sumire/` (gitignored, so they never get committed) and rebuild the web app (`npm run build` inside `web\`). Files are served from `/assets/sumire/`.
+No game art ships with the repo. Without images the app draws an original hand-built SVG bust (`Bust.tsx`): a 3/4 view facing left, faceted crimson hair with a low ponytail and ribbon, round red glasses, flat two-tone cel shading with ink outlines, on a slanted cut-paper plate. Only the brows, eyes, mouth and a small accent change per mood (hatched blush when smiling, a sweat drop when worried, a glasses flash when determined, shock lines when surprised); the outfit switches between a dark blazer with a neck ribbon and a red track jacket. To use real portraits, put PNGs in `web/public/assets/sumire/` (gitignored, so they never get committed) and rebuild the web app (`npm run build` inside `web\`). Files are served from `/assets/sumire/`.
 
 Expected names (`<outfit>-<mood>.png`, 10 files; any missing one falls back to the placeholder):
 

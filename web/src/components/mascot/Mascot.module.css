@@ -1,7 +1,7 @@
 .wrap {
   display: flex;
   align-items: flex-end;
-  gap: 4px;
+  gap: 2px;
   padding-right: 6px;
   pointer-events: none;
 }
@@ -11,8 +11,7 @@
   width: 120px;
   height: 120px;
   pointer-events: auto;
-  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
-  animation: bob 4s var(--ease) infinite alternate;
+  filter: drop-shadow(4px 4px 0 #000);
 }
 .figure img,
 .figure svg {
@@ -21,65 +20,107 @@
 
 .outfit {
   position: absolute;
-  right: 4px;
+  right: 6px;
   bottom: 4px;
-  padding: 1px 5px;
-  border: 1px solid var(--crimson);
-  border-radius: var(--radius);
-  background: rgba(11, 11, 15, 0.85);
-  color: var(--muted);
-  font: inherit;
-  font-size: 10px;
+  height: 16px;
+  padding: 0 5px;
+  border: 0;
+  border-bottom: 2px solid var(--key-dark-edge);
+  border-radius: var(--radius-key);
+  background: var(--key-dark);
+  color: var(--text);
+  font: 700 10px/14px var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   opacity: 0;
   cursor: pointer;
-  transition: opacity 0.15s var(--ease);
+  transition: opacity var(--dur-fast) var(--ease);
 }
 .figure:hover .outfit,
 .outfit:focus-visible {
   opacity: 1;
 }
 
+/* jagged P5 callout; the bottom-right spike is the tail pointing at her */
 .bubble {
   position: relative;
   max-width: 260px;
-  margin-bottom: 64px;
-  padding: 8px 10px;
-  border: 2px solid #fff;
-  background: var(--crimson);
-  color: #fff;
+  margin-bottom: 70px;
+  padding: 8px 14px 12px 12px;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
   font: inherit;
   font-size: var(--fs-sm);
-  line-height: 1.35;
+  line-height: 1.4;
   text-align: left;
   pointer-events: auto;
   cursor: pointer;
-  clip-path: polygon(0 0, 100% 4%, 97% 100%, 3% 94%);
+  clip-path: polygon(0 6%, 100% 0, 97% 80%, 100% 100%, 88% 87%, 4% 96%);
+  box-shadow: inset 3px 0 0 var(--crimson);
   transform: rotate(-1.5deg);
-  animation: pop 0.18s var(--ease);
+  animation: slash-in var(--dur) var(--ease);
+}
+/* the hard plate sits on a wrapper filter because clip-path cuts box-shadow */
+.plate {
+  display: flex;
+  pointer-events: none;
+  filter: drop-shadow(4px 4px 0 #000);
 }
 .bubble:focus-visible {
   outline: none;
-  box-shadow: var(--focus-ring);
+  box-shadow:
+    inset 3px 0 0 var(--crimson),
+    inset 0 0 0 2px var(--crimson);
+}
+/* the bubble's clip-path cuts its own ring, so the unclipped wrapper draws it */
+.plate:has(.bubble:focus-visible) {
+  outline: 2px solid var(--crimson);
+  outline-offset: 3px;
 }
 
-@keyframes bob {
+.alert {
+  background: var(--crimson);
+  color: var(--paper);
+  box-shadow: inset 3px 0 0 var(--ink);
+}
+.alert:focus-visible {
+  box-shadow:
+    inset 3px 0 0 var(--ink),
+    inset 0 0 0 2px var(--paper);
+}
+.tag {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 15px;
+  transform: rotate(-3deg);
+  animation: stamp var(--dur) var(--ease-snap) 60ms both;
+}
+
+/* module-local copies: CSS modules hash animation names */
+@keyframes slash-in {
   from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-3px);
+    transform: translateX(-10px) skewX(-8deg);
+    opacity: 0;
   }
 }
-@keyframes pop {
+@keyframes stamp {
   from {
+    transform: scale(1.25) rotate(-6deg);
     opacity: 0;
-    transform: rotate(-1.5deg) scale(0.92);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .figure,
-  .bubble {
+  .bubble,
+  .tag {
     animation: none;
   }
   .outfit {
