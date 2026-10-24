@@ -3,10 +3,10 @@ import { ColorType, createChart, CrosshairMode, type DeepPartial, type IChartApi
 
 /** Hex copies of theme/tokens.css (the canvas can't read CSS variables). */
 export const CHART_COLORS = {
-  bg: '#121218',
-  grid: '#1d1d27',
-  border: '#26262f',
-  text: '#8a8a99',
+  bg: '#100e0b',
+  grid: '#2a2218',
+  border: '#4a3a22',
+  text: '#b37c00',
   amber: '#ffb000',
   crimson: '#c8102e',
   up: '#22c55e',

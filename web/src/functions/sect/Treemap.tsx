@@ -14,8 +14,8 @@ export interface TreeItem {
 /** Background for a % change: deeper green/red as the move grows, saturating at ±`max`. */
 function heatColor(chg: number | null, max: number): string {
   if (chg == null || !Number.isFinite(chg) || chg === 0) return 'var(--panel-2)'
-  const a = 0.18 + 0.67 * Math.min(1, Math.abs(chg) / max)
-  return chg > 0 ? `rgba(34, 197, 94, ${a.toFixed(2)})` : `rgba(244, 63, 94, ${a.toFixed(2)})`
+  const a = Math.round(18 + 67 * Math.min(1, Math.abs(chg) / max))
+  return `color-mix(in srgb, var(${chg > 0 ? '--up' : '--down'}) ${a}%, var(--bg))`
 }
 
 /**

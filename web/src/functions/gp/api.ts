@@ -31,12 +31,12 @@ export const RANGES = [
 export type RangeKey = (typeof RANGES)[number]['range']
 
 export const INDICATORS = [
-  { id: 'sma20', label: 'SMA 20', color: '#38bdf8' },
-  { id: 'sma50', label: 'SMA 50', color: '#f472b6' },
-  { id: 'sma200', label: 'SMA 200', color: '#f2f2f5' },
-  { id: 'bb', label: 'Bollinger (20, 2)', color: '#64748b' },
+  { id: 'sma20', label: 'SMA 20', color: '#ffd27a' },
+  { id: 'sma50', label: 'SMA 50', color: '#ff7a1a' },
+  { id: 'sma200', label: 'SMA 200', color: '#f4efe6' },
+  { id: 'bb', label: 'Bollinger (20, 2)', color: '#9a8f7c' },
   { id: 'rsi', label: 'RSI 14 pane', color: '#ffb000' },
-  { id: 'macd', label: 'MACD histogram pane', color: '#a78bfa' },
+  { id: 'macd', label: 'MACD histogram pane', color: '#ff7a1a' },
 ] as const
 export type IndicatorId = (typeof INDICATORS)[number]['id']
 

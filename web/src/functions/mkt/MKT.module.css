@@ -11,13 +11,14 @@
   min-width: 0;
   padding: 8px 10px;
   border: 1px solid var(--border);
-  background: var(--panel-2);
+  background: var(--panel);
 }
 .hero {
   grid-column: span 2;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  border-top: 2px solid var(--amber-deep);
 }
 .breadth,
 .fcst {
@@ -45,23 +46,34 @@
   }
 }
 .h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0 0 6px;
-  color: var(--muted);
+  color: var(--amber-dim);
   font-size: var(--fs-xs);
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
+.h::after {
+  content: '';
+  flex: 1;
+  order: 1;
+  height: 1px;
+  background: var(--amber-deep);
+}
 .hint {
-  float: right;
+  order: 2;
   color: var(--faint);
   letter-spacing: 0;
   text-transform: none;
 }
 .label {
-  color: var(--muted);
+  color: var(--amber);
   font-size: var(--fs-xs);
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 .heroTop {
   display: flex;
@@ -70,8 +82,12 @@
 }
 .heroPrice {
   color: var(--text);
-  font-size: 34px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-d3);
+  font-weight: 700;
   line-height: 1.05;
+  font-variant-numeric: tabular-nums slashed-zero;
+  text-shadow: 0 0 2px var(--amber-glow);
 }
 .heroChange {
   font-size: var(--fs-lg);
@@ -109,7 +125,7 @@
   display: flex;
   height: 10px;
   overflow: hidden;
-  background: var(--border);
+  background: var(--panel-2);
 }
 .up {
   background: var(--up);
@@ -136,12 +152,12 @@
   font-size: var(--fs-sm);
 }
 .barLabel {
-  color: var(--muted);
+  color: var(--amber-dim);
 }
 .barTrack {
   position: relative;
   height: 8px;
-  background: var(--border);
+  background: var(--panel-2);
 }
 .barTrack::after {
   content: '';
@@ -179,18 +195,18 @@
   font-size: var(--fs-sm);
 }
 .coneH {
-  color: var(--muted);
+  color: var(--amber-dim);
 }
 .coneTrack {
   position: relative;
   height: 12px;
-  background: var(--border);
+  background: var(--panel-2);
 }
 .coneBand {
   position: absolute;
   top: 0;
   bottom: 0;
-  background: rgba(255, 176, 0, 0.3);
+  background: color-mix(in srgb, var(--amber) 28%, transparent);
   border-left: 1px solid var(--amber);
   border-right: 1px solid var(--amber);
 }
@@ -233,8 +249,12 @@
   background: var(--panel);
   font-size: var(--fs-sm);
 }
+.macroItem {
+  transition: background-color var(--dur-fast), color var(--dur-fast);
+}
 .macroItem:hover {
-  border-color: var(--crimson);
+  border-color: var(--amber-deep);
+  background: var(--panel-hover);
 }
 .macroCode {
   color: var(--amber);

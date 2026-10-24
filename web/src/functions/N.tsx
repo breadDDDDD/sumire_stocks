@@ -119,7 +119,10 @@ export default function N({ ticker }: FunctionProps) {
           }
         />
       )}
-      <p className={s.hint}>j/k to move · Enter opens the article in a new tab · third-party text, not verified</p>
+      <p className={s.hint}>
+        <kbd>j</kbd>/<kbd>k</kbd> to move · <kbd className="key-go">GO</kbd> opens the article in a new tab · third-party
+        text, not verified
+      </p>
     </Panel>
   )
 }

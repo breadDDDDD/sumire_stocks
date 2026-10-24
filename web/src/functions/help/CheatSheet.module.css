@@ -10,22 +10,30 @@
   }
 }
 .heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 6px;
-  color: var(--text);
+  color: var(--paper);
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: var(--fs-d1);
   font-weight: 400;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 .heading::before {
   content: '';
-  display: inline-block;
+  flex: none;
   width: 10px;
   height: 10px;
-  margin-right: 8px;
   background: var(--crimson);
   transform: skewX(-20deg);
+}
+.heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--amber-deep);
 }
 .syntax {
   margin: 0 0 12px;
@@ -43,21 +51,30 @@
 .fn {
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr) auto;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 3px 6px;
+  height: var(--row-h);
+  padding: 0 6px;
   border: 0;
   background: none;
   text-align: left;
+  transition: background-color var(--dur-fast), color var(--dur-fast);
 }
 .fn:hover,
 .fn:focus-visible {
   background: var(--panel-hover);
 }
+.fn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring-inset);
+}
+.fnList li:nth-child(5n) .fn {
+  border-bottom: 1px solid var(--amber-deep);
+}
 .code {
-  color: var(--amber);
-  font-weight: 700;
+  justify-self: start;
+  min-width: 36px;
 }
 .desc {
   color: var(--text);
@@ -77,17 +94,29 @@
   margin-bottom: 12px;
 }
 .groupName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0 0 4px;
-  color: var(--muted);
+  color: var(--amber-dim);
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  letter-spacing: 0.08em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+.groupName::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--amber-deep);
 }
 .key {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  padding: 2px 0;
+  min-height: var(--row-h);
   color: var(--text);
 }
 .combos {

@@ -23,19 +23,29 @@
   max-height: 34%;
   overflow: auto;
   padding: 6px 10px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--amber-deep);
   font-size: var(--fs-sm);
 }
 .recent p {
   margin: 0;
 }
 .h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0 0 4px;
-  color: var(--muted);
+  color: var(--amber-dim);
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+.h::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--amber-deep);
 }
 .fired {
   margin: 0;
@@ -44,6 +54,12 @@
   color: var(--text);
 }
 .fired li {
-  padding: 2px 0;
-  border-bottom: 1px solid var(--border);
+  height: var(--row-h);
+  line-height: var(--row-h);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fired li:nth-child(5n) {
+  border-bottom: 1px solid var(--amber-deep);
 }

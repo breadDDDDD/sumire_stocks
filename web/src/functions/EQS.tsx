@@ -218,7 +218,9 @@ export default function EQS({ args }: FunctionProps) {
           <Button type="submit" variant="primary">
             Run
           </Button>
-          <span className={s.keys}>Enter DES · g GP · w watchlist</span>
+          <span className={s.keys}>
+            <kbd className="key-go">GO</kbd> DES · <kbd>g</kbd> GP · <kbd>w</kbd> watchlist
+          </span>
         </div>
       </form>
 

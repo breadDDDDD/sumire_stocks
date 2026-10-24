@@ -84,7 +84,7 @@ export default function MKT(_: FunctionProps) {
             <div className={s.heroTop}>
               <div>
                 <div className={s.label}>IHSG</div>
-                <div className={`${s.heroPrice} display`}>
+                <div className={s.heroPrice}>
                   <Num value={ihsg?.price} format="price" decimals={2} />
                 </div>
                 <div className={s.heroChange}>

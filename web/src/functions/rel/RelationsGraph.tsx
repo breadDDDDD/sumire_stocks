@@ -60,6 +60,11 @@ export function RelationsGraph({ code, chgPct, nodes, live, onOpen }: RelationsG
         ))}
 
         <g className={s.center}>
+          <polygon
+            className={s.centerPlate}
+            transform="translate(5 5)"
+            points={`${CX - 74},${CY - 30} ${CX + 84},${CY - 30} ${CX + 74},${CY + 30} ${CX - 84},${CY + 30}`}
+          />
           <polygon points={`${CX - 74},${CY - 30} ${CX + 84},${CY - 30} ${CX + 74},${CY + 30} ${CX - 84},${CY + 30}`} />
           <text x={CX} y={CY + 1} className={s.centerCode}>
             {code}
@@ -86,7 +91,7 @@ export function RelationsGraph({ code, chgPct, nodes, live, onOpen }: RelationsG
               onKeyDown={(e) => onKey(e, clickable ? node.code : null)}
             >
               <title>{`${node.label} · ${node.detail}`}</title>
-              <rect x={-w / 2} y={-20} width={w} height={40} rx={2} style={{ stroke: KIND_META[node.kind].color }} />
+              <rect x={-w / 2} y={-20} width={w} height={40} style={{ stroke: KIND_META[node.kind].color }} />
               <text y={-3} className={s.nodeLabel}>
                 {node.label}
               </text>

@@ -3,6 +3,18 @@ import { FUNCTION_META } from '../types'
 import { SHORTCUTS } from './shortcuts'
 import s from './CheatSheet.module.css'
 
+/** Bloomberg key roles: Enter is the green GO key, Esc the red cancel key. */
+function Key({ k }: { k: string }) {
+  if (k === 'Enter')
+    return (
+      <kbd className="key-go" title="Enter">
+        GO
+      </kbd>
+    )
+  if (k === 'Esc') return <kbd className="key-cancel">Esc</kbd>
+  return <Key k={k} />
+}
+
 /** Functions and keys. `onRun` runs a function's example command. */
 export function CheatSheet({ onRun }: { onRun?: (command: string) => void }) {
   return (
@@ -11,7 +23,7 @@ export function CheatSheet({ onRun }: { onRun?: (command: string) => void }) {
         <section>
           <h3 className={s.heading}>Functions</h3>
           <p className={s.syntax}>
-            Type <code>[TICKER] [FUNCTION]</code> then Enter. A bare ticker opens <code>DES</code>; a ticker function
+            Type <code>[TICKER] [FUNCTION]</code> then <kbd className="key-go">GO</kbd>. A bare ticker opens <code>DES</code>; a ticker function
             typed alone uses the focused pane's ticker.
           </p>
           <ul className={s.fnList}>
@@ -23,7 +35,7 @@ export function CheatSheet({ onRun }: { onRun?: (command: string) => void }) {
                   onClick={() => onRun?.(f.example)}
                   title={onRun ? `Run ${f.example}` : undefined}
                 >
-                  <span className={s.code}>{f.code}</span>
+                  <kbd className={`key-fn ${s.code}`}>{f.code}</kbd>
                   <span className={s.desc}>{f.description}</span>
                   <span className={s.example}>{f.example}</span>
                 </button>
@@ -47,7 +59,7 @@ export function CheatSheet({ onRun }: { onRun?: (command: string) => void }) {
                           {combo.map((k, j) => (
                             <Fragment key={k}>
                               {j > 0 && '+'}
-                              <kbd>{k}</kbd>
+                              <Key k={k} />
                             </Fragment>
                           ))}
                         </span>

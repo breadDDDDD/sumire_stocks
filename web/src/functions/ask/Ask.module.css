@@ -23,13 +23,15 @@
   height: 26px;
   padding: 0 8px;
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
+  border-radius: 0;
   background: var(--bg);
   color: var(--text);
 }
 
-.input:focus {
+.input:focus-visible {
   border-color: var(--crimson);
+  outline: 2px solid var(--crimson);
+  outline-offset: -1px;
 }
 
 .history {
@@ -50,13 +52,22 @@
 }
 
 .historyTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0 0 6px;
-  color: var(--amber);
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
+  color: var(--amber-dim);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+.historyTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--amber-deep);
 }
 
 .historyItem {
@@ -64,15 +75,16 @@
   flex-direction: column;
   gap: 2px;
   width: 100%;
-  padding: 4px 6px;
-  border: 1px solid transparent;
+  padding: 3px 6px;
+  border: 0;
+  border-left: 3px solid transparent;
   background: none;
   text-align: left;
+  transition: background-color var(--dur-fast), color var(--dur-fast);
 }
 
 .historyItem:hover:not(:disabled),
 .historyItem:focus-visible {
-  border-color: var(--border-strong);
   background: var(--panel-hover);
 }
 
@@ -82,7 +94,8 @@
 }
 
 .selected {
-  border-color: var(--crimson);
+  border-left-color: var(--crimson);
+  background: var(--crimson-dim);
 }
 
 .historyQ {

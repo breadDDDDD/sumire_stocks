@@ -17,7 +17,7 @@ const QUADRANT_COLOR: Record<string, string> = {
   leading: 'var(--up)',
   weakening: 'var(--amber)',
   lagging: 'var(--down)',
-  improving: '#38bdf8',
+  improving: 'var(--paper)',
 }
 
 const SIZE = 320
@@ -35,12 +35,12 @@ export function RotationChart({ sectors, onOpen }: { sectors: RotationSector[]; 
 
   return (
     <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className={s.rotation} role="img" aria-label="Sector rotation quadrant">
-      <rect x={mid} y={PAD} width={q} height={q} fill="rgba(34,197,94,0.06)" />
-      <rect x={mid} y={mid} width={q} height={q} fill="rgba(255,176,0,0.06)" />
-      <rect x={PAD} y={mid} width={q} height={q} fill="rgba(244,63,94,0.06)" />
-      <rect x={PAD} y={PAD} width={q} height={q} fill="rgba(56,189,248,0.06)" />
-      <line x1={PAD} x2={SIZE - PAD} y1={mid} y2={mid} stroke="var(--border-strong)" />
-      <line x1={mid} x2={mid} y1={PAD} y2={SIZE - PAD} stroke="var(--border-strong)" />
+      <rect x={mid} y={PAD} width={q} height={q} fill="var(--up)" fillOpacity={0.06} />
+      <rect x={mid} y={mid} width={q} height={q} fill="var(--amber)" fillOpacity={0.06} />
+      <rect x={PAD} y={mid} width={q} height={q} fill="var(--down)" fillOpacity={0.06} />
+      <rect x={PAD} y={PAD} width={q} height={q} fill="var(--paper)" fillOpacity={0.04} />
+      <line x1={PAD} x2={SIZE - PAD} y1={mid} y2={mid} stroke="var(--amber-deep)" />
+      <line x1={mid} x2={mid} y1={PAD} y2={SIZE - PAD} stroke="var(--amber-deep)" />
       <text x={SIZE - PAD - 2} y={PAD + 10} textAnchor="end" className={s.quadLabel} fill={QUADRANT_COLOR.leading}>
         LEADING
       </text>

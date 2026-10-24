@@ -40,7 +40,7 @@
   cursor: crosshair;
 }
 .axis {
-  fill: var(--muted);
+  fill: var(--amber-dim);
   font-size: 10px;
   font-family: var(--font-mono);
 }
@@ -50,12 +50,22 @@
   gap: 20px;
 }
 .h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0 0 6px;
-  color: var(--muted);
+  color: var(--amber-dim);
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+.h::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--amber-deep);
 }
 .stats,
 .corr {
@@ -66,14 +76,26 @@
 .stats td,
 .corr th,
 .corr td {
-  padding: 3px 10px;
-  border-bottom: 1px solid var(--border);
+  height: var(--row-h);
+  padding: 0 10px;
   text-align: right;
   white-space: nowrap;
 }
+.stats thead th,
+.corr thead th {
+  color: var(--amber-dim);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--amber-deep);
+}
+.stats tbody tr:nth-child(5n) > *,
+.corr tbody tr:nth-child(5n) > * {
+  border-bottom: 1px solid var(--amber-deep);
+}
 .stats tbody th,
 .corr tbody th {
-  color: var(--muted);
+  color: var(--amber-dim);
   font-weight: 400;
   text-align: left;
 }

@@ -182,7 +182,7 @@ export default function COMP({ ticker, args }: FunctionProps) {
                           return (
                             <td
                               key={b}
-                              style={{ background: v == null || i === j ? undefined : `rgba(255, 176, 0, ${Math.abs(v) * 0.45})` }}
+                              style={{ background: v == null || i === j ? undefined : `color-mix(in srgb, var(--amber) ${Math.round(Math.abs(v) * 45)}%, transparent)` }}
                               className={v != null && v < 0 ? 'down' : undefined}
                             >
                               {v == null ? '—' : v.toFixed(2)}

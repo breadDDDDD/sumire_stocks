@@ -71,6 +71,6 @@ export function useForecast(code: string, enabled = true) {
 /** Display name and color for a forecast model. */
 export function modelStyle(model: string): { name: string; color: string } {
   if (model === 'baseline') return { name: 'Baseline', color: '#ffb000' }
-  if (model.startsWith('chronos')) return { name: 'Chronos-2', color: '#a78bfa' }
-  return { name: model, color: '#38bdf8' }
+  if (model.startsWith('chronos')) return { name: 'Chronos-2', color: '#f4efe6' }
+  return { name: model, color: '#ff7a1a' }
 }

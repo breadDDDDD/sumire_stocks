@@ -221,7 +221,8 @@ export default function W(_: FunctionProps) {
             )}
           </div>
           <div className={s.keys}>
-            Enter DES · g GP · Alt+↑/↓ reorder · Del remove
+            <kbd className="key-go">GO</kbd> DES · <kbd>g</kbd> GP · <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> reorder ·{' '}
+            <kbd>Del</kbd> remove
           </div>
         </>
       )}

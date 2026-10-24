@@ -34,7 +34,7 @@ export function Sparkline({
       role="img"
       aria-label="Intraday sparkline"
     >
-      <line x1={0} x2={width} y1={y(base)} y2={y(base)} stroke="var(--faint)" strokeDasharray="3 3" strokeWidth={1} />
+      <line x1={0} x2={width} y1={y(base)} y2={y(base)} stroke="var(--amber-deep)" strokeDasharray="3 3" strokeWidth={1} />
       <path d={`${d}L${width},${height}L0,${height}Z`} fill={color} opacity={0.08} />
       <path d={d} fill="none" stroke={color} strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
     </svg>
