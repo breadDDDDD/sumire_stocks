@@ -8,9 +8,6 @@
     <AssemblyName>Sumire</AssemblyName>
     <Version>0.1.0</Version>
     <InvariantGlobalization>false</InvariantGlobalization>
-    <!-- one user, one process: workstation GC keeps idle memory far below server GC's per-core heaps -->
-    <ServerGarbageCollection>false</ServerGarbageCollection>
-    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
   </PropertyGroup>
 
   <ItemGroup>
