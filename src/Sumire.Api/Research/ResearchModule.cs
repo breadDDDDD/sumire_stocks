@@ -20,7 +20,7 @@ public static partial class ResearchModule
         services.AddSingleton<IInsightNotifier, SignalRInsightNotifier>();
         services.AddSingleton<ResearchSignal>();
         services.AddScoped<ResearchQueue>();
-        services.AddScoped<IFactPacketBuilder, FactPacketBuilder>();
+        services.AddScoped<IFactPacketBuilder, FactPacket.MarketFactPacketBuilder>();
         services.AddScoped<ResearchWorker>();
         services.AddHostedService<ResearchScheduler>();
         return services;

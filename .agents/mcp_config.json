@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "sumire": {
+      "command": "dotnet",
+      "args": ["run", "--no-launch-profile", "-v", "q", "--project", "src/Sumire.Api", "--", "mcp"]
+    }
+  }
+}
