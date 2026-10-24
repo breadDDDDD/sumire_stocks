@@ -76,7 +76,7 @@ public sealed class ForecastFallbackJob(
         var args = "forecast --once";
         // Running as `dotnet Sumire.dll`: pass the dll to the host.
         if (Path.GetFileNameWithoutExtension(exe).Equals("dotnet", StringComparison.OrdinalIgnoreCase))
-            args = $"\"{Assembly.GetEntryAssembly()!.Location}\" {args}";
+            args = $"\"{Path.Combine(AppContext.BaseDirectory, "Sumire.dll")}\" {args}";
 
         using var p = Process.Start(new ProcessStartInfo(exe, args)
         {
