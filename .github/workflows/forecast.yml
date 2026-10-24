@@ -1,0 +1,48 @@
+name: forecast
+
+# Nightly Chronos-2 forecasts (implementation-plan.md §5.4). Reads daily_bars/instruments from Supabase and
+# writes forecasts. Needs the repository secret SUPABASE_CONNECTION_STRING (and HF_TOKEN for a private mirror).
+on:
+  schedule:
+    - cron: "0 10 * * 1-5" # 17:00 WIB, after the 16:30 EOD bars land
+  workflow_dispatch:
+
+concurrency:
+  group: forecast
+  cancel-in-progress: false
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FORECAST_MODE: actions
+      FORECAST_MODEL_REPO: sktime/chronos2-onnx
+      FORECAST_MODEL_REVISION: 84282421a54142dc689c0a71bc9876285b60bdae
+      FORECAST_MODEL_SHA256: f06aba77b0445061b78639008074d71f45af8c0edf16c9dbe4c9ea513c422c0e
+      FORECAST_MODEL_CACHE: ${{ github.workspace }}/.model-cache
+      SUPABASE_CONNECTION_STRING: ${{ secrets.SUPABASE_CONNECTION_STRING }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore cached model
+        uses: actions/cache@v4
+        with:
+          path: .model-cache
+          key: chronos-model-${{ env.FORECAST_MODEL_REPO }}-${{ env.FORECAST_MODEL_REVISION }}
+
+      - name: Build
+        run: dotnet build -c Release src/Sumire.Api
+
+      - name: Forecast
+        # Scheduled runs skip IDX holidays; a manual run always forecasts.
+        run: >
+          dotnet run -c Release --no-build --project src/Sumire.Api --
+          forecast --once ${{ github.event_name == 'schedule' && '--skip-holidays' || '' }}
