@@ -8,6 +8,9 @@
     <AssemblyName>Sumire</AssemblyName>
     <Version>0.1.0</Version>
     <InvariantGlobalization>false</InvariantGlobalization>
+    <!-- one user, one process: workstation GC keeps idle memory far below server GC's per-core heaps -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,5 +38,28 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Sumire.Api.Tests" />
   </ItemGroup>
+
+  <!--
+    Single-file publish (command in README.md, "Publish").
+    Not trimmed: EF Core, SignalR and System.Text.Json reflection are not trim-safe. wwwroot, Seed and the schema stay next to the exe.
+  -->
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <!--
+    dotnet publish builds the web UI first (skip with -p:SkipWebBuild=true). It runs before static web assets are
+    resolved and re-globs wwwroot, so freshly hashed bundles are picked up.
+  -->
+  <Target Name="BuildWebUi" BeforeTargets="ResolveProjectStaticWebAssets" Condition="'$(_IsPublishing)' == 'true' and '$(SkipWebBuild)' != 'true'">
+    <Exec Command="npm ci --no-audit --no-fund" WorkingDirectory="$(MSBuildProjectDirectory)/../../web" Condition="!Exists('$(MSBuildProjectDirectory)/../../web/node_modules')" />
+    <Exec Command="npm run build" WorkingDirectory="$(MSBuildProjectDirectory)/../../web" />
+    <ItemGroup>
+      <Content Remove="wwwroot/**" />
+      <Content Include="wwwroot/**" />
+    </ItemGroup>
+  </Target>
 
 </Project>
