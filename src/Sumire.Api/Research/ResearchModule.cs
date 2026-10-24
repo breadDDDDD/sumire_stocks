@@ -31,7 +31,8 @@ public static partial class ResearchModule
     public static IEndpointRouteBuilder MapResearch(this IEndpointRouteBuilder app)
     {
         var api = app.MapGroup("/api").AddEndpointFilter(async (ctx, next) =>
-            Db.IsConfigured ? await next(ctx) : Results.Problem(statusCode: 503, title: "Database not configured", detail: Db.NotConfiguredReason));
+            Db.IsConfigured ? await next(ctx) : Results.Problem(statusCode: 503, title: "Database not configured", detail: Db.NotConfiguredReason))
+            .AddEndpointFilter(Analytics.AnalyticsEndpoints.UnavailableFilter);
 
         api.MapPost("/research", async (ResearchRequest body, ResearchQueue queue, ResearchSignal signal, CancellationToken ct) =>
         {
