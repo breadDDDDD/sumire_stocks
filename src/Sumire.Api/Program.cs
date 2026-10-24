@@ -61,6 +61,8 @@ static async Task<int> RunCliAsync(string[] args, Func<IServiceProvider, string[
     var builder = Host.CreateApplicationBuilder(new HostApplicationBuilderSettings { Args = args, ContentRootPath = AppPaths.ContentRoot });
     if (logToStderr)
         builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
+    // hub contexts resolve (and broadcast to nobody) so services shared with the web host work unchanged
+    builder.Services.AddSignalR();
     AddAreas(builder.Services, builder.Configuration);
 
     using var host = builder.Build();
