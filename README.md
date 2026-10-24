@@ -10,8 +10,19 @@ Requirements: Windows, .NET 9 SDK, Node 22 / npm 10, a free Supabase project.
 
 1. **Environment.** Copy `.env.example` to `.env` (repo root) and fill it in. Never commit `.env`.
 2. **Database.** Set `SUPABASE_CONNECTION_STRING` to the **pooler** connection string: Supabase dashboard → Connect → *Session pooler* (or *Transaction pooler*). It looks like `postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres`. The app creates schema `sumire` and runs migrations on startup.
-3. **Web UI.** `npm --prefix web install`, then `npm --prefix web run build` (outputs to `src/Sumire.Api/wwwroot`).
-4. **Run.** `dotnet run --project src/Sumire.Api` and open http://localhost:5080. For UI work, run `npm --prefix web run dev` as well and open http://localhost:5173 (it proxies `/api` and `/hubs` to :5080).
+3. **Web UI.** Build it once, and again after UI changes. Run npm from inside `web\`, because `npm --prefix web install` doesn't work on Windows (it looks for `package.json` in the repo root). The build outputs to `src/Sumire.Api/wwwroot`.
+   ```powershell
+   cd web
+   npm install
+   npm run build
+   cd ..
+   ```
+4. **Run.** From the repo root:
+   ```powershell
+   dotnet run --project src/Sumire.Api
+   ```
+   Open http://localhost:5080. Press **Ctrl+C** to stop it; nothing keeps running after that. On the first start it creates the tables and backfills 3 years of prices, which takes a few minutes.
+   For UI work, also run `npm run dev` inside `web\` and open http://localhost:5173 (it proxies `/api` and `/hubs` to :5080).
 
 The app starts and the market screens work even when the database is unreachable (Yahoo fallback). `GET /api/health` says why the DB is down, and the status bar shows **DB down**.
 
@@ -23,7 +34,8 @@ Other symptoms:
 
 - Research screens (INS, BRIEF, RQ, ASK), watchlists, alerts and settings return **503**: the DB is unreachable. Fix the connection string.
 - Startup fails binding port 5080: another Sumire (or `dotnet run`) is already running. Close it first.
-- A blank page with a hint text: the UI isn't built yet. Run `npm --prefix web run build`.
+- A blank page, or a startup warning `The WebRootPath was not found`: the UI isn't built yet. Run `npm install` and `npm run build` inside `web\`, then restart the app.
+- A `fail: … __ef_migrations_history` line on the very first start is harmless: EF Core checks for its history table before creating it.
 
 ## Using it
 
@@ -115,8 +127,9 @@ CLI verbs on the same exe: `forecast --once`, `research --once`, `install-schedu
 ```sh
 dotnet build SumirePlatform.sln
 dotnet test SumirePlatform.sln
-npm --prefix web run build
-npm --prefix web run lint
+cd web
+npm run build
+npm run lint
 ```
 
 Endpoint docs are in [docs/api/](docs/api/). Tests never touch the real DB or network.

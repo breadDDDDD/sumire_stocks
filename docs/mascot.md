@@ -14,7 +14,7 @@ Outfit: `auto` (gym clothes during the IDX session and lunch break, school unifo
 
 ## Portrait files
 
-No game art ships with the repo. Without images the app draws an original SVG placeholder (crimson hair, round glasses, blazer or track jacket). To use real portraits, put PNGs in `web/public/assets/sumire/` (gitignored, so they never get committed) and rebuild the web app (`npm --prefix web run build`). Files are served from `/assets/sumire/`.
+No game art ships with the repo. Without images the app draws an original SVG placeholder (crimson hair, round glasses, blazer or track jacket). To use real portraits, put PNGs in `web/public/assets/sumire/` (gitignored, so they never get committed) and rebuild the web app (`npm run build` inside `web\`). Files are served from `/assets/sumire/`.
 
 Expected names (`<outfit>-<mood>.png`, 10 files; any missing one falls back to the placeholder):
 
