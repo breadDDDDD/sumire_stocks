@@ -1,8 +1,8 @@
 # Sumire Platform
 
-<video src="m2-res_270p.mp4" controls muted loop playsinline width="480"></video>
+<img src="docs/media/demo.gif" alt="Sumire" width="360">
 
-If the video doesn't play inline, [open it directly](m2-res_270p.mp4).
+[Original video (mp4)](m2-res_270p.mp4)
 
 A personal, Bloomberg-style terminal for the Indonesia Stock Exchange (IHSG / IDX), themed after Sumire "Violet" Yoshizawa from Persona 5 Royal. One small .NET 9 process serves a React UI on **http://localhost:5080**. It reads free Yahoo Finance data and RSS headlines, and runs quant analytics (technicals, risk, GARCH, signal score, screener, relations). It also shows forecasts (a statistical baseline plus Chronos-2 via GitHub Actions) and queues AI research through agent CLIs you are already signed into (Antigravity `agy`, Gemini CLI, Claude Code). AI insights explain moves and link them to stocks; they never make up prices.
 
