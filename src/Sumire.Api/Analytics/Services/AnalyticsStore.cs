@@ -88,6 +88,8 @@ public sealed class AnalyticsStore(
             lock (_lock) { _current = u; _building = null; _failure = null; }
             logger.LogInformation("Analytics snapshot for {Date} built from {Source}: {Count} stocks in {Ms} ms",
                 u.ExpectedDate, u.Source, u.Stocks.Count, (int)(clock.GetUtcNow() - u.BuiltAt).TotalMilliseconds);
+            // The build churns through bars and Yahoo JSON once a day; give that memory back instead of idling on it.
+            GC.Collect(2, GCCollectionMode.Aggressive, blocking: true, compacting: true);
             return u;
         }
         catch (Exception ex)
