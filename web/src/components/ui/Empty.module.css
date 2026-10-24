@@ -1,38 +1,65 @@
+/* Left-aligned, off-centre: burst behind the title, screentone from the top-right. */
 .empty {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   height: 100%;
   min-height: 140px;
-  padding: 24px;
-  text-align: center;
+  padding: 20px 24px 20px 28px;
+  text-align: left;
+}
+.head {
+  position: relative;
+  isolation: isolate;
+  padding-left: 18px;
+}
+.burst {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin: -32px 0 0 -18px;
+  z-index: -1;
+  color: var(--crimson);
+  opacity: 0.9;
+  transform: rotate(-8deg);
+}
+.error .burst {
+  color: var(--down);
+  opacity: 1;
 }
 .title {
   margin: 0;
-  color: var(--text);
+  color: var(--paper);
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: var(--fs-d2);
   font-weight: 400;
+  line-height: 1;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  text-shadow: 2px 2px 0 #000;
 }
 .slash {
   display: inline-block;
   width: 48px;
-  height: 6px;
+  height: 5px;
+  margin-left: 18px;
   background: var(--crimson);
   transform: skewX(-24deg);
 }
 .message {
   max-width: 46ch;
-  margin: 0;
+  margin: 0 0 0 18px;
   color: var(--muted);
   font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.error .message {
+  color: var(--text);
 }
 .actions {
-  margin-top: 6px;
   display: flex;
   gap: 8px;
+  margin: 6px 0 0 18px;
 }

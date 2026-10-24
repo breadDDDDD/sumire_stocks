@@ -11,10 +11,11 @@ export function Skeleton({ rows = 6, columns = 4 }: { rows?: number; columns?: n
           {Array.from({ length: columns }, (_, c) => (
             <div
               key={c}
-              className={s.bar}
-              style={{ width: `${WIDTHS[(r + c) % WIDTHS.length]}%`, animationDelay: `${(r * 60) % 600}ms` }}
+              className={r === 0 && c === 0 ? `${s.bar} ${s.stub}` : s.bar}
+              style={r === 0 && c === 0 ? undefined : { width: `${WIDTHS[(r + c) % WIDTHS.length]}%` }}
             />
           ))}
+          {r === rows - 1 && <span className={s.cursor} aria-hidden="true" />}
         </div>
       ))}
     </div>

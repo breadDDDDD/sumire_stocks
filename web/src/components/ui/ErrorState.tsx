@@ -4,13 +4,13 @@ import { Empty } from './Empty'
 
 function describe(error: unknown): string {
   if (error instanceof ApiError) {
-    if (error.status === 404) return 'Not found. The data may not exist yet for this ticker.'
-    if (error.status >= 500) return `The server had a problem (${error.status}). ${error.message}`
+    if (error.status === 404) return "There's no data for this ticker yet."
+    if (error.status >= 500) return `Server error (${error.status}). ${error.message}`
     return error.message
   }
-  if (error instanceof TypeError) return 'Cannot reach the Sumire server. Is it running on localhost:5080?'
+  if (error instanceof TypeError) return "The Sumire server at localhost:5080 isn't answering. Start it, then retry."
   if (error instanceof Error) return error.message
-  return 'Something went wrong.'
+  return 'That request failed.'
 }
 
 export function ErrorState({
@@ -23,7 +23,7 @@ export function ErrorState({
   title?: string
 }) {
   return (
-    <Empty title={title} message={describe(error)}>
+    <Empty title={title} message={describe(error)} tone="error">
       {onRetry && (
         <Button variant="primary" onClick={onRetry}>
           Retry

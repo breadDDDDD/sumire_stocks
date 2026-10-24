@@ -16,25 +16,43 @@
   overflow: visible;
 }
 .lens,
-.bridge {
+.bridge,
+.temple {
   fill: none;
   stroke: currentColor;
   stroke-width: 2.4;
-  stroke-linecap: round;
+  stroke-linecap: square;
+}
+.bridge {
+  stroke-linejoin: miter;
+}
+.lens {
+  fill: rgba(244, 239, 230, 0.06);
 }
 .shine {
   fill: none;
-  stroke: #fff;
+  stroke: var(--paper);
   stroke-width: 2.4;
-  stroke-linecap: round;
+  stroke-linecap: butt;
   stroke-dasharray: 8 49;
   animation: spin 1.1s linear infinite;
 }
 .shine2 {
   animation-delay: -0.55s;
 }
+.label {
+  color: var(--muted);
+}
 @keyframes spin {
   to {
     stroke-dashoffset: -57;
+  }
+}
+/* static glint at the top-left of each lens instead of a sweep */
+@media (prefers-reduced-motion: reduce) {
+  .shine,
+  .shine2 {
+    animation: none;
+    stroke-dashoffset: -6;
   }
 }

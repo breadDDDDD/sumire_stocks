@@ -31,12 +31,13 @@
   margin: 0;
   padding: 6px 10px 6px 24px;
   border-left: 3px solid var(--warn);
-  background: rgba(255, 176, 0, 0.06);
+  background: transparent;
   color: var(--amber);
   font-size: var(--fs-sm);
 }
 
 .summary {
+  max-width: 72ch;
   margin: 0;
   font-size: var(--fs-lg);
   line-height: 1.55;
@@ -44,6 +45,8 @@
 }
 
 .brief .summary {
+  max-width: 72ch;
+  color: var(--paper);
   font-size: 17px;
   border-left: 4px solid var(--crimson);
   padding-left: 12px;
@@ -56,24 +59,22 @@
 }
 
 .heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
-  color: var(--amber);
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
+  color: var(--amber-dim);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.heading::before {
+.heading::after {
   content: '';
-  display: inline-block;
-  width: 12px;
-  height: 4px;
-  margin-right: 8px;
-  vertical-align: middle;
-  background: var(--crimson);
-  transform: skewX(-24deg);
+  flex: 1;
+  height: 1px;
+  background: var(--amber-deep);
 }
 
 .chips {
@@ -97,7 +98,8 @@
 
 .connection {
   padding: 6px 8px;
-  border: 1px solid var(--border);
+  border: 0;
+  border-left: 2px solid var(--border-strong);
   background: var(--panel-2);
 }
 
@@ -140,19 +142,21 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 0 6px;
+  height: 16px;
+  padding: 0 5px;
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
+  border-radius: 0;
   color: var(--text);
-  font-size: var(--fs-xs);
-  line-height: 18px;
+  font-size: 10px;
+  line-height: 14px;
   text-decoration: none;
   white-space: nowrap;
 }
 
 .source:hover,
 .source:focus-visible {
-  border-color: var(--crimson);
+  border-color: var(--amber);
+  color: var(--amber-hi);
 }
 
 .sourceIdx {
@@ -205,6 +209,7 @@
   flex: none;
   min-width: 56px;
   color: var(--amber);
+  font-variant-numeric: tabular-nums slashed-zero;
 }
 
 .past {
@@ -248,6 +253,7 @@
   display: inline-block;
   width: 120px;
   height: 8px;
+  flex: none;
   background: var(--panel-2);
   border: 1px solid var(--border-strong);
 }
@@ -256,7 +262,6 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  opacity: 0.75;
 }
 
 .fill.up {

@@ -132,7 +132,11 @@ export function Table<T>({ columns, rows, rowKey, onOpen, initialSort, autoFocus
                   aria-sort={isSorted ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}
                 >
                   {c.header}
-                  {isSorted && (sort.dir === 'asc' ? ' ▲' : ' ▼')}
+                  {isSorted && (
+                    <span className={s.arrow} aria-hidden="true">
+                      {sort.dir === 'asc' ? '▲' : '▼'}
+                    </span>
+                  )}
                 </th>
               )
             })}

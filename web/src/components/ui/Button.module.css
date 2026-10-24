@@ -1,48 +1,63 @@
+/* Bloomberg keys: hard caps with a darker bottom edge */
 .button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 24px;
+  height: 22px;
   padding: 0 10px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  background: var(--panel-2);
+  border: 0;
+  border-bottom: 2px solid #000;
+  border-radius: var(--radius-key);
+  background: var(--key-dark);
   color: var(--text);
-  font-size: var(--fs-sm);
-  text-transform: uppercase;
+  font-size: var(--fs-xs);
+  font-weight: 700;
   letter-spacing: 0.04em;
+  text-transform: uppercase;
   white-space: nowrap;
   transition:
-    background 0.12s,
-    border-color 0.12s,
-    color 0.12s;
+    background-color var(--dur-fast),
+    color var(--dur-fast);
 }
 .button:hover:not(:disabled) {
-  border-color: var(--crimson);
   background: var(--panel-hover);
+  color: var(--amber-hi);
+}
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
 }
 .button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: default;
 }
 .primary {
-  background: var(--crimson);
-  border-color: var(--crimson);
-  color: #fff;
+  background: var(--key-fn);
+  border-bottom-color: var(--key-fn-edge);
+  color: var(--ink);
 }
 .primary:hover:not(:disabled) {
-  background: var(--crimson-bright);
+  background: #ffd21f;
+  color: var(--ink);
 }
 .ghost {
-  border-color: transparent;
+  padding: 0 2px;
+  border-bottom: 0;
   background: transparent;
   color: var(--muted);
+  text-underline-offset: 3px;
 }
 .ghost:hover:not(:disabled) {
-  color: var(--text);
-  border-color: var(--border-strong);
-}
-.active {
+  background: transparent;
   color: var(--amber);
-  border-color: var(--amber);
+  text-decoration: underline;
+}
+.ghost:active:not(:disabled) {
+  transform: none;
+}
+.active,
+.active:hover:not(:disabled) {
+  background: var(--amber);
+  border-bottom-color: var(--amber-deep);
+  color: var(--ink);
 }

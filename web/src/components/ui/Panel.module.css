@@ -5,31 +5,35 @@
   min-width: 0;
   height: 100%;
   background: var(--panel);
-  border: 1px solid var(--border);
+  border: 0;
 }
 
 .header {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 28px;
+  min-height: 26px;
   padding-right: 8px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(90deg, rgba(200, 16, 46, 0.14), transparent 60%);
+  border-bottom: 1px solid var(--amber-deep);
+  background: var(--bg);
 }
 
 .title {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
   margin: 0;
-  padding: 3px 22px 3px 12px;
+  padding: 2px 22px 2px 10px;
   background: var(--crimson);
-  color: #fff;
+  color: var(--paper);
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: var(--fs-d1);
   font-weight: 400;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  line-height: 1.35;
+  line-height: 1;
   clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  filter: drop-shadow(3px 0 0 #000);
   white-space: nowrap;
 }
 
@@ -57,5 +61,5 @@
 }
 
 .padded {
-  padding: 10px 12px;
+  padding: 8px 10px;
 }

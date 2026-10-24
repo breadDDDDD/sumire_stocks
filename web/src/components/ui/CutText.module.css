@@ -1,0 +1,60 @@
+.cut {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+  line-height: 1.05;
+}
+.letter {
+  display: inline-block;
+  padding: 0 2px;
+  margin-right: 1px;
+  line-height: 1.05;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.space {
+  display: inline-block;
+  width: 0.35em;
+}
+/* serif letters run 8% larger so their x-height matches Anton */
+.l1,
+.l3,
+.l5 {
+  font-family: var(--font-cut);
+  font-size: 1.08em;
+}
+.l1,
+.l5 {
+  font-style: italic;
+}
+.l0 {
+  background: var(--paper);
+  color: var(--ink);
+  transform: rotate(-3deg);
+}
+.l1 {
+  background: var(--ink);
+  color: var(--paper);
+  transform: rotate(2deg) translateY(1px);
+}
+.l2 {
+  background: var(--crimson);
+  color: var(--paper);
+  transform: rotate(-1deg) translateY(-1px);
+}
+.l3 {
+  background: transparent;
+  color: inherit;
+  transform: rotate(3deg);
+}
+.l4 {
+  background: var(--ink);
+  color: var(--amber);
+  transform: rotate(-2deg) translateY(1px);
+}
+.l5 {
+  background: var(--paper);
+  color: var(--crimson);
+  transform: rotate(1deg);
+}

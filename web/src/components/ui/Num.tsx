@@ -21,7 +21,7 @@ export function Num({ value, format = 'number', decimals, signed, colored, color
   const cls = [useColor ? dir : 'value', className].filter(Boolean).join(' ')
   const mark = arrow ? (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '') : ''
   return (
-    <span className={cls} style={{ fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+    <span className={cls} style={{ fontVariantNumeric: 'tabular-nums slashed-zero', whiteSpace: 'nowrap' }}>
       {mark}
       {formatNum(value, format, { decimals, signed })}
     </span>

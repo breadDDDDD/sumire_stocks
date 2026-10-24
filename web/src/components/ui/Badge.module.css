@@ -2,12 +2,13 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 0 6px;
+  height: 16px;
+  padding: 0 5px;
   border: 1px solid currentColor;
-  border-radius: var(--radius);
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  line-height: 18px;
+  border-radius: 0;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -20,9 +21,11 @@
   color: var(--amber);
 }
 .crimson {
-  color: #fff;
+  padding-right: 8px;
+  border-color: transparent;
   background: var(--crimson);
-  border-color: var(--crimson);
+  color: var(--paper);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
 }
 .up {
   color: var(--up);
@@ -35,7 +38,7 @@
   border-color: var(--border);
 }
 .solid {
-  color: var(--bg);
+  color: var(--ink);
   background: var(--amber);
   border-color: var(--amber);
 }

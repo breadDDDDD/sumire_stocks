@@ -1,25 +1,43 @@
+/* Static ledger rows; the only motion is one blinking block cursor. */
 .wrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px;
+  padding: 4px 10px;
 }
 .row {
   display: flex;
+  align-items: center;
   gap: 10px;
+  height: var(--row-h);
+  border-bottom: 1px solid var(--border);
+}
+.row:nth-child(5n) {
+  border-bottom-color: var(--amber-deep);
 }
 .bar {
-  height: 12px;
-  border-radius: var(--radius);
-  background: linear-gradient(90deg, var(--panel-2) 0%, var(--panel-hover) 50%, var(--panel-2) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.2s ease-in-out infinite;
+  height: 10px;
+  border-radius: 0;
+  background: var(--panel-2);
 }
-@keyframes shimmer {
-  from {
-    background-position: 100% 0;
+.stub {
+  flex: none;
+  width: 28px;
+  background: var(--amber-deep);
+}
+.cursor {
+  flex: none;
+  width: 8px;
+  height: 12px;
+  background: var(--amber);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
   }
-  to {
-    background-position: -100% 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    display: none;
   }
 }

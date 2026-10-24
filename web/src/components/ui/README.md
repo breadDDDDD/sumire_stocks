@@ -47,12 +47,14 @@ interactive area focusable with `tabIndex={0}`: Tab / Alt+1..4 focus the first `
 | `Panel` | `title, subtitle?, actions?, padded?, className?, bodyClassName?` | Slanted crimson header; body scrolls. |
 | `Table<T>` | `columns: Column<T>[], rows, rowKey, onOpen?, initialSort?, autoFocus?, empty?` | Sticky header, click header to sort, `j/k/↑/↓/Home/End/PgUp/PgDn`, `Enter` → `onOpen(row)`. Column: `key, header, render?, sortValue?, sortable?, align?, width?`. Right-aligned columns sort descending first. |
 | `Badge` | `tone?: default \| amber \| crimson \| up \| down \| muted \| solid, title?` | Small uppercase label. |
-| `Button` | `variant?: default \| primary \| ghost, active?` + button attrs | |
+| `Button` | `variant?: default \| primary \| ghost, active?` + button attrs | Bloomberg keycap: dark key, `primary` is the yellow function key, `active` is an amber key. |
 | `Spinner` | `size?, label?, center?` | Sumire's round glasses. Prefer `Skeleton` for tables/lists. |
-| `Skeleton` | `rows?, columns?` | Shimmer placeholder rows. |
-| `Empty` | `title, message?, children?` (actions) | Halftone empty state. |
+| `Skeleton` | `rows?, columns?` | Static ledger placeholder rows with a blinking cursor. |
+| `Empty` | `title, message?, children?` (actions), `tone?: 'error'` | Left-aligned, starburst behind the title, screentone from the top-right. |
 | `ErrorState` | `error?, onRetry?, title?` | Friendly text for `ApiError` (404, 5xx) and network errors. |
-| `FreshnessBadge` | `asOf, staleAfterSec? = 1200, label? = 'Delayed'` | "Delayed · as of 14:32:05 WIB", red "Stale" past the threshold. |
+| `FreshnessBadge` | `asOf, staleAfterSec? = 1200, label? = 'Delayed'` | "Delayed · as of 14:32:05 WIB", muted while fresh, amber "Stale" past the threshold, red at 3x. |
+| `CutText` | `text, className?` | Ransom-note letters. Only for the wordmark, the VIOLET label and the calling-card headline. |
+| `Starburst` | `size? = 64, className?, outline?` | 24-point impact burst in `currentColor`. |
 | `Num` | `value, format?: price \| idr \| pct \| compact \| number, decimals?, signed?, colored?, colorBy?, arrow?` | Tabular figures; `colored` uses the value's sign, `colorBy` another value (e.g. color a price by its change). `pct` takes percent values (0.42 → 0.42%). |
 
 `formatNum(value, format, { decimals, signed })` and `direction(value)` are the plain-string versions.
