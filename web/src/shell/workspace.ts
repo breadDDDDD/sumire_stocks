@@ -25,6 +25,7 @@ export type WorkspaceAction =
   | { type: 'focus'; pane: number }
   | { type: 'cycle'; delta: 1 | -1 }
   | { type: 'layout'; layout?: Layout }
+  | { type: 'replace'; state: WorkspaceState }
 
 export const STORAGE_KEY = 'sumire.workspace.v1'
 
@@ -35,23 +36,28 @@ const DEFAULT_ENTRIES: FunctionProps[] = [
   { code: 'RQ', args: [] },
 ]
 
-export function initialWorkspace(): WorkspaceState {
-  const fallback: WorkspaceState = {
-    layout: 4,
-    focused: 0,
-    panes: DEFAULT_ENTRIES.map((e) => ({ history: [e], index: 0 })),
-  }
-  const saved = load<WorkspaceState | null>(STORAGE_KEY, null)
+function defaultWorkspace(): WorkspaceState {
+  return { layout: 4, focused: 0, panes: DEFAULT_ENTRIES.map((e) => ({ history: [e], index: 0 })) }
+}
+
+/** A stored workspace (localStorage or /api/settings/ui-layout) if it is well-formed, else null. */
+export function validWorkspace(value: unknown): WorkspaceState | null {
+  const saved = value as WorkspaceState | null
   if (
     !saved ||
+    typeof saved !== 'object' ||
     !LAYOUTS.includes(saved.layout) ||
     !Array.isArray(saved.panes) ||
     saved.panes.length !== PANE_COUNT ||
     saved.panes.some((p) => !Array.isArray(p?.history) || !p.history.length || !p.history[p.index])
   ) {
-    return fallback
+    return null
   }
   return { ...saved, focused: Math.min(Math.max(0, saved.focused | 0), saved.layout - 1) }
+}
+
+export function initialWorkspace(): WorkspaceState {
+  return validWorkspace(load<unknown>(STORAGE_KEY, null)) ?? defaultWorkspace()
 }
 
 function sameEntry(a: FunctionProps, b: FunctionProps) {
@@ -89,6 +95,8 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
       const layout = action.layout ?? LAYOUTS[(LAYOUTS.indexOf(state.layout) + 1) % LAYOUTS.length]
       return { ...state, layout, focused: Math.min(state.focused, layout - 1) }
     }
+    case 'replace':
+      return action.state
   }
 }
 

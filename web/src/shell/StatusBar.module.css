@@ -1,0 +1,27 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  height: 100%;
+  padding: 0 8px;
+  border-right: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+
+.research {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.research button {
+  height: 20px;
+}
+
+.runner {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import AlertToaster from '../components/alerts/AlertToaster'
 import Mascot from '../components/mascot/Mascot'
 import TickerTape from '../components/tape/TickerTape'
 import WatchlistRail from '../components/watchlist/WatchlistRail'
@@ -8,7 +9,9 @@ import { load, save } from '../lib/storage'
 import type { CommandLineHandle } from './CommandLine'
 import { Pane } from './Pane'
 import { ShortcutOverlay } from './ShortcutOverlay'
+import { StatusBar } from './StatusBar'
 import { TopBar } from './TopBar'
+import { useLayoutSync } from './useLayoutSync'
 import {
   currentEntry,
   initialWorkspace,
@@ -38,6 +41,7 @@ export default function App() {
   const cmdRef = useRef<CommandLineHandle>(null)
 
   useEffect(() => save(STORAGE_KEY, state), [state])
+  useLayoutSync(state, dispatch)
   useEffect(() => save(MASCOT_KEY, mascotHidden), [mascotHidden])
   useEffect(() => {
     if (!toast) return
@@ -189,7 +193,8 @@ export default function App() {
             ))}
           </main>
         </div>
-        <footer className={s.bottom} style={{ paddingRight: mascotHidden ? 0 : 64 }}>
+        <footer className={s.bottom} style={{ paddingRight: mascotHidden ? 0 : 132 }}>
+          <StatusBar />
           <div className={s.tape}>
             <TickerTape />
           </div>
@@ -198,6 +203,7 @@ export default function App() {
           <Mascot hidden={mascotHidden} />
         </div>
       </div>
+      <AlertToaster />
       {helpOpen && (
         <ShortcutOverlay
           onClose={() => setHelpOpen(false)}
