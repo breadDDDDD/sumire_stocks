@@ -18,13 +18,14 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background: var(--canvas);
   color: var(--amber);
   font-family: var(--font-mono);
-  font-size: var(--fs-md);
-  line-height: 1.4;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-data);
   font-variant-numeric: tabular-nums slashed-zero;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow: hidden;
 }
 
@@ -46,7 +47,7 @@ button {
 /* native dropdown lists ignore inherited colours on some platforms */
 select,
 option {
-  background-color: var(--panel-2);
+  background-color: var(--raise-2);
   color: var(--text);
 }
 
@@ -54,56 +55,61 @@ option {
   outline: none;
 }
 
-/* an outline, not a box-shadow, so it survives clip-path and overflow: hidden */
+/* an outline, not a box-shadow, so it survives overflow: hidden */
 :focus-visible {
-  outline: 2px solid var(--crimson);
+  outline: 1px solid var(--crimson);
   outline-offset: 1px;
 }
 
 ::selection {
-  background: var(--crimson);
+  background: var(--select);
   color: #fff;
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border: 2px solid var(--bg);
+  background: var(--line-strong);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--amber-deep);
+  background: var(--muted);
 }
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-corner {
   background: transparent;
 }
 
-/* Bloomberg keys: a hard cap with a darker bottom edge */
+/* Bloomberg keys: a hard cap with a 2px darker bottom edge, the only depth in the UI */
 kbd,
 .key {
   display: inline-block;
-  min-width: 18px;
+  min-width: 16px;
   height: 16px;
-  padding: 0 4px;
+  padding: 0 var(--s-1);
   border: 0;
-  border-bottom: 2px solid var(--key-dark-edge);
+  border-bottom: 2px solid var(--key-plain-edge);
   border-radius: var(--radius-key);
-  background: var(--key-dark);
+  background: var(--key-plain);
   color: var(--text);
-  font: 700 10px/16px var(--font-mono);
-  letter-spacing: 0.04em;
+  font: 700 var(--fs-2xs) / 14px var(--font-mono);
+  letter-spacing: var(--track-code);
   text-transform: uppercase;
   text-align: center;
   vertical-align: 1px;
   white-space: nowrap;
 }
-.key-fn {
-  background: var(--key-fn);
-  border-bottom-color: var(--key-fn-edge);
-  color: var(--ink);
+/* yellow sector key: function codes and markets */
+.key-fn,
+.key-sector {
+  background: var(--key-sector);
+  border-bottom-color: var(--key-sector-edge);
+  color: var(--on-fill);
 }
 .key-go {
   background: var(--key-go);
@@ -116,58 +122,48 @@ kbd,
   color: #fff;
 }
 
-/* screentone that fades out from the top-right corner, like a hand-cut sheet */
-.halftone {
-  position: relative;
-  isolation: isolate;
-}
-.halftone::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: radial-gradient(circle, var(--tone-dot) 1px, transparent 1.3px);
-  background-size: var(--tone-size) var(--tone-size);
-  -webkit-mask-image: linear-gradient(225deg, #000 0%, transparent 55%);
-  mask-image: linear-gradient(225deg, #000 0%, transparent 55%);
-  opacity: 0.55;
+/* condensed chrome label, sentence case */
+.label {
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  color: var(--muted);
 }
 
 .display {
-  font-family: var(--font-display);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-weight: 400;
-  line-height: 1;
+  font-family: var(--font-label);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  line-height: 1.2;
 }
 
-/* crimson cut-paper tab with a 12px slanted right edge and a hard black plate */
-.slant {
-  display: inline-block;
-  padding: 2px 22px 2px 10px;
-  background: var(--crimson);
-  color: var(--paper);
-  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
-  filter: drop-shadow(3px 0 0 #000);
+/* reading text: insight, descriptions, answers */
+.prose {
+  font-family: var(--font-prose);
+  font-size: var(--fs-md);
+  line-height: var(--lh-prose);
+  max-width: 72ch;
+  color: var(--text);
 }
 
-/* amber-dim section label followed by a ledger rule */
+/* section label followed by a hairline */
 .rule-label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: var(--amber-dim);
+  gap: var(--s-2);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: var(--track-label);
+  color: var(--amber);
 }
 .rule-label::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--amber-deep);
+  background: var(--line);
 }
 
 .up {
@@ -185,52 +181,33 @@ kbd,
 .value {
   color: var(--text);
 }
+.cyan {
+  color: var(--cyan);
+}
 
-@keyframes slash-in {
-  from {
-    transform: translateX(-10px) skewX(-8deg);
-    opacity: 0;
-  }
+/* filled state cells: price limits and halts */
+.cell-ara {
+  background: var(--up);
+  color: var(--on-fill);
 }
-@keyframes wipe-in {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
+.cell-arb {
+  background: var(--down);
+  color: var(--on-fill);
 }
-@keyframes wipe-down {
-  from {
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
+.cell-halt {
+  background: var(--raise-3);
+  color: var(--text);
 }
-@keyframes stamp {
-  from {
-    transform: scale(1.25) rotate(-6deg);
-    opacity: 0;
-  }
-}
-@keyframes ribbon-drop {
-  from {
-    transform: translateY(-8px);
-  }
-}
-@keyframes cursor-blink {
-  50% {
-    opacity: 0;
-  }
-}
+
+/* Keyframes are not shared from here: CSS modules hash animation names, so every module
+   that animates defines its own @keyframes (see docs/design/v2-motion.md). */
 
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 1ms !important;
   }
 }

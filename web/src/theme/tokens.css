@@ -1,85 +1,143 @@
 :root {
-  /* surfaces: warm ink, derived from amber, not cool blue-grey */
-  --bg: #0a0908;
-  --panel: #100e0b;
-  --panel-2: #16130f;
-  --panel-hover: #1f1a13;
-  --border: #2a2218;
-  --border-strong: #4a3a22;
-  --ink: #0a0908;            /* NEW: outlines, plates, text on amber/paper */
-  --paper: #f4efe6;          /* NEW: speech bubble, calling-card body text */
+  /* ── surfaces (neutral, not warm) ───────────────────────── */
+  --canvas: #0c0c0c;        /* app background, pane gutters */
+  --bg: #000000;            /* pane body, tables, inputs */
+  --raise-1: #121212;       /* pane header strip, table header band, hover row */
+  --raise-2: #1a1a1a;       /* buttons, popovers, suggestion list */
+  --raise-3: #242424;       /* button hover, pressed keycap */
+  --line: #222222;          /* hairlines between rows-groups, pane borders */
+  --line-strong: #3a3a3a;   /* control borders, focused-control border */
+  --line-faint: #161616;    /* optional rule every 5 rows */
 
-  /* phosphor */
-  --amber: #ffb000;          /* labels, chrome text */
-  --amber-hi: #ffd27a;       /* NEW: hover on amber things, cursor */
-  --amber-dim: #b37c00;      /* table headers, secondary labels */
-  --amber-deep: #7a4a00;     /* NEW: ledger rules, halftone dots, key edges */
-  --amber-glow: rgba(255, 176, 0, 0.35); /* NEW: only the IHSG hero number */
+  /* ── phosphor ─────────────────────────────────────────── */
+  --amber: #ffa028;         /* labels, codes, primary values, chrome text */
+  --amber-hi: #ffc266;      /* hover on amber, caret */
+  --amber-dim: #b8741a;     /* secondary amber: axis text, units */
+  --amber-field: #ffa028;   /* security bar field (text on it is #000) */
 
-  /* text */
-  --text: #f4efe6;           /* values: warm white, same as paper */
-  --muted: #9a8f7c;
-  --faint: #847a66; /* 4.7:1 on --bg, still a step below --muted */
+  /* ── text ─────────────────────────────────────────────── */
+  --text: #f2f2f2;          /* values, reference numbers, headlines */
+  --muted: #8c8c8c;         /* column headers, descriptions (6.6:1 on #000) */
+  --faint: #6e6e6e;         /* footnotes, disabled (4.1:1 – non-essential only) */
+  --on-fill: #000000;       /* text on amber / yellow fills */
 
-  /* brand: crimson cut paper (never up/down) */
-  --crimson: #c8102e;
-  --crimson-bright: #e8203f;
-  --crimson-ink: #7d0a1c;    /* NEW: shadow tone on crimson, ribbon fold */
-  --crimson-dim: #3a0a12;    /* was #5c0a17: active-row wash on warm black */
-
-  /* market */
+  /* ── semantic hues (one job each, see 3.2) ────────────── */
+  --crimson: #c8102e;       /* focus, active pane, brand */
+  --crimson-hi: #e8203f;    /* focus text on black, error code */
+  --crimson-slab: #8e0c22;  /* function title slab, white text on it (7.9:1) */
+  --crimson-wash: #24060c;  /* keyboard-selected row / suggestion */
+  --cyan: #4fa3e0;          /* navigable links, in-table group labels */
+  --select: #1f5faf;        /* selected tab / chip / segment (white text) */
   --up: #22c55e;
   --down: #f43f5e;
-  --flat: #9a8f7c;
-  --warn: #ffb000;
-  --danger: #f43f5e;
+  --flat: #8c8c8c;
+  --warn: #ffa028;          /* = amber; caution reads as amber */
 
-  /* Bloomberg keycaps (NEW) */
-  --key-fn: #f5c400;         /* yellow function/sector key, black legend */
-  --key-fn-edge: #8a6d00;
-  --key-go: #2e7d32;         /* GO key only; darker than --up so it never reads as "up" */
+  /* ── Bloomberg keys ───────────────────────────────────── */
+  --key-sector: #f5c400;    /* yellow: functions and markets, black legend */
+  --key-sector-edge: #8a6d00;
+  --key-go: #2e7d32;        /* GO / run / confirm, white legend */
   --key-go-edge: #14431a;
-  --key-cancel: var(--crimson);
-  --key-cancel-edge: var(--crimson-ink);
-  --key-dark: #1f1a13;
-  --key-dark-edge: #000;
+  --key-cancel: #c8102e;    /* cancel / Esc / stop, white legend */
+  --key-cancel-edge: #6e0918;
+  --key-plain: #2a2a2a;     /* every other key, #f2f2f2 legend */
+  --key-plain-edge: #000000;
 
-  /* screentone (NEW) */
-  --tone-dot: var(--amber-deep);
-  --tone-size: 6px;
+  /* ── charts ───────────────────────────────────────────── */
+  --chart-top: #10151c;
+  --chart-bottom: #07090c;
+  --chart-grid: #1c232c;
+  --chart-axis: #8c8c8c;
 
-  /* plates: hard offset, never blurred (NEW) */
-  --plate: 3px 3px 0 0 #000;
-  --plate-lg: 5px 5px 0 0 #000;
-  --plate-crimson: 3px 3px 0 0 var(--crimson);
-
-  --focus-ring: 0 0 0 2px var(--crimson);
-  --focus-ring-inset: inset 0 0 0 2px var(--crimson); /* NEW */
-
+  /* ── type ─────────────────────────────────────────────── */
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
-  --font-display: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
-  --font-cut: 'DM Serif Display', 'Georgia', serif;   /* NEW: ransom letters only */
+  --font-label: 'IBM Plex Sans Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --font-prose: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
 
-  --fs-xs: 11px;
-  --fs-sm: 12px;
-  --fs-md: 13px;
-  --fs-lg: 15px;
-  --fs-d1: 15px;   /* NEW: panel title tab */
-  --fs-d2: 22px;   /* NEW: empty-state title, wordmark */
-  --fs-d3: 34px;   /* NEW: hero numbers (IHSG on MKT), calling-card headline */
+  --fs-2xs: 10px;   /* axis ticks, keycap legends, lamp labels */
+  --fs-xs: 11px;    /* column headers, badges, pane-strip labels */
+  --fs-sm: 12px;    /* table data (the default data size) */
+  --fs-md: 13px;    /* command input, prose, buttons */
+  --fs-lg: 15px;    /* pane hero line (DES name + price) */
+  --fs-xl: 20px;    /* quote tile values, MKT secondary heroes */
+  --fs-2xl: 28px;   /* IHSG hero only */
 
-  --row-h: 20px;   /* NEW: every table / list row */
-  --radius: 0;     /* was 2px: nothing is rounded */
-  --radius-key: 1px; /* NEW: keycaps only */
-  --gap: 6px;
-  --topbar-h: 44px;
-  --tape-h: 28px;
-  --rail-w: 220px;
+  --lh-data: 1.5;   /* 12px → 18px rows */
+  --lh-prose: 1.55;
 
-  /* motion (NEW except --ease) */
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-snap: cubic-bezier(0.3, 1.45, 0.5, 1); /* slight overshoot for stamps */
-  --dur-fast: 90ms;
-  --dur: 140ms;
-  --dur-slow: 200ms; /* hard ceiling, nothing is slower */
+  --track-label: 0.01em;   /* condensed labels */
+  --track-code: 0.04em;    /* uppercase mono codes */
+  --track-hero: -0.01em;   /* 20px and up */
+
+  /* ── space (4px base) ─────────────────────────────────── */
+  --s-0: 2px;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+
+  /* ── geometry ─────────────────────────────────────────── */
+  --row-h: 18px;           /* dense rows everywhere */
+  --row-h-comfy: 22px;     /* suggestion list, settings forms */
+  --strip-h: 20px;         /* pane header strip, Panel header */
+  --topbar-h: 32px;
+  --tape-h: 24px;
+  --status-h: 22px;
+  --rail-w: 208px;
+  --gutter: 2px;           /* gap between panes; shows --canvas */
+  --radius: 0;
+  --radius-key: 1px;       /* keycaps only */
+
+  --focus-ring: 0 0 0 1px var(--crimson);
+  --focus-ring-inset: inset 0 0 0 1px var(--crimson);
+
+  /* ── motion (from v2-motion.md §2) ────────────────────── */
+  --dur-1: 80ms;
+  --dur-2: 120ms;
+  --dur-3: 160ms;
+  --dur-4: 240ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-move: cubic-bezier(0.3, 0, 0, 1);
+  --ease-decay: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-wipe: cubic-bezier(0.65, 0, 0.35, 1);
+  --flash-up: rgba(34, 197, 94, 0.32);
+  --flash-down: rgba(244, 63, 94, 0.32);
+
+  /* ── legacy aliases (delete in the cleanup step, section 12) ── */
+  --panel: var(--bg);
+  --panel-2: var(--raise-2);
+  --panel-hover: var(--raise-1);
+  --border: var(--line);
+  --border-strong: var(--line-strong);
+  --amber-deep: var(--line-strong);
+  --crimson-bright: var(--crimson-hi);
+  --crimson-dim: var(--crimson-wash);
+  --crimson-ink: var(--crimson-slab);
+  --danger: var(--down);
+  --ink: #000000;
+  --paper: var(--text);
+  --key-fn: var(--key-sector);
+  --key-fn-edge: var(--key-sector-edge);
+  --key-dark: var(--key-plain);
+  --key-dark-edge: var(--key-plain-edge);
+  --font-display: var(--font-label);
+  --fs-d1: var(--fs-md);
+  --fs-d2: var(--fs-xl);
+  --fs-d3: var(--fs-2xl);
+  --gap: var(--s-1);
+  --plate: none;
+  --plate-lg: none;
+  --plate-crimson: none;
+  --amber-glow: transparent;
+  --ease: var(--ease-out);
+  --dur-fast: var(--dur-1);
+  --dur: var(--dur-2);
+  --dur-slow: var(--dur-4);
+  --font-cut: var(--font-label);
+  --tone-dot: transparent;
+  --tone-size: 6px;
+  --ease-snap: var(--ease-move);
 }
