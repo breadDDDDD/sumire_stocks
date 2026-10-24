@@ -60,12 +60,7 @@ export function RelationsGraph({ code, chgPct, nodes, live, onOpen }: RelationsG
         ))}
 
         <g className={s.center}>
-          <polygon
-            className={s.centerPlate}
-            transform="translate(5 5)"
-            points={`${CX - 74},${CY - 30} ${CX + 84},${CY - 30} ${CX + 74},${CY + 30} ${CX - 84},${CY + 30}`}
-          />
-          <polygon points={`${CX - 74},${CY - 30} ${CX + 84},${CY - 30} ${CX + 74},${CY + 30} ${CX - 84},${CY + 30}`} />
+          <rect x={CX - 80} y={CY - 30} width={160} height={60} />
           <text x={CX} y={CY + 1} className={s.centerCode}>
             {code}
           </text>

@@ -70,7 +70,7 @@ export function useForecast(code: string, enabled = true) {
 
 /** Display name and color for a forecast model. */
 export function modelStyle(model: string): { name: string; color: string } {
-  if (model === 'baseline') return { name: 'Baseline', color: '#ffb000' }
-  if (model.startsWith('chronos')) return { name: 'Chronos-2', color: '#f4efe6' }
-  return { name: model, color: '#ff7a1a' }
+  if (model === 'baseline') return { name: 'Baseline', color: '#ffa028' }
+  if (model.startsWith('chronos')) return { name: 'Chronos-2', color: '#4fa3e0' }
+  return { name: model, color: '#f2f2f2' }
 }

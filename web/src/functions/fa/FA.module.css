@@ -1,9 +1,9 @@
 .body {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--s-4);
   min-height: 100%;
-  padding: 10px 12px 14px;
+  padding: var(--s-2) var(--s-3) var(--s-4);
   outline: none;
 }
 
@@ -15,27 +15,27 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--s-1);
   min-width: 0;
 }
 
 .h {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--s-2);
   margin: 0;
-  color: var(--amber-dim);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  line-height: var(--row-h);
 }
 .h::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--amber-deep);
+  background: var(--line);
 }
 
 .table {
@@ -47,30 +47,28 @@
 
 .table th {
   height: var(--row-h);
-  padding: 0 8px;
-  border-bottom: 1px solid var(--amber-deep);
-  background: var(--bg);
-  color: var(--amber-dim);
+  padding: 0 var(--s-2);
+  background: var(--raise-1);
+  color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
   text-align: left;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
 .table td {
   height: var(--row-h);
-  padding: 0 8px;
+  padding: 0 var(--s-2);
   white-space: nowrap;
 }
 
 .table tbody tr:nth-child(5n) td {
-  border-bottom: 1px solid var(--amber-deep);
+  border-bottom: 1px solid var(--line-faint);
 }
 
 .table tbody tr:hover {
-  background: var(--panel-hover);
+  background: var(--raise-1);
 }
 
 .num {
@@ -79,6 +77,7 @@
 
 .metric {
   color: var(--amber);
+  font-family: var(--font-label);
 }
 
 .na {
@@ -86,25 +85,25 @@
 }
 
 .good td:first-child {
-  box-shadow: inset 3px 0 0 var(--up);
+  box-shadow: inset 2px 0 0 var(--up);
 }
 
 .bad td:first-child {
-  box-shadow: inset 3px 0 0 var(--down);
+  box-shadow: inset 2px 0 0 var(--down);
 }
 
 .tabs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
-  border-bottom: 1px solid var(--amber-deep);
-  padding-bottom: 4px;
+  gap: var(--s-1);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: var(--s-1);
 }
 
 .period {
   display: inline-flex;
-  gap: 2px;
+  gap: var(--s-0);
   margin-left: auto;
 }
 

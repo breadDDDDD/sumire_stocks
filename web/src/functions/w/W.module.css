@@ -7,31 +7,31 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: 0;
 }
 .tab {
-  height: 22px;
-  padding: 0 10px;
-  border: 0;
-  border-bottom: 2px solid var(--key-dark-edge);
-  border-radius: var(--radius-key);
-  background: var(--key-dark);
-  color: var(--muted);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: background-color var(--dur-fast), color var(--dur-fast);
+  height: 20px;
+  padding: 0 var(--s-2);
+  border: 1px solid var(--line-strong);
+  background: var(--raise-2);
+  color: var(--text);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+}
+.tab + .tab {
+  margin-left: -1px;
 }
 .tab:hover {
-  background: var(--panel-hover);
-  color: var(--amber-hi);
+  background: var(--raise-3);
 }
 .tabOn,
 .tabOn:hover {
-  border-bottom-color: var(--amber-deep);
-  background: var(--amber);
-  color: var(--ink);
+  position: relative;
+  border-color: var(--select);
+  background: var(--select);
+  color: #fff;
 }
 .spacer {
   flex: 1;
@@ -42,6 +42,7 @@
 }
 .code {
   color: var(--amber);
+  font-weight: 500;
 }
 .name {
   display: inline-block;
@@ -50,10 +51,12 @@
   text-overflow: ellipsis;
   vertical-align: bottom;
   color: var(--muted);
+  font-family: var(--font-label);
 }
 .keys {
-  padding: 3px 10px;
-  border-top: 1px solid var(--amber-deep);
+  padding: var(--s-0) var(--s-3);
+  font-family: var(--font-label);
+  border-top: 1px solid var(--line);
   color: var(--faint);
   font-size: var(--fs-xs);
 }

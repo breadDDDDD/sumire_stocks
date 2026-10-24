@@ -55,7 +55,7 @@ export default function GP({ ticker }: FunctionProps) {
   const fc = useForecast(code, daily && prefs.forecast)
   const live = useQuotes(code ? [code] : [])[code] as LiveQuote | undefined
 
-  const { ref: chartRef, chart } = useChart()
+  const { ref: chartRef, chart, reveal } = useChart()
   const wrapRef = useRef<HTMLDivElement>(null)
   const built = useRef<Built | null>(null)
   const lastBar = useRef<Bar | null>(null)
@@ -101,10 +101,14 @@ export default function GP({ ticker }: FunctionProps) {
     lastBar.current = data[data.length - 1]
 
     if (keepRange) chart.timeScale().setVisibleLogicalRange(keepRange)
-    else chart.timeScale().fitContent()
+    else {
+      chart.timeScale().fitContent()
+      // draw-in only when a new symbol or range lands, never on refreshes
+      if (fitted.current.split('|', 2).join('|') !== key.split('|', 2).join('|')) reveal()
+    }
     fitted.current = key
     setLiveTick((n) => n + 1)
-  }, [chart, data, seriesData, forecast, prefs.volume, prefs.indicators, daily, code, range.range, bars.data?.prevClose])
+  }, [chart, data, seriesData, forecast, prefs.volume, prefs.indicators, daily, code, range.range, bars.data?.prevClose, reveal])
 
   // crosshair legend
   useEffect(() => {
@@ -203,6 +207,7 @@ export default function GP({ ticker }: FunctionProps) {
       <div
         ref={wrapRef}
         className={s.chartWrap}
+        data-fetching={bars.isFetching && !bars.isPending ? '' : undefined}
         tabIndex={0}
         onKeyDown={onKeyDown}
         aria-label={`${code} price chart. Keys: 1 to 6 range, i indicators, f forecast, v volume`}
@@ -253,7 +258,8 @@ function buildSeries(
     borderDownColor: CHART_COLORS.down,
     wickUpColor: CHART_COLORS.up,
     wickDownColor: CHART_COLORS.down,
-    priceLineColor: CHART_COLORS.amber,
+    // IDX prices are whole rupiah
+    priceFormat: { type: 'custom', minMove: 1, formatter: (p: number) => Math.round(p).toLocaleString('en-US') },
   })
   all.push(candle)
   candle.setData(bars.map((b) => ({ time: t(b.time), open: b.open, high: b.high, low: b.low, close: b.close })))

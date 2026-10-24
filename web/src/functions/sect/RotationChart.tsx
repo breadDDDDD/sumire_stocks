@@ -17,7 +17,7 @@ const QUADRANT_COLOR: Record<string, string> = {
   leading: 'var(--up)',
   weakening: 'var(--amber)',
   lagging: 'var(--down)',
-  improving: 'var(--paper)',
+  improving: 'var(--cyan)',
 }
 
 const SIZE = 320
@@ -38,20 +38,20 @@ export function RotationChart({ sectors, onOpen }: { sectors: RotationSector[]; 
       <rect x={mid} y={PAD} width={q} height={q} fill="var(--up)" fillOpacity={0.06} />
       <rect x={mid} y={mid} width={q} height={q} fill="var(--amber)" fillOpacity={0.06} />
       <rect x={PAD} y={mid} width={q} height={q} fill="var(--down)" fillOpacity={0.06} />
-      <rect x={PAD} y={PAD} width={q} height={q} fill="var(--paper)" fillOpacity={0.04} />
-      <line x1={PAD} x2={SIZE - PAD} y1={mid} y2={mid} stroke="var(--amber-deep)" />
-      <line x1={mid} x2={mid} y1={PAD} y2={SIZE - PAD} stroke="var(--amber-deep)" />
+      <rect x={PAD} y={PAD} width={q} height={q} fill="var(--cyan)" fillOpacity={0.05} />
+      <line x1={PAD} x2={SIZE - PAD} y1={mid} y2={mid} stroke="var(--line-strong)" />
+      <line x1={mid} x2={mid} y1={PAD} y2={SIZE - PAD} stroke="var(--line-strong)" />
       <text x={SIZE - PAD - 2} y={PAD + 10} textAnchor="end" className={s.quadLabel} fill={QUADRANT_COLOR.leading}>
-        LEADING
+        Leading
       </text>
       <text x={SIZE - PAD - 2} y={SIZE - PAD - 4} textAnchor="end" className={s.quadLabel} fill={QUADRANT_COLOR.weakening}>
-        WEAKENING
+        Weakening
       </text>
       <text x={PAD + 2} y={SIZE - PAD - 4} className={s.quadLabel} fill={QUADRANT_COLOR.lagging}>
-        LAGGING
+        Lagging
       </text>
       <text x={PAD + 2} y={PAD + 10} className={s.quadLabel} fill={QUADRANT_COLOR.improving}>
-        IMPROVING
+        Improving
       </text>
       <text x={SIZE / 2} y={SIZE - 6} textAnchor="middle" className={s.axisLabel}>
         RS-Ratio →

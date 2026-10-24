@@ -1,24 +1,27 @@
 .body {
-  padding: 6px;
+  padding: 0;
 }
+
+/* sections tile the pane with 1px hairlines between them, no cards;
+   outlines (not a gap over a grey background) so an empty grid cell stays black */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 6px;
+  gap: 1px;
   align-items: stretch;
+  background: var(--bg);
 }
 .card {
   min-width: 0;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  background: var(--panel);
+  padding: var(--s-2) var(--s-3);
+  background: var(--bg);
+  outline: 1px solid var(--line);
 }
 .hero {
   grid-column: span 2;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  border-top: 2px solid var(--amber-deep);
+  gap: var(--s-2);
 }
 .breadth,
 .fcst {
@@ -28,7 +31,7 @@
   grid-column: 1 / -1;
 }
 .movers {
-  padding: 8px 0 0;
+  padding: var(--s-2) 0 0;
   max-height: 260px;
   display: flex;
   flex-direction: column;
@@ -38,62 +41,65 @@
   min-height: 0;
 }
 .movers .h {
-  padding: 0 10px;
+  padding: 0 var(--s-3);
 }
 @media (max-width: 720px) {
   .hero {
     grid-column: 1 / -1;
   }
 }
+
+/* section header: condensed sentence-case label, then a hairline */
 .h {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 0 0 6px;
-  color: var(--amber-dim);
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-2);
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  line-height: var(--row-h);
 }
 .h::after {
   content: '';
   flex: 1;
   order: 1;
   height: 1px;
-  background: var(--amber-deep);
+  background: var(--line);
 }
 .hint {
   order: 2;
   color: var(--faint);
-  letter-spacing: 0;
-  text-transform: none;
+  font-weight: 400;
+  font-size: var(--fs-xs);
 }
 .label {
   color: var(--amber);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-code);
 }
 .heroTop {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--s-3);
 }
 .heroPrice {
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: var(--fs-d3);
-  font-weight: 700;
-  line-height: 1.05;
+  font-size: var(--fs-2xl);
+  font-weight: 500;
+  letter-spacing: var(--track-hero);
+  line-height: 1.1;
   font-variant-numeric: tabular-nums slashed-zero;
-  text-shadow: 0 0 2px var(--amber-glow);
 }
 .heroChange {
   font-size: var(--fs-lg);
 }
 .sub {
-  margin-top: 4px;
+  margin-top: var(--s-1);
   color: var(--muted);
   font-size: var(--fs-sm);
 }
@@ -101,7 +107,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: var(--s-1);
   max-width: 55%;
 }
 .reasons {
@@ -109,6 +115,7 @@
   padding: 0;
   list-style: none;
   color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   text-align: right;
 }
@@ -119,13 +126,15 @@
 .breadthBody {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--s-2);
 }
+/* advance / unchanged / decline: one 6px track, gaps between segments */
 .advdec {
   display: flex;
-  height: 10px;
+  gap: 1px;
+  height: 6px;
   overflow: hidden;
-  background: var(--panel-2);
+  background: var(--bg);
 }
 .up {
   background: var(--up);
@@ -137,7 +146,7 @@
   background: var(--amber);
 }
 .flatSeg {
-  background: var(--faint);
+  background: var(--raise-3);
 }
 .advdecLegend {
   display: flex;
@@ -146,18 +155,20 @@
 }
 .barRow {
   display: grid;
-  grid-template-columns: 90px 1fr 40px;
+  grid-template-columns: 90px 1fr 48px;
   align-items: center;
-  gap: 6px;
+  gap: var(--s-2);
   font-size: var(--fs-sm);
+  line-height: var(--row-h);
 }
 .barLabel {
-  color: var(--amber-dim);
+  color: var(--muted);
+  font-family: var(--font-label);
 }
 .barTrack {
   position: relative;
-  height: 8px;
-  background: var(--panel-2);
+  height: 6px;
+  background: var(--raise-1);
 }
 .barTrack::after {
   content: '';
@@ -165,11 +176,14 @@
   left: 50%;
   top: -2px;
   bottom: -2px;
-  border-left: 1px dashed var(--faint);
+  border-left: 1px dotted var(--line-strong);
 }
 .barFill {
   display: block;
+  width: 100%;
   height: 100%;
+  transform-origin: left center;
+  transition: transform var(--dur-4) var(--ease-move);
 }
 .barValue {
   color: var(--text);
@@ -177,7 +191,7 @@
 }
 .hilo {
   display: flex;
-  gap: 12px;
+  gap: var(--s-3);
   font-size: var(--fs-sm);
   color: var(--muted);
 }
@@ -185,30 +199,30 @@
 .cone {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--s-2);
 }
 .coneRow {
   display: grid;
-  grid-template-columns: 30px 1fr auto;
+  grid-template-columns: 32px 1fr auto;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-2);
   font-size: var(--fs-sm);
 }
 .coneH {
-  color: var(--amber-dim);
+  color: var(--amber);
 }
 .coneTrack {
   position: relative;
-  height: 12px;
-  background: var(--panel-2);
+  height: 8px;
+  background: var(--raise-1);
 }
 .coneBand {
   position: absolute;
   top: 0;
   bottom: 0;
-  background: color-mix(in srgb, var(--amber) 28%, transparent);
-  border-left: 1px solid var(--amber);
-  border-right: 1px solid var(--amber);
+  background: rgba(255, 160, 40, 0.18);
+  border-left: 1px solid var(--amber-dim);
+  border-right: 1px solid var(--amber-dim);
 }
 .coneMid {
   position: absolute;
@@ -222,8 +236,7 @@
   position: absolute;
   top: -3px;
   bottom: -3px;
-  width: 2px;
-  margin-left: -1px;
+  width: 1px;
   background: var(--text);
 }
 .coneNums {
@@ -232,30 +245,33 @@
 .coneNote {
   margin: 0;
   color: var(--faint);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
 }
 
+/* macro: one dense row of code / value / change, separated by hairlines */
 .macroStrip {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
 }
 .macroItem {
   display: inline-flex;
-  gap: 8px;
+  gap: var(--s-2);
   align-items: baseline;
-  padding: 3px 8px;
-  border: 1px solid var(--border);
-  background: var(--panel);
+  height: var(--row-h-comfy);
+  padding: 0 var(--s-3) 0 0;
+  margin-right: var(--s-3);
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
   font-size: var(--fs-sm);
-}
-.macroItem {
-  transition: background-color var(--dur-fast), color var(--dur-fast);
+  line-height: var(--row-h-comfy);
 }
 .macroItem:hover {
-  border-color: var(--amber-deep);
-  background: var(--panel-hover);
+  background: var(--raise-1);
 }
 .macroCode {
   color: var(--amber);
+  font-weight: 500;
 }

@@ -66,4 +66,4 @@ export function maxDrawdownPct(closes: number[]): number | null {
   return worst * 100
 }
 
-export const SERIES_COLORS = ['#ffb000', '#f4efe6', '#ff7a1a', '#7fb8a4']
+export const SERIES_COLORS = ['#ffa028', '#4fa3e0', '#f2f2f2', '#8c8c8c']

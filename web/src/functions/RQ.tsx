@@ -20,7 +20,7 @@ import s from './rq/Rq.module.css'
 const STATUS_TONE: Record<string, BadgeTone> = {
   pending: 'amber',
   running: 'solid',
-  done: 'up',
+  done: 'default',
   failed: 'down',
   skipped: 'muted',
 }
@@ -205,7 +205,7 @@ export default function RQ(_props: FunctionProps) {
             ) : d.paused ? (
               <Badge tone="amber">Paused</Badge>
             ) : d.current ? (
-              <Badge tone="up" title="Runner the next job will use">
+              <Badge tone="default" title="Runner the next job will use">
                 Next: {d.current.runner}/{d.current.model}
               </Badge>
             ) : (

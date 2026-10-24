@@ -1,4 +1,5 @@
 import { direction } from '../../lib/format'
+import s from './Sparkline.module.css'
 
 /** Tiny SVG line, colored by last vs baseline (prevClose, else first point). */
 export function Sparkline({
@@ -34,9 +35,11 @@ export function Sparkline({
       role="img"
       aria-label="Intraday sparkline"
     >
-      <line x1={0} x2={width} y1={y(base)} y2={y(base)} stroke="var(--amber-deep)" strokeDasharray="3 3" strokeWidth={1} />
-      <path d={`${d}L${width},${height}L0,${height}Z`} fill={color} opacity={0.08} />
-      <path d={d} fill="none" stroke={color} strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+      <line x1={0} x2={width} y1={y(base)} y2={y(base)} stroke="var(--line-strong)" strokeDasharray="2 3" strokeWidth={1} />
+      {height >= 40 && <path className={s.area} d={`${d}L${width},${height}L0,${height}Z`} fill={color} />}
+      <path d={d} fill="none" stroke={color} strokeWidth={1.25} vectorEffect="non-scaling-stroke" />
+      {/* draw-in shutter: mounts once with the first data, shrinks to the right, then stays at scaleX(0) */}
+      <rect className={s.shutter} x={0} y={0} width={width} height={height} />
     </svg>
   )
 }

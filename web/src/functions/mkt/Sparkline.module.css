@@ -1,0 +1,31 @@
+.area {
+  opacity: 0.08;
+  animation: area-in var(--dur-2) var(--ease-out) 200ms both;
+}
+
+.shutter {
+  fill: var(--bg);
+  transform-box: fill-box;
+  transform-origin: right center;
+  transform: scaleX(0);
+  animation: shutter var(--dur-4) var(--ease-wipe);
+  pointer-events: none;
+}
+
+@keyframes shutter {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes area-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.08;
+  }
+}

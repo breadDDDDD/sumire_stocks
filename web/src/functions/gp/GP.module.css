@@ -9,14 +9,18 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 4px;
-  padding: 3px 6px;
-  border-bottom: 1px solid var(--amber-deep);
+  gap: var(--s-1);
+  padding: var(--s-0) var(--s-2);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
 }
 
+/* segmented control: adjacent buttons share their borders */
 .group {
   display: flex;
-  gap: 2px;
+}
+.group > * + * {
+  margin-left: -1px;
 }
 
 .chartWrap {
@@ -24,6 +28,12 @@
   flex: 1;
   min-height: 160px;
   outline: none;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+
+/* refetch after a range or interval change: dim until the new bars land */
+.chartWrap[data-fetching] {
+  opacity: 0.45;
 }
 
 .chartWrap:focus-visible {
@@ -38,13 +48,13 @@
 
 .legends {
   position: absolute;
-  top: 6px;
-  left: 8px;
+  top: var(--s-1);
+  left: var(--s-2);
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
+  gap: var(--s-0);
   max-width: calc(100% - 90px);
   pointer-events: none;
 }
@@ -52,10 +62,9 @@
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 10px;
-  padding: 2px 6px;
-  background: color-mix(in srgb, var(--panel) 85%, transparent);
-  font-size: var(--fs-sm);
+  gap: var(--s-1) var(--s-3);
+  font-size: var(--fs-xs);
+  color: var(--text);
   font-variant-numeric: tabular-nums slashed-zero;
   pointer-events: none;
 }
@@ -67,18 +76,17 @@
 .seriesLegend {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 12px;
-  padding: 1px 6px;
-  background: color-mix(in srgb, var(--panel) 85%, transparent);
-  color: var(--amber-dim);
+  gap: var(--s-0) var(--s-3);
+  color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   pointer-events: none;
 }
 
 .swatch {
   display: inline-block;
-  width: 14px;
-  margin-right: 5px;
+  width: 12px;
+  margin-right: var(--s-1);
   vertical-align: middle;
   border-top-width: 2px;
 }
@@ -88,92 +96,89 @@
   right: 70px;
   bottom: 30px;
   z-index: 2;
-  padding: 1px 6px;
-  border-left: 2px solid var(--amber-deep);
-  background: var(--panel-2);
+  padding: 0 var(--s-2);
+  border-left: 2px solid var(--amber);
+  background: var(--raise-2);
   color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
+  line-height: var(--row-h);
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 4;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in srgb, var(--panel) 80%, transparent);
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .loading {
-  color: var(--amber);
+  padding: var(--s-3);
+  color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 .menu {
   position: absolute;
   top: 100%;
-  right: 6px;
+  right: var(--s-2);
   z-index: 10;
   display: flex;
   flex-direction: column;
   min-width: 200px;
-  padding: 2px 0;
-  background: var(--panel-2);
-  border: 1px solid var(--border-strong);
-  border-top: 2px solid var(--amber);
-  box-shadow: var(--plate);
-  animation: wipe-down var(--dur-fast) var(--ease);
+  padding: var(--s-0) 0;
+  background: var(--raise-2);
+  border: 1px solid var(--line-strong);
+  transform-origin: top right;
+  animation: menu-in var(--dur-2) var(--ease-out);
 }
 
 .menuItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: var(--row-h);
-  padding: 0 10px;
+  gap: var(--s-2);
+  height: var(--row-h-comfy);
+  padding: 0 var(--s-3);
   border: 0;
   background: transparent;
   color: var(--text);
-  font: inherit;
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--dur-fast), color var(--dur-fast);
 }
 
-.menuItem:hover,
-.menuItem:focus-visible {
-  background: var(--panel-hover);
-  color: var(--amber-hi);
+.menuItem:hover {
+  background: var(--raise-3);
 }
 
 .menuItem:focus-visible {
   outline: none;
-  box-shadow: var(--focus-ring-inset);
+  background: var(--crimson-wash);
+  box-shadow: inset 2px 0 0 var(--crimson);
 }
 
 .check {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border: 1px solid;
 }
 
 .menuHint {
-  padding: 4px 10px 2px;
-  border-top: 1px solid var(--amber-deep);
+  padding: var(--s-1) var(--s-3) var(--s-0);
+  border-top: 1px solid var(--line);
   color: var(--faint);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
 }
 
-/* local copy: CSS modules hash animation names, so the global keyframes aren't reachable */
-@keyframes wipe-down {
+@keyframes menu-in {
   from {
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
+    opacity: 0;
+    transform: translateY(-4px);
   }
 }

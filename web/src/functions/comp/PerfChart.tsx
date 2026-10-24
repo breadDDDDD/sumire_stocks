@@ -54,13 +54,13 @@ export function PerfChart({ dates, series, names }: { dates: string[]; series: n
       >
         {ticks.map((t) => (
           <g key={t}>
-            <line x1={PAD.l} x2={W - PAD.r} y1={y(t)} y2={y(t)} stroke="var(--border)" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+            <line x1={PAD.l} x2={W - PAD.r} y1={y(t)} y2={y(t)} stroke="var(--line)" strokeDasharray="1 3" strokeWidth={1} vectorEffect="non-scaling-stroke" />
             <text x={W - PAD.r + 4} y={y(t) + 4} className={s.axis}>
               {t.toFixed(0)}
             </text>
           </g>
         ))}
-        <line x1={PAD.l} x2={W - PAD.r} y1={y(100)} y2={y(100)} stroke="var(--amber-deep)" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />
+        <line x1={PAD.l} x2={W - PAD.r} y1={y(100)} y2={y(100)} stroke="var(--line-strong)" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />
         {xTicks.map((i) => (
           <text key={i} x={x(i)} y={H - 4} className={s.axis} textAnchor={i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}>
             {dates[i]}
@@ -77,7 +77,7 @@ export function PerfChart({ dates, series, names }: { dates: string[]; series: n
           />
         ))}
         {hover !== null && (
-          <line x1={x(hover)} x2={x(hover)} y1={PAD.t} y2={H - PAD.b} stroke="var(--amber)" strokeWidth={1} strokeDasharray="2 2" vectorEffect="non-scaling-stroke" />
+          <line x1={x(hover)} x2={x(hover)} y1={PAD.t} y2={H - PAD.b} stroke="var(--muted)" strokeWidth={1} strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
         )}
       </svg>
     </div>

@@ -12,17 +12,17 @@
 
 .form {
   display: flex;
-  gap: 6px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
+  gap: var(--s-1);
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--line);
 }
 
 .input {
   flex: 1;
   min-width: 0;
-  height: 26px;
-  padding: 0 8px;
-  border: 1px solid var(--border-strong);
+  height: 22px;
+  padding: 0 var(--s-2);
+  border: 1px solid var(--line-strong);
   border-radius: 0;
   background: var(--bg);
   color: var(--text);
@@ -30,15 +30,15 @@
 
 .input:focus-visible {
   border-color: var(--crimson);
-  outline: 2px solid var(--crimson);
+  outline: 1px solid var(--crimson);
   outline-offset: -1px;
 }
 
 .history {
   flex: none;
   width: 240px;
-  padding: 8px 10px;
-  border-left: 1px solid var(--border);
+  padding: var(--s-2) var(--s-3);
+  border-left: 1px solid var(--line);
   font-size: var(--fs-sm);
 }
 
@@ -48,44 +48,48 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--s-0);
 }
 
 .historyTitle {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 0 0 6px;
-  color: var(--amber-dim);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-1);
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  line-height: var(--row-h);
 }
 .historyTitle::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--amber-deep);
+  background: var(--line);
 }
 
 .historyItem {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--s-0);
   width: 100%;
-  padding: 3px 6px;
+  padding: var(--s-1) var(--s-2);
   border: 0;
-  border-left: 3px solid transparent;
+  border-left: 2px solid transparent;
   background: none;
   text-align: left;
-  transition: background-color var(--dur-fast), color var(--dur-fast);
 }
 
-.historyItem:hover:not(:disabled),
+.historyItem:hover:not(:disabled) {
+  background: var(--raise-1);
+}
+
 .historyItem:focus-visible {
-  background: var(--panel-hover);
+  outline: none;
+  background: var(--crimson-wash);
+  border-left-color: var(--crimson);
 }
 
 .historyItem:disabled {
@@ -95,11 +99,12 @@
 
 .selected {
   border-left-color: var(--crimson);
-  background: var(--crimson-dim);
+  background: var(--crimson-wash);
 }
 
 .historyQ {
   color: var(--text);
+  font-family: var(--font-prose);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

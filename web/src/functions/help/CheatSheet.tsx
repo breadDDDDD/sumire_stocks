@@ -12,7 +12,7 @@ function Key({ k }: { k: string }) {
       </kbd>
     )
   if (k === 'Esc') return <kbd className="key-cancel">Esc</kbd>
-  return <Key k={k} />
+  return <kbd>{k}</kbd>
 }
 
 /** Functions and keys. `onRun` runs a function's example command. */

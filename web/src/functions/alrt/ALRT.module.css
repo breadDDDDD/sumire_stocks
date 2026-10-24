@@ -9,6 +9,7 @@
 }
 .code {
   color: var(--amber);
+  font-weight: 500;
 }
 .toggle {
   padding: 0;
@@ -17,13 +18,14 @@
 }
 .hint {
   color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
 }
 .recent {
   max-height: 34%;
   overflow: auto;
-  padding: 6px 10px;
-  border-top: 1px solid var(--amber-deep);
+  padding: var(--s-2) var(--s-3);
+  border-top: 1px solid var(--line);
   font-size: var(--fs-sm);
 }
 .recent p {
@@ -32,20 +34,20 @@
 .h {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 0 0 4px;
-  color: var(--amber-dim);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-1);
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  line-height: var(--row-h);
 }
 .h::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--amber-deep);
+  background: var(--line);
 }
 .fired {
   margin: 0;
@@ -61,5 +63,5 @@
   white-space: nowrap;
 }
 .fired li:nth-child(5n) {
-  border-bottom: 1px solid var(--amber-deep);
+  border-bottom: 1px solid var(--line-faint);
 }

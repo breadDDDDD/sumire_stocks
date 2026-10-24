@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../api/client'
-import { Badge, ErrorState, FreshnessBadge, Num, Panel, Skeleton, type BadgeTone } from '../components/ui'
+import { Badge, ErrorState, FreshnessBadge, Num, Odometer, Panel, Skeleton, type BadgeTone } from '../components/ui'
 import { usePane } from '../shell/workspace'
 import { MoversTable } from './mkt/MoversTable'
 import { MACRO_LABELS, useLiveQuotes, type Mover, type Quote } from './mkt/quotes'
@@ -85,16 +85,16 @@ export default function MKT(_: FunctionProps) {
               <div>
                 <div className={s.label}>IHSG</div>
                 <div className={s.heroPrice}>
-                  <Num value={ihsg?.price} format="price" decimals={2} />
+                  <Odometer value={ihsg?.price} format="price" decimals={2} />
                 </div>
                 <div className={s.heroChange}>
-                  <Num value={ihsg?.change} format="number" decimals={2} signed colored arrow />{' '}
-                  <Num value={ihsg?.changePct} format="pct" signed colored />
+                  <Num value={ihsg?.change} format="number" decimals={2} signed colored arrow flash />{' '}
+                  <Num value={ihsg?.changePct} format="pct" signed colored flash />
                 </div>
                 {lq45 && (
                   <div className={s.sub}>
-                    LQ45 <Num value={lq45.price} format="price" decimals={2} />{' '}
-                    <Num value={lq45.changePct} format="pct" signed colored />
+                    LQ45 <Num value={lq45.price} format="price" decimals={2} flash />{' '}
+                    <Num value={lq45.changePct} format="pct" signed colored flash />
                   </div>
                 )}
               </div>
@@ -160,7 +160,7 @@ function Bar({ label, pct, tone, value }: { label: string; pct: number; tone: 'u
     <div className={s.barRow}>
       <span className={s.barLabel}>{label}</span>
       <span className={s.barTrack}>
-        <span className={`${s.barFill} ${s[tone]}`} style={{ width: `${Math.max(0, Math.min(100, pct))}%` }} />
+        <span className={`${s.barFill} ${s[tone]}`} style={{ transform: `scaleX(${Math.max(0, Math.min(100, pct)) / 100})` }} />
       </span>
       <span className={s.barValue}>{value}</span>
     </div>
@@ -234,8 +234,8 @@ function MacroStrip({ quotes }: { quotes: Quote[] }) {
       {quotes.map((m) => (
         <button key={m.code} className={s.macroItem} onClick={() => pane.open({ code: 'GP', ticker: m.code, args: [] })}>
           <span className={s.macroCode}>{MACRO_LABELS[m.code] ?? m.code}</span>
-          <Num value={m.price} format="price" />
-          <Num value={m.changePct} format="pct" signed colored />
+          <Num value={m.price} format="price" flash />
+          <Num value={m.changePct} format="pct" signed colored flash />
         </button>
       ))}
     </div>

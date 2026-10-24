@@ -43,11 +43,11 @@ export interface MapNode {
 }
 
 export const KIND_META: Record<NodeKind, { label: string; color: string; max: number }> = {
-  group: { label: 'Group', color: 'var(--crimson-bright)', max: 8 },
+  group: { label: 'Group', color: 'var(--text)', max: 8 },
   factor: { label: 'Factor', color: 'var(--amber)', max: 6 },
-  chain: { label: 'Supply chain', color: '#ff7a1a', max: 6 },
-  correlated: { label: 'Correlated', color: '#f4efe6', max: 5 },
-  leadLag: { label: 'Leads it', color: '#9a8f7c', max: 3 },
+  chain: { label: 'Supply chain', color: 'var(--cyan)', max: 6 },
+  correlated: { label: 'Correlated', color: '#ffc266', max: 5 },
+  leadLag: { label: 'Leads it', color: 'var(--muted)', max: 3 },
 }
 
 /** Supply-chain neighbours: tickers in the stages right before and after the stages that contain the stock. */

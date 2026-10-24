@@ -11,11 +11,13 @@ export interface TreeItem {
   chg: number | null
 }
 
-/** Background for a % change: deeper green/red as the move grows, saturating at ±`max`. */
+/** Background for a % change: 7-step diverging scale through neutral grey, saturating at ±`max`.
+ *  The top step stays a deep tone so a big move doesn't flood the pane and white labels keep contrast. */
 function heatColor(chg: number | null, max: number): string {
-  if (chg == null || !Number.isFinite(chg) || chg === 0) return 'var(--panel-2)'
-  const a = Math.round(18 + 67 * Math.min(1, Math.abs(chg) / max))
-  return `color-mix(in srgb, var(${chg > 0 ? '--up' : '--down'}) ${a}%, var(--bg))`
+  if (chg == null || !Number.isFinite(chg) || chg === 0) return 'var(--raise-2)'
+  const step = Math.min(3, Math.ceil((3 * Math.abs(chg)) / max)) // 1..3 per side
+  const a = [0, 22, 40, 60][step]
+  return `color-mix(in srgb, var(${chg > 0 ? '--up' : '--down'}) ${a}%, var(--raise-2))`
 }
 
 /**

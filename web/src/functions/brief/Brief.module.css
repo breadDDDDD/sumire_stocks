@@ -3,38 +3,41 @@
   top: 0;
   z-index: 1;
   display: flex;
-  gap: 2px;
-  padding: 4px 10px 0;
-  border-bottom: 1px solid var(--amber-deep);
-  background: var(--panel);
+  gap: 0;
+  padding: var(--s-1) var(--s-3);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
 }
 
 .tab {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--s-1);
   height: 22px;
-  margin-bottom: -1px;
-  padding: 0 10px;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  background: none;
-  color: var(--amber-dim);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: background-color var(--dur-fast), color var(--dur-fast);
+  padding: 0 var(--s-2);
+  border: 1px solid var(--line-strong);
+  background: var(--raise-2);
+  color: var(--text);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
 }
 
 .tab:hover {
-  background: var(--panel-hover);
-  color: var(--amber-hi);
+  background: var(--raise-3);
 }
 
-.active {
-  border-bottom-color: var(--amber);
-  color: var(--amber);
+.tab + .tab {
+  margin-left: -1px;
+}
+
+.active,
+.active:hover {
+  position: relative;
+  border-color: var(--select);
+  background: var(--select);
+  color: #fff;
 }
 
 .tab kbd {

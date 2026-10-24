@@ -5,8 +5,8 @@ import type { Mover } from './quotes'
 
 const columns: Column<Mover>[] = [
   { key: 'code', header: 'Code', render: (r) => <span title={r.name}>{r.code}</span> },
-  { key: 'price', header: 'Last', align: 'right', render: (r) => <Num value={r.price} format="price" colorBy={r.changePct} /> },
-  { key: 'changePct', header: 'Chg', align: 'right', render: (r) => <Num value={r.changePct} format="pct" signed colored /> },
+  { key: 'price', header: 'Last', align: 'right', render: (r) => <Num value={r.price} format="price" colorBy={r.changePct} flash /> },
+  { key: 'changePct', header: 'Chg', align: 'right', render: (r) => <Num value={r.changePct} format="pct" signed colored flash /> },
   { key: 'value', header: 'Value', align: 'right', render: (r) => <Num value={r.value} format="compact" /> },
 ]
 

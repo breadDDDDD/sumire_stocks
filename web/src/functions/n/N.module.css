@@ -1,5 +1,5 @@
 .publisher {
-  color: var(--amber);
+  color: var(--muted);
   white-space: nowrap;
 }
 
@@ -10,13 +10,14 @@
 .chips {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--s-1);
 }
 
 .hint {
   margin: 0;
-  padding: 4px 12px;
-  border-top: 1px solid var(--amber-deep);
+  padding: var(--s-0) var(--s-3);
+  font-family: var(--font-label);
+  border-top: 1px solid var(--line);
   color: var(--faint);
   font-size: var(--fs-xs);
 }

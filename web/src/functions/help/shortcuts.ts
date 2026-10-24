@@ -51,7 +51,6 @@ export const SHORTCUTS: { group: string; items: Shortcut[] }[] = [
   {
     group: 'General',
     items: [
-      { keys: [['m']], action: 'Hide / show Sumire' },
       { keys: [['?']], action: 'This cheat sheet' },
     ],
   },

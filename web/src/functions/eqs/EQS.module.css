@@ -9,15 +9,18 @@
 }
 .desc {
   color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
 }
 .keys {
   margin-left: auto;
+  font-family: var(--font-label);
   color: var(--faint);
   font-size: var(--fs-xs);
 }
 .code {
   color: var(--amber);
+  font-weight: 500;
 }
 .name {
   display: inline-block;
