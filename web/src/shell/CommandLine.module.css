@@ -11,11 +11,11 @@
   height: 30px;
   border: 1px solid var(--border-strong);
   background: var(--bg);
-  transition: border-color 0.12s;
+  transition: border-color var(--dur-fast);
 }
 .box:focus-within {
   border-color: var(--crimson);
-  box-shadow: 0 0 0 1px var(--crimson), 0 0 18px rgba(200, 16, 46, 0.25);
+  box-shadow: var(--plate-crimson);
 }
 .error {
   border-color: var(--down) !important;
@@ -44,7 +44,7 @@
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  caret-color: var(--crimson);
+  caret-color: var(--amber-hi);
 }
 .input::placeholder {
   color: var(--faint);
@@ -53,13 +53,15 @@
   font-weight: 400;
 }
 .input:focus-visible {
+  outline: none;
   box-shadow: none;
 }
 
 .hint {
-  padding: 0 8px;
-  color: var(--faint);
-  font-size: var(--fs-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
   white-space: nowrap;
 }
 .errorText {
@@ -85,29 +87,51 @@
   list-style: none;
   border: 1px solid var(--crimson);
   background: var(--panel);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--plate-lg);
+  animation: wipe-down var(--dur-fast) var(--ease);
 }
 .section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 4px 10px 2px;
-  color: var(--faint);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.08em;
+  color: var(--amber-dim);
+  font-size: 10px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+.section::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--amber-deep);
 }
 .item {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr) auto;
   gap: 10px;
-  align-items: baseline;
-  padding: 3px 10px;
+  align-items: center;
+  height: var(--row-h);
+  padding: 0 10px;
   cursor: pointer;
+  transition: background-color var(--dur-fast);
 }
 .item:hover {
   background: var(--panel-hover);
 }
 .itemActive {
-  background: rgba(200, 16, 46, 0.2) !important;
-  box-shadow: inset 3px 0 0 var(--crimson);
+  background: var(--crimson) !important;
+  box-shadow: none;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+.itemActive .itemLabel {
+  color: var(--amber);
+}
+.itemActive .itemDetail {
+  color: var(--paper);
+}
+.itemActive .itemMeta {
+  color: rgba(244, 239, 230, 0.7);
 }
 .itemLabel {
   color: var(--amber);
@@ -131,4 +155,17 @@
   margin-top: 4px;
   color: var(--faint);
   font-size: var(--fs-xs);
+}
+.footer kbd {
+  margin-right: 2px;
+}
+
+/* CSS modules hash animation names, so the global keyframes are copied here */
+@keyframes wipe-down {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
 }

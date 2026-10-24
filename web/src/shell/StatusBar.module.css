@@ -1,21 +1,26 @@
 .bar {
   display: flex;
   align-items: center;
-  gap: 6px;
   flex: none;
   height: 100%;
-  padding: 0 8px;
   border-right: 1px solid var(--border-strong);
   white-space: nowrap;
 }
-
-.research {
+/* Bloomberg-style hairline separators between status groups */
+.seg {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  align-self: stretch;
+  padding: 0 8px;
+  border-right: 1px solid var(--border);
 }
+.seg:last-child {
+  border-right: 0;
+}
+
 .research button {
-  height: 20px;
+  height: 18px;
 }
 
 .runner {
@@ -24,4 +29,12 @@
   text-overflow: ellipsis;
   color: var(--muted);
   font-size: var(--fs-xs);
+}
+.running {
+  display: inline-block;
+  margin-right: 5px;
+  vertical-align: 1px;
+  width: 6px;
+  height: 6px;
+  background: var(--crimson);
 }

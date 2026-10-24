@@ -197,7 +197,7 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
     }
   }
 
-  const placeholder = ws.focusedTicker ? `${ws.focusedTicker} GP · MKT · ASK …` : 'BBCA · BBRI GP · MKT · ASK …'
+  const placeholder = `Type a ticker or function, e.g. ${ws.focusedTicker ?? 'BBCA'} GP`
 
   return (
     <div className={s.wrap}>
@@ -233,8 +233,9 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
             {error}
           </span>
         ) : (
-          <span className={s.hint}>
-            <kbd>/</kbd>
+          <span className={s.hint} aria-hidden="true">
+            {showList && <kbd className="key-cancel">ESC</kbd>}
+            <kbd className="key-go">GO</kbd>
           </span>
         )}
       </div>
@@ -268,10 +269,10 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
               <kbd>↓</kbd> choose
             </span>
             <span>
-              <kbd>Enter</kbd> run
+              <kbd className="key-go">GO</kbd> run
             </span>
             <span>
-              <kbd>Esc</kbd> close
+              <kbd className="key-cancel">ESC</kbd> close
             </span>
           </li>
         </ul>

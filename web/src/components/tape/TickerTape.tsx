@@ -38,14 +38,14 @@ export default function TickerTape() {
     return (
       <button
         key={c}
-        className={[s.item, sep && s.sep].filter(Boolean).join(' ')}
+        className={[s.item, sep && s.sep, c === 'IHSG' && s.lead].filter(Boolean).join(' ')}
         onClick={() => ws.run({ code: TAPE_CODES.includes(c) ? 'GP' : 'DES', ticker: c, args: [] })}
         title={q.name ?? c}
         tabIndex={-1}
       >
         <span className={s.code}>{MACRO_LABELS[c] ?? c}</span>
         <Num value={q.price} format="price" />
-        <Num value={q.changePct} format="pct" signed colored arrow />
+        <Num value={q.changePct} format="pct" signed colored arrow className={s.pct} />
       </button>
     )
   })

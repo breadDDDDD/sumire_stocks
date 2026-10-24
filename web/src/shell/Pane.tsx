@@ -26,7 +26,9 @@ export function Pane({ index }: { index: number }) {
       <div className={s.strip}>
         <span className={s.num}>{index + 1}</span>
         <span className={s.cmd} title={formatEntry(entry)}>
-          {formatEntry(entry)}
+          <kbd className={focused ? 'key-fn' : undefined}>{entry.code === 'INS' && entry.force ? 'INS!' : entry.code}</kbd>
+          {entry.code !== 'COMP' && entry.ticker && <span className={s.ticker}>{entry.ticker}</span>}
+          {entry.args.length > 0 && <span className={s.args}>{entry.args.join(' ')}</span>}
         </span>
         <span className="muted">{registry[entry.code]?.name}</span>
         <span className={s.nav}>

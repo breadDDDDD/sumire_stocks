@@ -97,8 +97,9 @@ export default function WatchlistRail() {
         </div>
       ) : !codes.length ? (
         <div className={s.msg}>
+          <p className={s.msgTitle}>Empty watchlist</p>
           <p>
-            Empty. Press <kbd>w</kbd> on a ticker to add it.
+            Type a ticker and press <kbd className="key-go">GO</kbd>, then <kbd>w</kbd> to add it here.
           </p>
         </div>
       ) : (

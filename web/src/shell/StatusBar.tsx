@@ -35,34 +35,38 @@ export function StatusBar() {
   const hub = useHubStatus()
   const d = status.data
   const current = research.data?.current
+  const researchRunning = research.data?.jobs.some((j) => j.status === 'running') ?? false
   const barsStale = d?.lastBarDate && d.expectedBarDate && d.lastBarDate < d.expectedBarDate
 
   return (
     <div className={s.bar}>
-      {status.isError ? (
-        <Badge tone="down" title="GET /api/status failed">API offline</Badge>
-      ) : (
-        <FreshnessBadge asOf={d?.lastQuoteTime ?? null} />
-      )}
-      {d && d.db !== 'ok' && (
-        <Badge tone="amber" title={d.dbError ?? 'Database unreachable'}>
-          DB down
-        </Badge>
-      )}
-      {barsStale && (
-        <Badge tone="amber" title={`Last daily bar ${d.lastBarDate}, expected ${d.expectedBarDate}`}>
-          {d.eod.running ? 'EOD running' : 'Bars stale'}
-        </Badge>
-      )}
-      {hub !== HubConnectionState.Connected && (
-        <Badge tone="muted" title="Live quote connection">
-          {hub === HubConnectionState.Disconnected ? 'Offline' : 'Reconnecting'}
-        </Badge>
-      )}
-      <span className={s.research}>
+      <span className={s.seg}>
+        {status.isError ? (
+          <Badge tone="down" title="GET /api/status failed">API offline</Badge>
+        ) : (
+          <FreshnessBadge asOf={d?.lastQuoteTime ?? null} />
+        )}
+        {d && d.db !== 'ok' && (
+          <Badge tone="amber" title={d.dbError ?? 'Database unreachable'}>
+            DB down
+          </Badge>
+        )}
+        {barsStale && (
+          <Badge tone="amber" title={`Last daily bar ${d.lastBarDate}, expected ${d.expectedBarDate}`}>
+            {d.eod.running ? 'EOD running' : 'Bars stale'}
+          </Badge>
+        )}
+        {hub !== HubConnectionState.Connected && (
+          <Badge tone="muted" title="Live quote connection">
+            {hub === HubConnectionState.Disconnected ? 'Offline' : 'Reconnecting'}
+          </Badge>
+        )}
+      </span>
+      <span className={`${s.seg} ${s.research}`}>
         <ResearchUsage />
         {current && (
           <span className={s.runner} title="Runner and model the next research job would use">
+            {researchRunning && <span className={s.running} aria-label="Research running" />}
             {current.runner} · {current.model}
           </span>
         )}

@@ -4,13 +4,12 @@
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  border: 1px solid var(--border);
+  border: 0;
   background: var(--panel);
-  transition: border-color 0.12s;
 }
 .focused {
-  border-color: var(--crimson);
-  box-shadow: 0 0 0 1px var(--crimson);
+  outline: 1px solid var(--crimson);
+  outline-offset: -1px;
   z-index: 1;
 }
 
@@ -40,15 +39,29 @@
 .focused .num {
   background: var(--crimson);
   color: #fff;
+  filter: drop-shadow(2px 0 0 #000);
 }
 .cmd {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.cmd kbd {
+  flex: none;
+}
+.ticker {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.args {
   min-width: 0;
   color: var(--amber);
-  font-weight: 500;
-  letter-spacing: 0.04em;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .nav {
   margin-left: auto;
@@ -61,11 +74,12 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--muted);
+  color: var(--amber-dim);
   line-height: 1;
+  transition: background-color var(--dur-fast), color var(--dur-fast);
 }
 .navBtn:hover:not(:disabled) {
-  color: var(--text);
+  color: var(--amber-hi);
   background: var(--panel-hover);
 }
 .navBtn:disabled {
@@ -74,16 +88,40 @@
   cursor: default;
 }
 
-/* ribbon on the active pane */
+/* two-tail ribbon hanging off the active pane's strip; the wrapper carries
+   the plate so the knot and the clipped tails share one hard shadow */
 .ribbon {
   position: absolute;
-  top: -1px;
-  right: 54px;
-  width: 10px;
-  height: 16px;
-  background: var(--crimson);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 72%, 0 100%);
+  top: 14px;
+  right: 56px;
+  z-index: 2;
+  width: 12px;
+  height: 20px;
   pointer-events: none;
+  filter: drop-shadow(1px 2px 0 #000);
+  animation: ribbon-drop var(--dur) var(--ease-snap);
+}
+.ribbon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--crimson);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);
+}
+.ribbon::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -2px;
+  z-index: 1;
+  width: 16px;
+  height: 6px;
+  background: var(--crimson-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ribbon {
+    animation: none;
+  }
 }
 
 .body {
@@ -96,4 +134,11 @@
 .body > * {
   flex: 1;
   min-height: 0;
+}
+
+/* CSS modules hash animation names, so the global keyframes are copied here */
+@keyframes ribbon-drop {
+  from {
+    transform: translateY(-8px);
+  }
 }

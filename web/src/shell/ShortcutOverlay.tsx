@@ -33,7 +33,7 @@ export function ShortcutOverlay({ onClose, onRun }: { onClose: () => void; onRun
           subtitle="Everything is reachable from the keyboard"
           actions={
             <Button variant="ghost" onClick={onClose} aria-label="Close">
-              Esc
+              <kbd className="key-cancel">ESC</kbd>
             </Button>
           }
         >

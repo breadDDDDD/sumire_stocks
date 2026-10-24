@@ -15,12 +15,13 @@
 .group {
   display: inline-flex;
   align-items: center;
-  gap: 22px;
-  padding-right: 22px;
+  gap: 18px;
+  height: 100%;
+  padding-right: 18px;
 }
 .static {
   display: flex;
-  gap: 22px;
+  gap: 18px;
   align-items: center;
   height: 100%;
   padding: 0 12px;
@@ -40,11 +41,28 @@
   text-decoration: underline;
 }
 .sep {
-  padding-left: 22px;
-  border-left: 1px solid var(--border-strong);
+  padding-left: 18px;
+  border-left: 1px solid var(--amber-deep);
 }
 .code {
   color: var(--amber);
+}
+/* the IHSG lead item is inverted once, to break the row's symmetry */
+.lead {
+  align-self: stretch;
+  align-items: center;
+  padding: 0 8px;
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 700;
+}
+.lead .code,
+.lead :global(.value) {
+  color: var(--ink);
+}
+.lead .pct {
+  padding: 1px 3px;
+  background: var(--ink);
 }
 @keyframes scroll {
   from {

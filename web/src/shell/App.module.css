@@ -22,9 +22,10 @@
 
 .grid {
   display: grid;
-  gap: 4px;
+  gap: 1px;
   min-height: 0;
-  padding: 4px;
+  padding: 0;
+  background: var(--border);
 }
 .layout1 {
   grid-template: minmax(0, 1fr) / minmax(0, 1fr);
@@ -67,9 +68,8 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(5, 5, 8, 0.78);
-  backdrop-filter: blur(2px);
-  animation: fade 0.12s var(--ease);
+  background: rgba(10, 9, 8, 0.82);
+  animation: fade var(--dur-fast) var(--ease);
 }
 .dialog {
   width: min(980px, 100%);
@@ -77,17 +77,11 @@
   display: flex;
   flex-direction: column;
   border: 1px solid var(--crimson);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
-  animation: pop 0.16s var(--ease);
+  box-shadow: var(--plate-lg);
+  animation: wipe-in var(--dur-slow) var(--ease);
 }
 @keyframes fade {
   from {
-    opacity: 0;
-  }
-}
-@keyframes pop {
-  from {
-    transform: translateY(8px) scale(0.99);
     opacity: 0;
   }
 }
@@ -99,10 +93,28 @@
   z-index: 90;
   transform: translateX(-50%);
   padding: 6px 14px;
-  border: 1px solid var(--crimson);
-  background: var(--panel);
+  border: 0;
+  border-left: 4px solid var(--crimson);
+  background: var(--panel-2);
   color: var(--text);
   font-size: var(--fs-sm);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-  animation: pop 0.16s var(--ease);
+  box-shadow: var(--plate);
+  animation: toast-in var(--dur) var(--ease);
+}
+/* slash-in, keeping the centring translate */
+@keyframes toast-in {
+  from {
+    transform: translateX(calc(-50% - 10px)) skewX(-8deg);
+    opacity: 0;
+  }
+}
+
+/* CSS modules hash animation names, so the global keyframes are copied here */
+@keyframes wipe-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
 }

@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useState } from 'react'
+import { CutText } from '../components/ui'
 import { sessionState, type SessionState } from '../lib/session'
 import { formatTimeWib } from '../lib/time'
 import { CommandLine, type CommandLineHandle } from './CommandLine'
@@ -33,6 +34,18 @@ function SessionPill({ state }: { state: SessionState }) {
   )
 }
 
+function Clock({ time }: { time: string }) {
+  // "14:32:07": seconds are secondary, so they sit in a dimmer tone
+  const cut = time.lastIndexOf(':')
+  return (
+    <span className={s.clock}>
+      {cut > 0 ? time.slice(0, cut) : time}
+      {cut > 0 && <span className={s.sec}>{time.slice(cut)}</span>}
+      <small>WIB</small>
+    </span>
+  )
+}
+
 function LayoutIcon({ layout }: { layout: Layout }) {
   if (layout === 4)
     return (
@@ -58,7 +71,7 @@ export const TopBar = forwardRef<CommandLineHandle>(function TopBar(_props, ref)
   return (
     <header className={s.bar}>
       <div className={s.brand}>
-        <span className={s.wordmark}>SUMIRE</span>
+        <CutText text="SUMIRE" className={s.wordmark} />
         <span className={s.codename}>VIOLET</span>
       </div>
       <CommandLine ref={ref} />
@@ -72,10 +85,7 @@ export const TopBar = forwardRef<CommandLineHandle>(function TopBar(_props, ref)
         >
           <LayoutIcon layout={state.layout} />
         </button>
-        <span className={s.clock}>
-          {formatTimeWib(now)}
-          <small>WIB</small>
-        </span>
+        <Clock time={formatTimeWib(now)} />
         <SessionPill state={sessionState(now)} />
       </div>
     </header>
