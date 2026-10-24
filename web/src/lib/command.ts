@@ -54,7 +54,9 @@ export function parseCommand(input: string, fallbackTicker?: string): ParseResul
   }
 
   const { code, force } = fn
-  if (!ticker && FUNCTION_META[code].needsTicker) {
+  // `INS sector Energy` is a sector narrative and needs no ticker
+  const sectorInsight = code === 'INS' && tokens[restStart]?.toLowerCase() === 'sector' && !!tokens[restStart + 1]
+  if (!ticker && FUNCTION_META[code].needsTicker && !sectorInsight) {
     if (!fallbackTicker) return { ok: false, error: `${code} needs a ticker, e.g. ${FUNCTION_META[code].example}` }
     ticker = fallbackTicker
   }
