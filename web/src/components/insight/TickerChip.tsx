@@ -1,4 +1,4 @@
-import { formatNum, direction } from '../ui'
+import { Num } from '../ui'
 import s from './TickerChip.module.css'
 
 export interface TickerChipProps {
@@ -14,15 +14,14 @@ export interface TickerChipProps {
   highlight?: boolean
 }
 
-/** Ticker label with today's % move, colored up/down. Click/Enter opens it. */
+/** Ticker label with today's % move, colored up/down and flashing on a live tick. Click/Enter opens it. */
 export function TickerChip({ code, chgPct, live, onOpen, title, plain, highlight }: TickerChipProps) {
   const pct = live?.[code]?.changePct ?? chgPct ?? null
-  const dir = direction(pct)
   const cls = [s.chip, onOpen && s.clickable, highlight && s.highlight].filter(Boolean).join(' ')
   const body = (
     <>
       <span className={s.code}>{code}</span>
-      {!plain && <span className={dir}>{formatNum(pct, 'pct', { signed: true })}</span>}
+      {!plain && <Num value={pct} format="pct" signed colored flash className={s.pct} />}
     </>
   )
   if (!onOpen)

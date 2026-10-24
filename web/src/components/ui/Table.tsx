@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
 import s from './Table.module.css'
 
 export interface Column<T> {
@@ -11,6 +11,8 @@ export interface Column<T> {
   sortable?: boolean
   align?: 'left' | 'right' | 'center'
   width?: number | string
+  /** Depth bar behind the cell, growing from the right edge; pct is 0–100. */
+  bar?: (row: T) => { pct: number; tone?: 'amber' | 'up' | 'down' } | null | undefined
 }
 
 export interface TableProps<T> {
@@ -57,6 +59,15 @@ export function Table<T>({ columns, rows, rowKey, onOpen, initialSort, autoFocus
   }, [rows, columns, sort])
 
   const activeIndex = Math.min(active, Math.max(0, sorted.length - 1))
+
+  // the first rows ease in once, when data first shows up
+  const [entered, setEntered] = useState(false)
+  const hasRows = sorted.length > 0
+  useEffect(() => {
+    if (entered || !hasRows) return
+    const id = setTimeout(() => setEntered(true), 320)
+    return () => clearTimeout(id)
+  }, [entered, hasRows])
 
   useEffect(() => {
     if (autoFocus) wrapRef.current?.focus({ preventScroll: true })
@@ -147,17 +158,30 @@ export function Table<T>({ columns, rows, rowKey, onOpen, initialSort, autoFocus
             <tr
               key={rowKey(row)}
               data-row={i}
-              className={[s.row, onOpen && s.clickable, i === activeIndex && s.active].filter(Boolean).join(' ')}
+              className={[s.row, onOpen && s.clickable, i === activeIndex && s.active, !entered && i < 12 && s.enter]
+                .filter(Boolean)
+                .join(' ')}
+              style={!entered && i < 12 ? ({ '--i': i } as CSSProperties) : undefined}
               onClick={() => {
                 setActive(i)
                 onOpen?.(row)
               }}
             >
-              {columns.map((c) => (
-                <td key={c.key} className={alignCls(c.align)}>
-                  {c.render ? c.render(row) : String(readKey(row, c.key) ?? '—')}
-                </td>
-              ))}
+              {columns.map((c) => {
+                const bar = c.bar?.(row)
+                const pct = bar && Number.isFinite(bar.pct) ? Math.max(0, Math.min(100, bar.pct)) : null
+                return (
+                  <td
+                    key={c.key}
+                    className={[alignCls(c.align), pct != null && s.bar, pct != null && bar?.tone && s[bar.tone]]
+                      .filter(Boolean)
+                      .join(' ')}
+                    style={pct != null ? ({ '--pct': `${pct}%` } as CSSProperties) : undefined}
+                  >
+                    {c.render ? c.render(row) : String(readKey(row, c.key) ?? '—')}
+                  </td>
+                )
+              })}
             </tr>
           ))}
         </tbody>

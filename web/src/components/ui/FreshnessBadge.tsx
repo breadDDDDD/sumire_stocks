@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { formatTimeWib } from '../../lib/time'
 import { Badge } from './Badge'
+import s from './FreshnessBadge.module.css'
 
 export interface FreshnessBadgeProps {
   /** ISO-8601 timestamp of the data. */
@@ -10,7 +11,7 @@ export interface FreshnessBadgeProps {
   label?: string
 }
 
-/** "Delayed · as of 14:32:05 WIB": muted while fresh, amber once stale, red when very stale. */
+/** "Delayed 14:32:05" (WIB): muted while fresh, amber once stale, crimson when very stale. */
 export function FreshnessBadge({ asOf, staleAfterSec = 1200, label = 'Delayed' }: FreshnessBadgeProps) {
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
@@ -25,8 +26,9 @@ export function FreshnessBadge({ asOf, staleAfterSec = 1200, label = 'Delayed' }
   const stale = ageSec > staleAfterSec
   const veryStale = ageSec > staleAfterSec * 3
   return (
-    <Badge tone={veryStale ? 'down' : stale ? 'amber' : 'muted'} title={new Date(t).toString()}>
-      {stale ? 'Stale' : label} · as of {formatTimeWib(t)} WIB
+    <Badge tone={veryStale ? 'crimson' : stale ? 'amber' : 'muted'} title={`As of ${formatTimeWib(t)} WIB`}>
+      {stale ? 'Stale' : label}
+      <span className={s.time}>{formatTimeWib(t)}</span>
     </Badge>
   )
 }

@@ -1,0 +1,36 @@
+.odo {
+  display: inline-flex;
+  font-variant-numeric: tabular-nums slashed-zero;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.glyph {
+  display: inline-block;
+}
+.window {
+  position: relative;
+  display: inline-block;
+  height: 1.15em;
+  overflow: hidden;
+}
+/* holds the window's width and height in flow; the column overlays it */
+.sizer {
+  visibility: hidden;
+}
+.column {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--dur-4) var(--ease-move);
+}
+.column > span {
+  height: 1.15em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .column {
+    transition: none;
+  }
+}

@@ -1,58 +1,51 @@
 .wrap {
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: var(--s-2);
   color: var(--muted);
-  font-size: var(--fs-sm);
 }
 .center {
   display: flex;
   width: 100%;
-  padding: 24px 0;
+  padding: var(--s-3);
 }
-.glasses {
-  color: var(--crimson);
-  overflow: visible;
+.track {
+  position: relative;
+  flex: none;
+  height: 2px;
+  background: var(--line);
+  overflow: hidden;
 }
-.lens,
-.bridge,
-.temple {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.4;
-  stroke-linecap: square;
-}
-.bridge {
-  stroke-linejoin: miter;
-}
-.lens {
-  fill: rgba(244, 239, 230, 0.06);
-}
-.shine {
-  fill: none;
-  stroke: var(--paper);
-  stroke-width: 2.4;
-  stroke-linecap: butt;
-  stroke-dasharray: 8 49;
-  animation: spin 1.1s linear infinite;
-}
-.shine2 {
-  animation-delay: -0.55s;
+.bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 2px;
+  background: var(--amber);
+  transform: translateX(-48px);
+  animation: sweep 900ms linear infinite;
 }
 .label {
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
   color: var(--muted);
 }
-@keyframes spin {
+/* runs across the track and off its right edge (the track clips it) */
+@keyframes sweep {
+  from {
+    transform: translateX(-48px);
+  }
   to {
-    stroke-dashoffset: -57;
+    transform: translateX(var(--sweep-to, 400px));
   }
 }
-/* static glint at the top-left of each lens instead of a sweep */
 @media (prefers-reduced-motion: reduce) {
-  .shine,
-  .shine2 {
+  .bar {
     animation: none;
-    stroke-dashoffset: -6;
+    width: 30%;
+    transform: none;
   }
 }

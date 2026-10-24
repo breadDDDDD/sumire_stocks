@@ -4,43 +4,42 @@
   min-height: 0;
   min-width: 0;
   height: 100%;
-  background: var(--panel);
-  border: 0;
+  background: var(--bg);
+}
+/* nested next to other panels inside a pane body */
+.boxed {
+  border: 1px solid var(--line);
 }
 
 .header {
+  flex: none;
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 26px;
-  padding-right: 8px;
-  border-bottom: 1px solid var(--amber-deep);
-  background: var(--bg);
+  gap: var(--s-2);
+  height: var(--strip-h);
+  padding: 0 var(--s-2);
+  background: var(--raise-1);
 }
 
 .title {
-  align-self: stretch;
-  display: flex;
-  align-items: center;
+  flex: none;
   margin: 0;
-  padding: 2px 22px 2px 10px;
-  background: var(--crimson);
-  color: var(--paper);
-  font-family: var(--font-display);
-  font-size: var(--fs-d1);
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  line-height: 1;
-  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
-  filter: drop-shadow(3px 0 0 #000);
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  line-height: var(--strip-h);
   white-space: nowrap;
 }
 
 .subtitle {
   min-width: 0;
   color: var(--muted);
-  font-size: var(--fs-sm);
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  letter-spacing: var(--track-label);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -50,8 +49,8 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: var(--fs-sm);
+  gap: var(--s-1);
+  font-size: var(--fs-xs);
 }
 
 .body {
@@ -61,5 +60,28 @@
 }
 
 .padded {
-  padding: 8px 10px;
+  padding: var(--s-2) var(--s-3);
+}
+
+/* a pane-level panel sits under the pane strip, which already shows the code and ticker:
+   its title is kept for screen readers only, and the header becomes a thin sub-bar for
+   subtitle and actions (or disappears when it has neither) */
+.panel:not(.boxed) > .header {
+  height: auto;
+  min-height: 0;
+  padding: 2px var(--s-2);
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.panel:not(.boxed) > .header:not(:has(.subtitle, .actions)) {
+  padding: 0;
+  border: 0;
+}
+.panel:not(.boxed) > .header > .title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

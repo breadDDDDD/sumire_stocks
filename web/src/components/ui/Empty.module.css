@@ -1,65 +1,59 @@
-/* Left-aligned, off-centre: burst behind the title, screentone from the top-right. */
+/* A terminal message at the top-left of the pane body, not an illustration. */
 .empty {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  gap: 6px;
-  height: 100%;
-  min-height: 140px;
-  padding: 20px 24px 20px 28px;
+  gap: var(--s-1);
+  max-width: 60ch;
+  padding: var(--s-3);
   text-align: left;
 }
-.head {
-  position: relative;
-  isolation: isolate;
-  padding-left: 18px;
-}
-.burst {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  margin: -32px 0 0 -18px;
-  z-index: -1;
-  color: var(--crimson);
-  opacity: 0.9;
-  transform: rotate(-8deg);
-}
-.error .burst {
-  color: var(--down);
-  opacity: 1;
-}
 .title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
   margin: 0;
-  color: var(--paper);
-  font-family: var(--font-display);
-  font-size: var(--fs-d2);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-shadow: 2px 2px 0 #000;
-}
-.slash {
-  display: inline-block;
-  width: 48px;
-  height: 5px;
-  margin-left: 18px;
-  background: var(--crimson);
-  transform: skewX(-24deg);
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  line-height: 1.35;
 }
 .message {
-  max-width: 46ch;
-  margin: 0 0 0 18px;
+  margin: 0;
   color: var(--muted);
+  font-family: var(--font-prose);
+  font-size: var(--fs-md);
+  line-height: var(--lh-prose);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-1);
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
-  line-height: 1.5;
+  color: var(--text);
+}
+
+.error {
+  padding-left: calc(var(--s-3) - 2px);
+  border-left: 2px solid var(--crimson);
+}
+.error .title {
+  color: var(--text);
 }
 .error .message {
   color: var(--text);
 }
-.actions {
-  display: flex;
-  gap: 8px;
-  margin: 6px 0 0 18px;
+/* "ERR 503" before the title */
+.code {
+  flex: none;
+  color: var(--crimson-hi);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: var(--track-code);
 }

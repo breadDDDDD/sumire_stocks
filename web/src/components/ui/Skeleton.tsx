@@ -2,7 +2,7 @@ import s from './Skeleton.module.css'
 
 const WIDTHS = [22, 38, 14, 18, 26, 12]
 
-/** Placeholder rows while something loads (prefer this over a spinner for tables and lists). */
+/** Static placeholder rows while something loads; shows after 150ms so fast loads never flash it. */
 export function Skeleton({ rows = 6, columns = 4 }: { rows?: number; columns?: number }) {
   return (
     <div className={s.wrap} aria-busy="true" aria-label="Loading">
@@ -11,11 +11,10 @@ export function Skeleton({ rows = 6, columns = 4 }: { rows?: number; columns?: n
           {Array.from({ length: columns }, (_, c) => (
             <div
               key={c}
-              className={r === 0 && c === 0 ? `${s.bar} ${s.stub}` : s.bar}
-              style={r === 0 && c === 0 ? undefined : { width: `${WIDTHS[(r + c) % WIDTHS.length]}%` }}
+              className={c === 0 ? `${s.bar} ${s.code}` : c === columns - 1 && columns > 1 ? `${s.bar} ${s.end}` : s.bar}
+              style={c === 0 ? undefined : { width: `${WIDTHS[(r + c) % WIDTHS.length]}%` }}
             />
           ))}
-          {r === rows - 1 && <span className={s.cursor} aria-hidden="true" />}
         </div>
       ))}
     </div>

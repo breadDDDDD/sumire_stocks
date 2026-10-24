@@ -1,76 +1,125 @@
+/* why research won't run: one amber-ruled line under the pane strip */
 .notice {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  padding: 4px 10px;
-  border-bottom: 1px solid var(--border);
-  border-left: 3px solid var(--amber);
-  background: var(--panel-2);
-  color: var(--amber);
+  gap: var(--s-2);
+  min-height: var(--row-h-comfy);
+  padding: 0 var(--s-3) 0 calc(var(--s-3) - 2px);
+  border-left: 2px solid var(--amber);
+  border-bottom: 1px solid var(--line);
+  background: var(--raise-1);
+  color: var(--text);
+  font-family: var(--font-label);
   font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
 }
 
+/* queued / running job */
 .progress {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  font-size: var(--fs-sm);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-1);
+  padding: var(--s-3);
 }
 
 .progressLabel {
-  color: var(--paper);
-  font-family: var(--font-display);
-  font-size: 18px;
-  line-height: 1.1;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
 }
 
+.progressState {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--muted);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+}
+
+.progressState b {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+
+/* status bar usage: "Research 9/20" + a 40×4 bar */
 .usage {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 22px;
-  padding: 0 8px;
+  gap: var(--s-1);
+  height: 18px;
+  padding: 0 var(--s-1);
   border: 0;
-  border-bottom: 2px solid #000;
-  border-radius: var(--radius-key);
-  background: var(--key-dark);
-  color: var(--amber-dim);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  background: transparent;
+  color: var(--muted);
   white-space: nowrap;
-  transition:
-    background-color var(--dur-fast),
-    color var(--dur-fast);
 }
 
-.usage:hover,
-.usage:focus-visible {
-  background: var(--panel-hover);
-  color: var(--amber-hi);
+.usage:hover {
+  background: var(--raise-1);
 }
 
-.usage b {
+.usage:hover .usageLabel {
+  color: var(--amber);
+}
+
+.usageLabel {
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+}
+
+.count {
   color: var(--text);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums slashed-zero;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
 }
 
-.usage .warn {
-  color: var(--warn);
+.warn {
+  color: var(--amber);
 }
 
-.usage .bad {
-  color: var(--down);
+.bad {
+  color: var(--crimson-hi);
 }
 
-/* running marker: a static crimson square, no pulse */
+.meter {
+  position: relative;
+  width: 40px;
+  height: 4px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.meterFill {
+  position: absolute;
+  inset: 0;
+  background: var(--amber);
+  transform-origin: left;
+  transition: transform var(--dur-4) var(--ease-move);
+}
+
+.meterHot {
+  background: var(--crimson);
+}
+
+.paused {
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+}
+
+/* running marker: a static amber square, no pulse */
 .dot {
+  flex: none;
   width: 6px;
   height: 6px;
-  background: var(--crimson);
+  background: var(--amber);
 }

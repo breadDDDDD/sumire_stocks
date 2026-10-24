@@ -17,7 +17,7 @@ export interface InsightCardProps {
   actions?: ReactNode
 }
 
-const CONFIDENCE_TONE = { high: 'up', med: 'amber', low: 'muted' } as const
+const CONFIDENCE_TONE = { high: 'default', med: 'amber', low: 'muted' } as const
 
 function shortDate(d: string): string {
   const t = Date.parse(d)
@@ -41,7 +41,7 @@ function SourceChip({ source, index }: { source: InsightSource; index: number })
     <a className={s.source} href={source.url} target="_blank" rel="noreferrer noopener" title={source.title}>
       <span className={s.sourceIdx}>{index}</span>
       {source.publisher || hostOf(source.url)}
-      {source.publishedAt && <span className="muted"> · {shortDate(source.publishedAt)}</span>}
+      {source.publishedAt && <span> · {shortDate(source.publishedAt)}</span>}
     </a>
   )
 }
@@ -74,10 +74,16 @@ export function InsightCard({ insight, onOpenTicker, variant = 'stock', actions 
   const confidence = (insight.confidence ?? '').toLowerCase()
   const confTone = CONFIDENCE_TONE[confidence as keyof typeof CONFIDENCE_TONE] ?? 'muted'
 
-  /** A chip for codes with a quote; a plain factor label otherwise. */
+  /** A chip for codes with a quote or a ticker shape; a cyan factor label otherwise. */
   const node = (code: string, highlight?: boolean) => {
     const c = code.toUpperCase()
     const quoted = live[c] !== undefined
+    if (!quoted && !/^[A-Z]{4}$/.test(c))
+      return (
+        <span key={c} className={s.factor}>
+          {code}
+        </span>
+      )
     return (
       <TickerChip
         key={c}
@@ -102,7 +108,7 @@ export function InsightCard({ insight, onOpenTicker, variant = 'stock', actions 
         {warnings.length > 0 && (
           <button type="button" className={s.warnBtn} onClick={() => setShowWarnings((v) => !v)} aria-expanded={showWarnings}>
             <Badge tone="amber" title={warnings.map((w) => w.message).join('\n')}>
-              ⚠ {warnings.length} check{warnings.length > 1 ? 's' : ''} flagged
+              {warnings.length} check{warnings.length > 1 ? 's' : ''} flagged {showWarnings ? '▴' : '▾'}
             </Badge>
           </button>
         )}

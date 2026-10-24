@@ -1,43 +1,35 @@
-/* Static ledger rows; the only motion is one blinking block cursor. */
+/* Static bars at row height, no shimmer. */
 .wrap {
   display: flex;
   flex-direction: column;
-  padding: 4px 10px;
+  padding: var(--s-1) var(--s-2);
+  animation: appear 0s 150ms both;
 }
 .row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--s-3);
   height: var(--row-h);
-  border-bottom: 1px solid var(--border);
-}
-.row:nth-child(5n) {
-  border-bottom-color: var(--amber-deep);
 }
 .bar {
   height: 10px;
-  border-radius: 0;
-  background: var(--panel-2);
+  background: var(--raise-1);
 }
-.stub {
+/* ticker column */
+.code {
   flex: none;
-  width: 28px;
-  background: var(--amber-deep);
+  width: 6ch;
+  background: var(--raise-2);
 }
-.cursor {
-  flex: none;
-  width: 8px;
-  height: 12px;
-  background: var(--amber);
-  animation: blink 1s steps(1) infinite;
+/* numbers sit at the right edge */
+.end {
+  margin-left: auto;
 }
-@keyframes blink {
-  50% {
+@keyframes appear {
+  from {
     opacity: 0;
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cursor {
-    display: none;
+  to {
+    opacity: 1;
   }
 }

@@ -1,6 +1,7 @@
 import { ApiError } from '../../api/client'
 import { Button } from './Button'
 import { Empty } from './Empty'
+import s from './Empty.module.css'
 
 function describe(error: unknown): string {
   if (error instanceof ApiError) {
@@ -13,6 +14,13 @@ function describe(error: unknown): string {
   return 'That request failed.'
 }
 
+/** "ERR 503", "ERR NET" or plain "ERR". */
+function errCode(error: unknown): string {
+  if (error instanceof ApiError) return `ERR ${error.status}`
+  if (error instanceof TypeError) return 'ERR NET'
+  return 'ERR'
+}
+
 export function ErrorState({
   error,
   onRetry,
@@ -23,7 +31,16 @@ export function ErrorState({
   title?: string
 }) {
   return (
-    <Empty title={title} message={describe(error)} tone="error">
+    <Empty
+      title={
+        <>
+          <span className={s.code}>{errCode(error)}</span>
+          <span>{title}</span>
+        </>
+      }
+      message={describe(error)}
+      tone="error"
+    >
       {onRetry && (
         <Button variant="primary" onClick={onRetry}>
           Retry

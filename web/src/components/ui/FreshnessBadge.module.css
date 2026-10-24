@@ -1,0 +1,5 @@
+.time {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0;
+}

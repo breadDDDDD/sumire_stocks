@@ -1,43 +1,47 @@
 .chip {
   display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  padding: 0 6px;
-  border: 1px solid var(--border-strong);
-  border-radius: 0;
-  background: var(--panel-2);
+  align-items: center;
+  gap: var(--s-1);
+  height: 16px;
+  padding: 0 var(--s-1);
+  border: 1px solid var(--line-strong);
+  background: transparent;
   color: var(--text);
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
-  line-height: 18px;
+  font-weight: 400;
+  line-height: 14px;
   white-space: nowrap;
-  font-variant-numeric: tabular-nums slashed-zero;
+  vertical-align: middle;
+  isolation: isolate;
 }
 
 .code {
   color: var(--amber);
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: var(--track-code);
+}
+
+.pct {
+  font-size: var(--fs-xs);
 }
 
 .clickable {
   cursor: pointer;
-  transition:
-    border-color var(--dur-fast),
-    background-color var(--dur-fast);
 }
-
-.clickable:hover,
-.clickable:focus-visible {
-  border-color: var(--amber);
-  background: var(--panel-hover);
+.clickable:hover {
+  background: var(--raise-1);
 }
-
 .clickable:hover .code {
   color: var(--amber-hi);
 }
+.clickable:focus-visible {
+  outline: 1px solid var(--crimson);
+  outline-offset: 1px;
+}
 
+/* the subject of the insight */
 .highlight {
-  border-color: var(--crimson);
-  background: var(--crimson-dim);
-  box-shadow: inset 3px 0 0 var(--crimson);
+  border-color: var(--amber-dim);
+  background: var(--raise-1);
 }

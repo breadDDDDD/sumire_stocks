@@ -1,63 +1,68 @@
-/* Bloomberg keys: hard caps with a darker bottom edge */
 .button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--s-1);
   height: 22px;
-  padding: 0 10px;
-  border: 0;
-  border-bottom: 2px solid #000;
-  border-radius: var(--radius-key);
-  background: var(--key-dark);
+  padding: 0 var(--s-2);
+  border: 1px solid var(--line-strong);
+  background: var(--raise-2);
   color: var(--text);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  line-height: 20px;
   white-space: nowrap;
-  transition:
-    background-color var(--dur-fast),
-    color var(--dur-fast);
+  vertical-align: middle;
 }
 .button:hover:not(:disabled) {
-  background: var(--panel-hover);
-  color: var(--amber-hi);
+  background: var(--raise-3);
 }
+/* press applies on the same frame: no transition */
 .button:active:not(:disabled) {
   transform: translateY(1px);
-  border-bottom-width: 1px;
 }
 .button:disabled {
-  opacity: 0.4;
+  color: var(--faint);
   cursor: default;
 }
+/* keycap after the label: "Refresh [r]" */
+.button :global(kbd) {
+  margin-left: 2px;
+}
+
 .primary {
-  background: var(--key-fn);
-  border-bottom-color: var(--key-fn-edge);
-  color: var(--ink);
+  border-color: var(--amber);
+  background: var(--amber);
+  color: var(--on-fill);
 }
 .primary:hover:not(:disabled) {
-  background: #ffd21f;
-  color: var(--ink);
+  border-color: var(--amber-hi);
+  background: var(--amber-hi);
 }
+.primary:disabled {
+  border-color: var(--raise-3);
+  background: var(--raise-3);
+}
+
 .ghost {
-  padding: 0 2px;
-  border-bottom: 0;
-  background: transparent;
-  color: var(--muted);
-  text-underline-offset: 3px;
-}
-.ghost:hover:not(:disabled) {
+  border-color: transparent;
   background: transparent;
   color: var(--amber);
-  text-decoration: underline;
 }
-.ghost:active:not(:disabled) {
-  transform: none;
+.ghost:hover:not(:disabled) {
+  background: var(--raise-1);
 }
+
+/* selected segment / toggle; adjacent buttons overlap their borders */
 .active,
 .active:hover:not(:disabled) {
-  background: var(--amber);
-  border-bottom-color: var(--amber-deep);
-  color: var(--ink);
+  position: relative;
+  z-index: 1;
+  border-color: var(--select);
+  background: var(--select);
+  color: #fff;
+}
+.button + .button {
+  margin-left: -1px;
 }

@@ -1,58 +1,56 @@
 .wrap {
   height: 100%;
   overflow: auto;
+  background: var(--bg);
 }
 .wrap:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring-inset);
+  outline: 1px solid var(--crimson);
+  outline-offset: -1px;
 }
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--fs-md);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
 }
 .table th {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   height: var(--row-h);
-  padding: 0 8px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--amber-deep);
-  color: var(--amber-dim);
+  padding: 0 var(--s-2);
+  background: var(--raise-1);
+  color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
   font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: var(--track-label);
   text-align: left;
   white-space: nowrap;
   user-select: none;
 }
 .sortable {
   cursor: pointer;
-  transition: color var(--dur-fast);
 }
 .sortable:hover {
   color: var(--amber-hi);
 }
-.sorted {
-  color: var(--amber) !important;
+.sorted,
+.sorted:hover {
+  color: var(--text);
 }
 .arrow {
   margin-left: 3px;
-  font-size: 9px;
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 8px;
   vertical-align: 1px;
 }
 .table td {
   height: var(--row-h);
-  padding: 0 8px;
-  border-bottom: 0;
+  padding: 0 var(--s-2);
+  color: var(--text);
   white-space: nowrap;
-  transition: background-color var(--dur-fast);
-}
-/* ledger rule every fifth row */
-.table tbody tr:nth-child(5n) td {
-  border-bottom: 1px solid var(--amber-deep);
 }
 .right {
   text-align: right !important;
@@ -67,12 +65,55 @@
 .clickable {
   cursor: pointer;
 }
+/* row states use background-color so depth bars (background-image) stay visible */
 .row:hover td {
-  background: var(--panel-hover);
+  background-color: var(--raise-1);
 }
-.active td {
-  background: var(--crimson-dim) !important;
+/* the keyboard row is crimson only in the focused pane, a neutral band elsewhere */
+.active td,
+.active:hover td {
+  background-color: var(--raise-1);
 }
 .active td:first-child {
-  box-shadow: inset 3px 0 0 var(--crimson);
+  box-shadow: inset 2px 0 0 var(--line-strong, var(--faint));
+}
+:global([data-focused]) .active td,
+:global([data-focused]) .active:hover td {
+  background-color: var(--crimson-wash);
+}
+:global([data-focused]) .active td:first-child {
+  box-shadow: inset 2px 0 0 var(--crimson);
+}
+
+/* depth bar behind the number, growing from the right edge */
+.bar {
+  --tint: rgba(255, 160, 40, 0.12);
+  background-image: linear-gradient(to left, var(--tint) var(--pct), transparent var(--pct));
+}
+.bar.up {
+  --tint: rgba(34, 197, 94, 0.14);
+}
+.bar.down {
+  --tint: rgba(244, 63, 94, 0.14);
+}
+
+/* first data: rows ease in, 12ms apart */
+.enter {
+  animation: row-in var(--dur-2) var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 12ms);
+}
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .enter {
+    animation: none;
+  }
 }

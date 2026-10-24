@@ -42,20 +42,21 @@ interactive area focusable with `tabIndex={0}`: Tab / Alt+1..4 focus the first `
 
 ## Components
 
+Visual rules live in `docs/design/direction.md` §6: black panes, `--raise-1` header bands, sentence-case labels in the
+condensed face, uppercase mono codes, no radius or shadows. Motion follows `docs/design/v2-motion.md`.
+
 | Component | Props | Notes |
 |---|---|---|
-| `Panel` | `title, subtitle?, actions?, padded?, className?, bodyClassName?` | Slanted crimson header; body scrolls. |
-| `Table<T>` | `columns: Column<T>[], rows, rowKey, onOpen?, initialSort?, autoFocus?, empty?` | Sticky header, click header to sort, `j/k/↑/↓/Home/End/PgUp/PgDn`, `Enter` → `onOpen(row)`. Column: `key, header, render?, sortValue?, sortable?, align?, width?`. Right-aligned columns sort descending first. |
-| `Badge` | `tone?: default \| amber \| crimson \| up \| down \| muted \| solid, title?` | Small uppercase label. |
-| `Button` | `variant?: default \| primary \| ghost, active?` + button attrs | Bloomberg keycap: dark key, `primary` is the yellow function key, `active` is an amber key. |
-| `Spinner` | `size?, label?, center?` | Sumire's round glasses. Prefer `Skeleton` for tables/lists. |
-| `Skeleton` | `rows?, columns?` | Static ledger placeholder rows with a blinking cursor. |
-| `Empty` | `title, message?, children?` (actions), `tone?: 'error'` | Left-aligned, starburst behind the title, screentone from the top-right. |
-| `ErrorState` | `error?, onRetry?, title?` | Friendly text for `ApiError` (404, 5xx) and network errors. |
-| `FreshnessBadge` | `asOf, staleAfterSec? = 1200, label? = 'Delayed'` | "Delayed · as of 14:32:05 WIB", muted while fresh, amber "Stale" past the threshold, red at 3x. |
-| `CutText` | `text, className?` | Ransom-note letters. Only for the wordmark, the VIOLET label and the calling-card headline. |
-| `Starburst` | `size? = 64, className?, outline?` | 24-point impact burst in `currentColor`. |
-| `Num` | `value, format?: price \| idr \| pct \| compact \| number, decimals?, signed?, colored?, colorBy?, arrow?` | Tabular figures; `colored` uses the value's sign, `colorBy` another value (e.g. color a price by its change). `pct` takes percent values (0.42 → 0.42%). |
+| `Panel` | `title, subtitle?, actions?, padded?, boxed?, className?, bodyClassName?` | 20px `--raise-1` header with an amber sentence-case title; `boxed` adds a 1px border for nested panels; body scrolls. |
+| `Table<T>` | `columns: Column<T>[], rows, rowKey, onOpen?, initialSort?, autoFocus?, empty?` | 18px mono rows, sticky header, click header to sort, `j/k/↑/↓/Home/End/PgUp/PgDn`, `Enter` → `onOpen(row)`. Column: `key, header, render?, sortValue?, sortable?, align?, width?, bar?`. `bar(row) → { pct 0–100, tone?: amber \| up \| down }` draws a depth bar from the right edge. The first rows ease in once when data arrives. Right-aligned columns sort descending first. |
+| `Badge` | `tone?: default \| amber \| crimson \| up \| down \| muted \| solid, title?` | 16px outlined label, sentence case. Never pulses; a direction badge carries a sign or arrow. |
+| `Button` | `variant?: default \| primary \| ghost, active?` + button attrs | 22px. `primary` is amber, `ghost` amber text, `active` the selected segment (select blue). Adjacent buttons overlap 1px, so a row of them reads as a segmented control. Put a `<kbd>` after the label for its shortcut. |
+| `Spinner` | `size?, label?, center?` | Indeterminate amber bar on a `size × 3`px track plus a label (default "Loading"). Prefer `Skeleton` for tables/lists. |
+| `Skeleton` | `rows?, columns?` | Static row-height bars, shown after 150ms so fast loads never flash. |
+| `Empty` | `title, message?, children?` (actions), `tone?: 'error'` | Terminal message at the top-left: amber title, prose message, action row; `error` adds a crimson left rule and announces itself. |
+| `ErrorState` | `error?, onRetry?, title?` | `ERR 503` code + title, friendly text for `ApiError` (404, 5xx) and network errors, primary Retry. |
+| `FreshnessBadge` | `asOf, staleAfterSec? = 1200, label? = 'Delayed'` | "Delayed 14:32:05" (WIB) muted while fresh, amber "Stale" past the threshold, crimson at 3x. |
+| `Num` | `value, format?: price \| idr \| pct \| compact \| number, decimals?, signed?, colored?, colorBy?, arrow?, flash?` | Tabular figures; `colored` uses the value's sign, `colorBy` another value (e.g. color a price by its change). `flash` tints the cell for one tick on a live change. `pct` takes percent values (0.42 → 0.42%). |
 
 `formatNum(value, format, { decimals, signed })` and `direction(value)` are the plain-string versions.
 
@@ -69,6 +70,9 @@ interactive area focusable with `tabIndex={0}`: Tab / Alt+1..4 focus the first `
 
 ## Theme
 
-Tokens in `theme/tokens.css`: `--bg --panel --panel-2 --panel-hover --border --border-strong --amber --text --muted
---faint --crimson --up --down --font-mono --font-display`. Global classes: `.up .down .flat .muted .value .display
-.halftone`. Crimson is brand only; use `--up`/`--down` for market moves.
+Tokens in `theme/tokens.css` (direction.md §3.1): surfaces `--canvas --bg --raise-1/2/3 --line --line-strong`, text
+`--amber --text --muted --faint`, hues `--crimson --cyan --select --up --down`, fonts `--font-mono --font-label
+--font-prose`, sizes `--fs-2xs … --fs-2xl`, space `--s-0 … --s-6`, motion `--dur-1 … --dur-4 --ease-*`. Global
+classes: `.up .down .flat .muted .value .cyan .label .prose .display .cell-ara .cell-arb .cell-halt`, keycaps `kbd`,
+`.key-fn`, `.key-go`, `.key-cancel`. Each hue has one job: crimson marks focus and the brand, up/down mark direction
+only, cyan marks something you can navigate to.

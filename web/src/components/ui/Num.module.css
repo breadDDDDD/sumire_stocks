@@ -1,0 +1,43 @@
+.num {
+  position: relative;
+  isolation: isolate;
+  font-variant-numeric: tabular-nums slashed-zero;
+  white-space: nowrap;
+}
+.num[data-tick='up'] {
+  color: var(--up);
+}
+.num[data-tick='down'] {
+  color: var(--down);
+}
+
+/* phosphor tick: a tint behind the digits that drops fast and fades long */
+.flash {
+  position: absolute;
+  inset: -1px -3px;
+  z-index: -1;
+  pointer-events: none;
+  animation: tick-decay var(--dur-4) var(--ease-decay) forwards;
+}
+.flash[data-dir='up'] {
+  background: var(--flash-up);
+}
+.flash[data-dir='down'] {
+  background: var(--flash-down);
+}
+
+@keyframes tick-decay {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* the flash is opacity only and carries meaning, so it stays under reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .flash {
+    animation-duration: var(--dur-4) !important;
+  }
+}
