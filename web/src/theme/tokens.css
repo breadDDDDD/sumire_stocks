@@ -1,44 +1,85 @@
 :root {
-  /* surfaces */
-  --bg: #0b0b0f;
-  --panel: #121218;
-  --panel-2: #17171f;
-  --panel-hover: #1d1d27;
-  --border: #26262f;
-  --border-strong: #3a3a46;
+  /* surfaces: warm ink, derived from amber, not cool blue-grey */
+  --bg: #0a0908;
+  --panel: #100e0b;
+  --panel-2: #16130f;
+  --panel-hover: #1f1a13;
+  --border: #2a2218;
+  --border-strong: #4a3a22;
+  --ink: #0a0908;            /* NEW: outlines, plates, text on amber/paper */
+  --paper: #f4efe6;          /* NEW: speech bubble, calling-card body text */
+
+  /* phosphor */
+  --amber: #ffb000;          /* labels, chrome text */
+  --amber-hi: #ffd27a;       /* NEW: hover on amber things, cursor */
+  --amber-dim: #b37c00;      /* table headers, secondary labels */
+  --amber-deep: #7a4a00;     /* NEW: ledger rules, halftone dots, key edges */
+  --amber-glow: rgba(255, 176, 0, 0.35); /* NEW: only the IHSG hero number */
 
   /* text */
-  --amber: #ffb000;
-  --amber-dim: #b37c00;
-  --text: #f2f2f5;
-  --muted: #8a8a99;
-  --faint: #55555f;
+  --text: #f4efe6;           /* values: warm white, same as paper */
+  --muted: #9a8f7c;
+  --faint: #847a66; /* 4.7:1 on --bg, still a step below --muted */
 
-  /* brand + market colors (crimson is brand only, never up/down) */
+  /* brand: crimson cut paper (never up/down) */
   --crimson: #c8102e;
   --crimson-bright: #e8203f;
-  --crimson-dim: #5c0a17;
+  --crimson-ink: #7d0a1c;    /* NEW: shadow tone on crimson, ribbon fold */
+  --crimson-dim: #3a0a12;    /* was #5c0a17: active-row wash on warm black */
+
+  /* market */
   --up: #22c55e;
   --down: #f43f5e;
-  --flat: #8a8a99;
+  --flat: #9a8f7c;
   --warn: #ffb000;
   --danger: #f43f5e;
 
+  /* Bloomberg keycaps (NEW) */
+  --key-fn: #f5c400;         /* yellow function/sector key, black legend */
+  --key-fn-edge: #8a6d00;
+  --key-go: #2e7d32;         /* GO key only; darker than --up so it never reads as "up" */
+  --key-go-edge: #14431a;
+  --key-cancel: var(--crimson);
+  --key-cancel-edge: var(--crimson-ink);
+  --key-dark: #1f1a13;
+  --key-dark-edge: #000;
+
+  /* screentone (NEW) */
+  --tone-dot: var(--amber-deep);
+  --tone-size: 6px;
+
+  /* plates: hard offset, never blurred (NEW) */
+  --plate: 3px 3px 0 0 #000;
+  --plate-lg: 5px 5px 0 0 #000;
+  --plate-crimson: 3px 3px 0 0 var(--crimson);
+
   --focus-ring: 0 0 0 2px var(--crimson);
+  --focus-ring-inset: inset 0 0 0 2px var(--crimson); /* NEW */
 
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
-  --font-display: 'Anton', 'Bebas Neue', 'Impact', sans-serif;
+  --font-display: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
+  --font-cut: 'DM Serif Display', 'Georgia', serif;   /* NEW: ransom letters only */
 
   --fs-xs: 11px;
   --fs-sm: 12px;
   --fs-md: 13px;
   --fs-lg: 15px;
+  --fs-d1: 15px;   /* NEW: panel title tab */
+  --fs-d2: 22px;   /* NEW: empty-state title, wordmark */
+  --fs-d3: 34px;   /* NEW: hero numbers (IHSG on MKT), calling-card headline */
 
-  --radius: 2px;
+  --row-h: 20px;   /* NEW: every table / list row */
+  --radius: 0;     /* was 2px: nothing is rounded */
+  --radius-key: 1px; /* NEW: keycaps only */
   --gap: 6px;
   --topbar-h: 44px;
   --tape-h: 28px;
   --rail-w: 220px;
 
+  /* motion (NEW except --ease) */
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-snap: cubic-bezier(0.3, 1.45, 0.5, 1); /* slight overshoot for stamps */
+  --dur-fast: 90ms;
+  --dur: 140ms;
+  --dur-slow: 200ms; /* hard ceiling, nothing is slower */
 }
