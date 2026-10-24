@@ -4,55 +4,70 @@
   flex-direction: column;
   height: 100%;
   min-height: 0;
-}
-.head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 6px 8px 6px 0;
-  border-bottom: 1px solid var(--amber-deep);
   background: var(--bg);
 }
-.title {
-  padding: 2px 14px 2px 8px;
-  background: var(--crimson);
-  color: var(--paper);
-  font-family: var(--font-display);
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  line-height: 1.15;
-  text-transform: uppercase;
+
+.head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--s-2);
+  height: var(--strip-h);
+  padding: 0 var(--s-2);
+  border-bottom: 1px solid var(--line);
+  background: var(--raise-1);
   white-space: nowrap;
+}
+.title {
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+}
+.listName {
+  min-width: 0;
   overflow: hidden;
+  color: var(--muted);
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-label);
   text-overflow: ellipsis;
-  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
-  filter: drop-shadow(2px 0 0 #000);
 }
 .select {
-  min-width: 0;
   flex: 1;
-  height: 22px;
-  margin-left: 8px;
-  border: 1px solid var(--border-strong);
+  min-width: 0;
+  height: 18px;
+  padding: 0 var(--s-1);
+  border: 1px solid var(--line-strong);
   border-radius: 0;
-  background: var(--panel-2);
-  color: var(--amber);
+  background: var(--raise-2);
+  color: var(--text);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
-  text-transform: uppercase;
+  letter-spacing: var(--track-label);
+}
+.select:focus-visible {
+  outline: 1px solid var(--crimson);
+  outline-offset: -1px;
 }
 .link {
+  margin-left: auto;
   padding: 0;
   border: 0;
   background: none;
-  color: var(--muted);
+  color: var(--cyan);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
-  text-decoration: underline dotted;
+  letter-spacing: var(--track-label);
 }
 .link:hover {
-  color: var(--amber-hi);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
+
 .list {
+  position: relative;
   flex: 1;
   margin: 0;
   padding: 0;
@@ -61,82 +76,123 @@
 }
 .row {
   display: grid;
-  grid-template-columns: 1fr auto 58px;
-  gap: 6px;
+  grid-template-columns: 6ch minmax(0, 1fr) 7ch;
+  gap: var(--s-2);
   align-items: center;
   width: 100%;
   height: var(--row-h);
-  padding: 0 8px;
+  padding: 0 var(--s-2);
   border: 0;
   background: none;
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
   text-align: right;
-  transition: background-color var(--dur-fast);
-}
-/* ledger rule every 5th row */
-.list > li:nth-child(5n) .row {
-  border-bottom: 1px solid var(--amber-deep);
 }
 .row:hover {
-  background: var(--panel-hover);
+  background: var(--raise-1);
 }
 .row:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring-inset);
+  outline: 1px solid var(--crimson);
+  outline-offset: -1px;
 }
-.current,
-.current:hover {
-  box-shadow: inset 3px 0 0 var(--crimson);
-  background: var(--crimson-dim);
+.code {
+  overflow: hidden;
+  color: var(--amber);
+  font-weight: 500;
+  letter-spacing: var(--track-code);
+  text-align: left;
+  text-overflow: clip;
 }
 .current .code {
   color: var(--amber-hi);
 }
-.code {
-  color: var(--amber);
-  text-align: left;
+.last {
+  color: var(--text);
 }
 .pct {
   font-size: var(--fs-xs);
 }
-.msg {
-  padding: 10px 8px;
-  color: var(--muted);
-  font-size: var(--fs-sm);
-}
-.msg p {
-  margin: 0 0 6px;
-}
-.msg .msgTitle {
-  color: var(--paper);
-  font-family: var(--font-display);
-  font-size: var(--fs-d1);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-.note {
+
+/* the shared current-ticker marker: one bar that slides between rows */
+.marker {
   position: absolute;
-  left: 6px;
-  right: 6px;
-  bottom: 6px;
-  padding: 5px 8px;
-  border: 0;
-  border-left: 3px solid var(--crimson);
-  background: var(--panel-2);
-  color: var(--text);
-  font-size: var(--fs-xs);
-  box-shadow: var(--plate);
-  animation: slash-in var(--dur) var(--ease);
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 2px;
+  height: var(--row-h);
+  background: var(--crimson);
+  pointer-events: none;
+  transition: transform var(--dur-3) var(--ease-move);
 }
-.noteError {
-  border-left-color: var(--down);
-  color: var(--down);
+.instant {
+  transition: none;
 }
 
-/* CSS modules hash animation names, so the global keyframes are copied here */
-@keyframes slash-in {
+.added {
+  animation: rail-in var(--dur-2) var(--ease-out) backwards;
+}
+
+.msg {
+  padding: var(--s-2);
+  color: var(--muted);
+  font-family: var(--font-prose);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-prose);
+}
+.msg p {
+  margin: 0 0 var(--s-1);
+}
+.msg .msgTitle {
+  color: var(--amber);
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+}
+
+.note {
+  position: absolute;
+  left: var(--s-1);
+  right: var(--s-1);
+  bottom: var(--s-1);
+  padding: var(--s-1) var(--s-2);
+  border: 1px solid var(--line-strong);
+  border-left: 2px solid var(--amber);
+  background: var(--raise-2);
+  color: var(--text);
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-label);
+  animation: note-in var(--dur-2) var(--ease-out);
+}
+.noteError {
+  border-left-color: var(--crimson);
+}
+
+@keyframes rail-in {
   from {
-    transform: translateX(-10px) skewX(-8deg);
     opacity: 0;
+    transform: translateX(-4px);
+  }
+}
+@keyframes note-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes rail-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marker {
+    transition: none;
+  }
+  .note {
+    animation: rail-fade var(--dur-1) linear;
+    animation-duration: var(--dur-1) !important;
   }
 }

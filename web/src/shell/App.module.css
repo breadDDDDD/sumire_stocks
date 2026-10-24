@@ -1,8 +1,9 @@
 .app {
   display: grid;
-  grid-template-rows: var(--topbar-h) minmax(0, 1fr) var(--tape-h);
+  grid-template-rows: var(--topbar-h) minmax(0, 1fr) var(--tape-h) var(--status-h);
   height: 100vh;
   min-width: 900px;
+  background: var(--canvas);
 }
 
 .main {
@@ -15,17 +16,18 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  overflow: auto;
-  border-right: 1px solid var(--border-strong);
-  background: var(--panel);
+  overflow: hidden;
+  border-right: 1px solid var(--line);
+  background: var(--bg);
 }
 
+/* panes are tiles of black separated by a gutter of canvas, not by borders */
 .grid {
   display: grid;
-  gap: 1px;
+  gap: var(--gutter);
   min-height: 0;
-  padding: 0;
-  background: var(--border);
+  padding: var(--gutter);
+  background: var(--canvas);
 }
 .layout1 {
   grid-template: minmax(0, 1fr) / minmax(0, 1fr);
@@ -37,84 +39,80 @@
   grid-template: repeat(2, minmax(0, 1fr)) / repeat(2, minmax(0, 1fr));
 }
 
-.bottom {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  border-top: 1px solid var(--border-strong);
-  background: var(--bg);
-  font-size: var(--fs-sm);
-}
 .tape {
-  flex: 1;
   min-width: 0;
-  height: 100%;
   overflow: hidden;
 }
-.mascot {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  z-index: 40;
-  display: flex;
-  align-items: flex-end;
-  padding: 0 0 4px;
+.status {
+  min-width: 0;
 }
 
+/* shortcut overlay */
 .overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
   display: grid;
-  place-items: center;
-  padding: 24px;
-  background: rgba(10, 9, 8, 0.82);
-  animation: fade var(--dur-fast) var(--ease);
+  place-items: start center;
+  padding: calc(var(--topbar-h) + var(--s-5)) var(--s-5) var(--s-5);
+  background: rgba(0, 0, 0, 0.6);
+  animation: fade var(--dur-1) var(--ease-out);
 }
 .dialog {
   width: min(980px, 100%);
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - var(--topbar-h) - 48px);
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--crimson);
-  box-shadow: var(--plate-lg);
-  animation: wipe-in var(--dur-slow) var(--ease);
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--raise-2);
+  animation: dialog-in var(--dur-2) var(--ease-out);
 }
+.dialog:focus-visible {
+  outline: 1px solid var(--crimson);
+  outline-offset: -1px;
+}
+
+/* shell notices (e.g. "No ticker in this pane"): bottom-left over the panes, above the tape */
+.toast {
+  position: fixed;
+  left: calc(var(--rail-w) + var(--s-2));
+  bottom: calc(var(--tape-h) + var(--status-h) + var(--s-2));
+  z-index: 90;
+  max-width: 60ch;
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--line-strong);
+  border-left: 2px solid var(--amber);
+  background: var(--raise-2);
+  color: var(--text);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--track-label);
+  animation: toast-in var(--dur-2) var(--ease-out);
+}
+
 @keyframes fade {
   from {
     opacity: 0;
   }
 }
-
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: calc(var(--tape-h) + 12px);
-  z-index: 90;
-  transform: translateX(-50%);
-  padding: 6px 14px;
-  border: 0;
-  border-left: 4px solid var(--crimson);
-  background: var(--panel-2);
-  color: var(--text);
-  font-size: var(--fs-sm);
-  box-shadow: var(--plate);
-  animation: toast-in var(--dur) var(--ease);
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
 }
-/* slash-in, keeping the centring translate */
 @keyframes toast-in {
   from {
-    transform: translateX(calc(-50% - 10px)) skewX(-8deg);
     opacity: 0;
+    transform: translateY(6px);
   }
 }
 
-/* CSS modules hash animation names, so the global keyframes are copied here */
-@keyframes wipe-in {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
+@media (prefers-reduced-motion: reduce) {
+  .dialog,
+  .toast {
+    animation: fade var(--dur-1) linear;
+    animation-duration: var(--dur-1) !important;
   }
 }

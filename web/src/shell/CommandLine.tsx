@@ -1,5 +1,6 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { FUNCTION_META, isFunctionCode } from '../functions/types'
+import { reducedMotion } from '../lib/motion'
 import { load, save } from '../lib/storage'
 import { useInstrumentSearch } from './useInstrumentSearch'
 import { useWorkspace } from './workspace'
@@ -83,10 +84,10 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
     if (context === 'first' || context === 'function') {
       for (const f of ALL_FUNCTIONS) {
         if (context === 'function' && f.code === 'HELP') continue
-        if (!q || f.code.startsWith(q)) out.push({ kind: 'fn', label: f.code, detail: f.description, meta: f.name, insert: f.code })
+        if (!q || f.code.startsWith(q)) out.push({ kind: 'fn', label: f.code, detail: f.name, meta: f.description, insert: f.code })
       }
       if (context === 'function' && 'INS!'.startsWith(q) && q.startsWith('INS')) {
-        out.push({ kind: 'fn', label: 'INS!', detail: 'Queue a fresh AI insight', meta: 'Insight', insert: 'INS!' })
+        out.push({ kind: 'fn', label: 'INS!', detail: 'Insight, fresh', meta: 'Queue a fresh AI insight', insert: 'INS!' })
       }
     }
     if (context === 'first' || context === 'ticker') {
@@ -101,6 +102,50 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
 
   const showList = open && suggestions.length > 0
   const activeIndex = Math.min(active, suggestions.length - 1)
+
+  // keep the list mounted for its 80 ms close, showing what it showed last
+  const [prev, setPrev] = useState({ show: showList, sugs: suggestions })
+  const [closing, setClosing] = useState<Suggestion[] | null>(null)
+  const sameSugs =
+    prev.sugs === suggestions ||
+    (prev.sugs.length === suggestions.length && prev.sugs.every((p, i) => p.kind === suggestions[i].kind && p.insert === suggestions[i].insert))
+  if (prev.show !== showList || (showList && !sameSugs)) {
+    if (prev.show && !showList && !reducedMotion()) setClosing(prev.sugs)
+    else if (showList && closing) setClosing(null)
+    setPrev({ show: showList, sugs: suggestions })
+  }
+  const listSugs = showList ? suggestions : closing
+  const barIndex = listSugs ? Math.max(0, Math.min(active, listSugs.length - 1)) : 0
+
+  // arrow keys under key repeat: the highlight bar follows without easing
+  const lastArrow = useRef(0)
+  const [fast, setFast] = useState(false)
+  const markArrow = () => {
+    const now = performance.now()
+    setFast(now - lastArrow.current < 90)
+    lastArrow.current = now
+  }
+
+  const boxRef = useRef<HTMLDivElement>(null)
+  const rowsRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    if (!showList || !navigated) return
+    rowsRef.current?.querySelector<HTMLElement>('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' })
+  }, [showList, navigated, activeIndex])
+
+  const nudge = () => {
+    if (reducedMotion()) return
+    boxRef.current?.animate(
+      [
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(-3px)' },
+        { transform: 'translateX(3px)' },
+        { transform: 'translateX(-2px)' },
+        { transform: 'translateX(0)' },
+      ],
+      { duration: 180, easing: 'linear' },
+    )
+  }
 
   const accept = (sug: Suggestion) => {
     if (sug.kind === 'recent') {
@@ -128,6 +173,7 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
     const err = ws.run(toRun)
     if (err) {
       setError(err)
+      nudge()
       return
     }
     remember(toRun)
@@ -150,6 +196,7 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
         }
         setOpen(true)
         setNavigated(true)
+        markArrow()
         setActive((a) => (suggestions.length ? (a + 1) % suggestions.length : 0))
         return
       case 'ArrowUp':
@@ -163,6 +210,7 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
         }
         setOpen(true)
         setNavigated(true)
+        markArrow()
         setActive((a) => (suggestions.length ? (a - 1 + suggestions.length) % suggestions.length : 0))
         return
       case 'Tab':
@@ -197,14 +245,12 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
     }
   }
 
-  const placeholder = `Type a ticker or function, e.g. ${ws.focusedTicker ?? 'BBCA'} GP`
+  const placeholder = `Ticker and function, e.g. ${ws.focusedTicker ?? 'BBRI'} GP`
+  const popover = listSugs || error
 
   return (
     <div className={s.wrap}>
-      <div className={`${s.box} ${error ? s.error : ''}`}>
-        <span className={s.prompt} aria-hidden="true">
-          ▸
-        </span>
+      <div ref={boxRef} className={`${s.box} ${error ? s.error : ''}`}>
         <input
           ref={inputRef}
           className={s.input}
@@ -215,6 +261,7 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
           aria-label="Command line"
           aria-expanded={showList}
           aria-controls="cmd-suggestions"
+          aria-invalid={error ? true : undefined}
           role="combobox"
           onChange={(e) => {
             setValue(e.target.value)
@@ -228,54 +275,76 @@ export const CommandLine = forwardRef<CommandLineHandle>(function CommandLine(_p
           onBlur={() => setOpen(false)}
           onKeyDown={onKeyDown}
         />
-        {error ? (
-          <span className={s.errorText} role="alert">
-            {error}
-          </span>
-        ) : (
-          <span className={s.hint} aria-hidden="true">
-            {showList && <kbd className="key-cancel">ESC</kbd>}
-            <kbd className="key-go">GO</kbd>
-          </span>
-        )}
+        <span className={s.hint} aria-hidden="true">
+          <kbd className="key-go">GO</kbd>
+        </span>
       </div>
-      {showList && (
-        <ul className={s.list} id="cmd-suggestions" role="listbox">
-          {suggestions[0].kind === 'recent' && <li className={s.section}>Recent</li>}
-          {suggestions.map((sug, i) => (
-            <li
-              key={`${sug.kind}:${sug.label}`}
-              role="option"
-              aria-selected={i === activeIndex}
-              className={`${s.item} ${i === activeIndex ? s.itemActive : ''}`}
-              onMouseDown={(e) => {
-                e.preventDefault()
-                if (sug.kind === 'recent') execute(sug.insert)
-                else accept(sug)
-              }}
-              onMouseEnter={() => setActive(i)}
-            >
-              <span className={s.itemLabel}>{sug.label}</span>
-              <span className={s.itemDetail}>{sug.detail}</span>
-              <span className={s.itemMeta}>{sug.kind === 'ticker' ? (sug.meta ?? 'ticker') : sug.meta}</span>
-            </li>
-          ))}
-          <li className={s.footer} aria-hidden="true">
-            <span>
-              <kbd>Tab</kbd> complete
-            </span>
-            <span>
-              <kbd>↑</kbd>
-              <kbd>↓</kbd> choose
-            </span>
-            <span>
-              <kbd className="key-go">GO</kbd> run
-            </span>
-            <span>
-              <kbd className="key-cancel">ESC</kbd> close
-            </span>
-          </li>
-        </ul>
+      {popover && (
+        <div
+          className={s.pop}
+          data-state={showList || error ? 'open' : 'closing'}
+          aria-hidden={showList || error ? undefined : true}
+          onAnimationEnd={(e) => {
+            if (e.target === e.currentTarget && !showList) setClosing(null)
+          }}
+        >
+          {error && (
+            <div className={s.errorLine} role="alert">
+              <span className={s.errCode}>ERR</span>
+              {error}
+            </div>
+          )}
+          {listSugs && (
+            <>
+              {listSugs[0].kind === 'recent' && <div className={s.section}>Recent</div>}
+              <div ref={rowsRef} className={s.rows} data-fast={fast || undefined}>
+                <div
+                  className={s.bar}
+                  style={{ transform: `translateY(calc(${barIndex} * var(--row-h-comfy)))` }}
+                  aria-hidden="true"
+                />
+                <ul className={s.list} id="cmd-suggestions" role="listbox" aria-label="Suggestions">
+                  {listSugs.map((sug, i) => (
+                    <li
+                      key={`${sug.kind}:${sug.label}`}
+                      role="option"
+                      aria-selected={i === barIndex}
+                      className={`${s.item} ${sug.kind === 'recent' ? s.recent : ''} ${i === barIndex ? s.itemActive : ''}`}
+                      onMouseDown={(e) => {
+                        e.preventDefault()
+                        if (sug.kind === 'recent') execute(sug.insert)
+                        else accept(sug)
+                      }}
+                      onMouseEnter={() => {
+                        setFast(false)
+                        setActive(i)
+                      }}
+                    >
+                      <span className={s.itemLabel}>{sug.label}</span>
+                      {sug.kind !== 'recent' && <span className={s.itemDetail}>{sug.detail}</span>}
+                      <span className={s.itemMeta}>{sug.kind === 'ticker' ? (sug.meta ?? 'Ticker') : sug.meta}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className={s.footer} aria-hidden="true">
+                <span>
+                  <kbd>Tab</kbd> accept
+                </span>
+                <span>
+                  <kbd>↑</kbd>
+                  <kbd>↓</kbd> move
+                </span>
+                <span>
+                  <kbd>Enter</kbd> run
+                </span>
+                <span>
+                  <kbd>Esc</kbd> close
+                </span>
+              </div>
+            </>
+          )}
+        </div>
       )}
     </div>
   )

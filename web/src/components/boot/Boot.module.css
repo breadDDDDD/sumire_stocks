@@ -1,0 +1,111 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  pointer-events: none;
+}
+.out {
+  animation: boot-out 160ms var(--ease-in) forwards;
+}
+
+.block {
+  width: 46ch;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+/* CRT power-on, played once: a line that opens into the mark */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-5);
+  transform-origin: center;
+  animation: power-on var(--dur-3) var(--ease-out) backwards;
+}
+.word {
+  color: var(--text);
+  font-family: var(--font-label);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: var(--track-hero);
+}
+
+.lines {
+  display: grid;
+  gap: 2px;
+}
+.line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  height: var(--row-h);
+  animation: line-in var(--dur-2) var(--ease-out) backwards;
+}
+.line:nth-child(1) {
+  animation-delay: 160ms;
+}
+.line:nth-child(2) {
+  animation-delay: 240ms;
+}
+.line:nth-child(3) {
+  animation-delay: 320ms;
+}
+.line:nth-child(4) {
+  animation-delay: 400ms;
+}
+.key {
+  flex: none;
+  width: 8ch;
+  color: var(--amber);
+}
+.val {
+  flex: none;
+  color: var(--text);
+}
+.leader {
+  flex: 1;
+  min-width: 2ch;
+  overflow: hidden;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.leader::before {
+  content: '................................................................';
+}
+.res {
+  flex: none;
+}
+.res[data-tone='ok'] {
+  color: var(--up);
+}
+.res[data-tone='warn'] {
+  color: var(--amber);
+}
+.res[data-tone='info'] {
+  color: var(--text);
+}
+.res[data-tone='wait'] {
+  color: var(--faint);
+}
+
+@keyframes power-on {
+  from {
+    opacity: 0.6;
+    transform: scaleX(1.04) scaleY(0.02);
+  }
+}
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+}
+@keyframes boot-out {
+  to {
+    opacity: 0;
+  }
+}

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import AlertToaster from '../components/alerts/AlertToaster'
-import Mascot from '../components/mascot/Mascot'
+import { Boot } from '../components/boot/Boot'
 import TickerTape from '../components/tape/TickerTape'
 import WatchlistRail from '../components/watchlist/WatchlistRail'
 import type { FunctionProps } from '../functions/types'
 import { parseCommand } from '../lib/command'
-import { load, save } from '../lib/storage'
+import { reducedMotion } from '../lib/motion'
+import { save } from '../lib/storage'
 import type { CommandLineHandle } from './CommandLine'
 import { Pane } from './Pane'
 import { ShortcutOverlay } from './ShortcutOverlay'
@@ -22,8 +23,6 @@ import {
 } from './workspace'
 import s from './App.module.css'
 
-const MASCOT_KEY = 'sumire.mascotHidden'
-
 function isTypingTarget(el: EventTarget | null): boolean {
   if (!(el instanceof HTMLElement)) return false
   return el.isContentEditable || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT'
@@ -36,13 +35,11 @@ function tickerOf(e: FunctionProps): string | undefined {
 export default function App() {
   const [state, dispatch] = useReducer(workspaceReducer, undefined, initialWorkspace)
   const [helpOpen, setHelpOpen] = useState(false)
-  const [mascotHidden, setMascotHidden] = useState(() => load(MASCOT_KEY, false))
   const [toast, setToast] = useState<string | null>(null)
   const cmdRef = useRef<CommandLineHandle>(null)
 
   useEffect(() => save(STORAGE_KEY, state), [state])
   useLayoutSync(state, dispatch)
-  useEffect(() => save(MASCOT_KEY, mascotHidden), [mascotHidden])
   useEffect(() => {
     if (!toast) return
     const id = setTimeout(() => setToast(null), 2500)
@@ -145,10 +142,6 @@ export default function App() {
           focusPaneContent(next)
           return
         }
-        case 'm':
-          e.preventDefault()
-          setMascotHidden((h) => !h)
-          return
         case 'n':
           e.preventDefault()
           needTicker((t) => run({ code: 'INS', ticker: t, args: [] }))
@@ -177,6 +170,18 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  // layout change: the grid moves instantly, the panes crossfade
+  const gridRef = useRef<HTMLElement>(null)
+  const firstLayout = useRef(true)
+  useEffect(() => {
+    if (firstLayout.current) {
+      firstLayout.current = false
+      return
+    }
+    if (reducedMotion()) return
+    gridRef.current?.animate([{ opacity: 0.4 }, { opacity: 1 }], { duration: 120, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' })
+  }, [state.layout])
+
   const visible = Array.from({ length: state.layout }, (_, i) => i)
 
   return (
@@ -187,22 +192,20 @@ export default function App() {
           <aside className={s.rail} aria-label="Watchlist">
             <WatchlistRail />
           </aside>
-          <main className={`${s.grid} ${s[`layout${state.layout}`]}`}>
+          <main ref={gridRef} className={`${s.grid} ${s[`layout${state.layout}`]}`}>
             {visible.map((i) => (
               <Pane key={i} index={i} />
             ))}
           </main>
         </div>
-        <footer className={s.bottom} style={{ paddingRight: mascotHidden ? 0 : 132 }}>
-          <StatusBar />
-          <div className={s.tape}>
-            <TickerTape />
-          </div>
-        </footer>
-        <div className={s.mascot}>
-          <Mascot hidden={mascotHidden} />
+        <div className={s.tape}>
+          <TickerTape />
         </div>
+        <footer className={s.status}>
+          <StatusBar />
+        </footer>
       </div>
+      <Boot />
       <AlertToaster />
       {helpOpen && (
         <ShortcutOverlay

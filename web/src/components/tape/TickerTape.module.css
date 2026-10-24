@@ -1,70 +1,75 @@
-.tape {
-  height: 100%;
+.tape,
+.static {
+  height: var(--tape-h);
   overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
   white-space: nowrap;
 }
 .track {
   display: inline-flex;
   height: 100%;
-  animation: scroll linear infinite;
+  will-change: transform;
+  animation: tape-scroll var(--tape-dur, 60s) linear infinite;
 }
 .tape:hover .track,
-.tape:focus-within .track {
+.tape:focus-within .track,
+.paused .track {
   animation-play-state: paused;
 }
 .group {
   display: inline-flex;
+  flex: none;
   align-items: center;
-  gap: 18px;
   height: 100%;
-  padding-right: 18px;
 }
 .static {
   display: flex;
-  gap: 18px;
   align-items: center;
-  height: 100%;
-  padding: 0 12px;
-  overflow: hidden;
 }
+
+/* IHSG 7,312.40 +0.42% ▲ │ */
 .item {
   display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  padding: 0;
+  align-items: center;
+  gap: var(--s-2);
+  height: 100%;
+  padding: 0 var(--s-3);
   border: 0;
   background: none;
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
   white-space: nowrap;
 }
-.item:hover .code {
-  text-decoration: underline;
+.item::after {
+  content: '';
+  width: 1px;
+  height: 12px;
+  margin-left: var(--s-3);
+  margin-right: calc(-1 * var(--s-3));
+  background: var(--line);
 }
+.item:hover {
+  background: var(--raise-1);
+}
+/* where the macro block ends and the watchlist begins */
 .sep {
-  padding-left: 18px;
-  border-left: 1px solid var(--amber-deep);
+  border-left: 1px solid var(--line-strong);
 }
 .code {
   color: var(--amber);
-}
-/* the IHSG lead item is inverted once, to break the row's symmetry */
-.lead {
-  align-self: stretch;
-  align-items: center;
-  padding: 0 8px;
-  background: var(--amber);
-  color: var(--ink);
   font-weight: 700;
+  letter-spacing: var(--track-code);
 }
-.lead .code,
-.lead :global(.value) {
-  color: var(--ink);
+.price {
+  color: var(--text);
 }
-.lead .pct {
-  padding: 1px 3px;
-  background: var(--ink);
+.empty {
+  color: var(--faint);
 }
-@keyframes scroll {
+
+@keyframes tape-scroll {
   from {
     transform: translateX(0);
   }
@@ -72,12 +77,19 @@
     transform: translateX(-50%);
   }
 }
+
+/* reduced motion: a static strip you can scroll by hand */
 @media (prefers-reduced-motion: reduce) {
   .tape {
     overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tape::-webkit-scrollbar {
+    display: none;
   }
   .track {
     animation: none;
+    will-change: auto;
   }
   .group[aria-hidden='true'] {
     display: none;

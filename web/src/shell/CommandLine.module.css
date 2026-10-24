@@ -2,47 +2,38 @@
   position: relative;
   flex: 1;
   min-width: 200px;
-  max-width: 720px;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
 }
 
 .box {
   display: flex;
   align-items: center;
-  height: 30px;
-  border: 1px solid var(--border-strong);
+  width: 100%;
+  height: 24px;
   background: var(--bg);
-  transition: border-color var(--dur-fast);
 }
 .box:focus-within {
-  border-color: var(--crimson);
-  box-shadow: var(--plate-crimson);
+  box-shadow: var(--focus-ring-inset);
 }
-.error {
-  border-color: var(--down) !important;
-}
-
-.prompt {
-  align-self: stretch;
-  display: grid;
-  place-items: center;
-  padding: 0 12px 0 8px;
-  background: var(--crimson);
-  color: #fff;
-  font-weight: 700;
-  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+.error,
+.error:focus-within {
+  box-shadow: inset 0 0 0 1px var(--crimson-hi);
 }
 
 .input {
   flex: 1;
   min-width: 0;
   height: 100%;
-  padding: 0 10px;
+  padding: 0 var(--s-2);
   border: 0;
   background: transparent;
   color: var(--amber);
-  font-size: var(--fs-lg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-code);
   text-transform: uppercase;
   caret-color: var(--amber-hi);
 }
@@ -60,112 +51,175 @@
 .hint {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 0 6px;
-  white-space: nowrap;
+  padding: 0 var(--s-1);
+  opacity: 0;
 }
-.errorText {
-  padding: 0 8px;
-  color: var(--down);
+.box:focus-within .hint {
+  opacity: 1;
+}
+
+/* popover: opens from the command line, closes back into it */
+.pop {
+  position: absolute;
+  top: calc(100% - 3px);
+  left: 0;
+  z-index: 50;
+  width: min(100%, 720px);
+  min-width: 420px;
+  border: 1px solid var(--line-strong);
+  background: var(--raise-2);
+  transform-origin: top left;
+  animation: pop-in var(--dur-2) var(--ease-out);
+}
+.pop[data-state='closing'] {
+  pointer-events: none;
+  animation: pop-out var(--dur-1) var(--ease-in) forwards;
+}
+
+.errorLine {
+  display: flex;
+  gap: var(--s-2);
+  align-items: baseline;
+  padding: var(--s-1) var(--s-2);
+  border-left: 2px solid var(--crimson);
+  color: var(--text);
+  font-family: var(--font-prose);
   font-size: var(--fs-sm);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 50%;
+}
+.errorLine + .section,
+.errorLine + .rows {
+  border-top: 1px solid var(--line);
+}
+.errCode {
+  flex: none;
+  color: var(--crimson-hi);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: var(--track-code);
+}
+
+.section {
+  padding: var(--s-1) var(--s-2) 0;
+  color: var(--muted);
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+}
+
+.rows {
+  position: relative;
+  max-height: calc(var(--row-h-comfy) * 14);
+  overflow-y: auto;
+}
+/* one shared highlight that slides between rows */
+.bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--row-h-comfy);
+  background: var(--crimson-wash);
+  box-shadow: inset 2px 0 0 var(--crimson);
+  pointer-events: none;
+  transition: transform var(--dur-1) var(--ease-move);
+}
+.rows[data-fast] .bar {
+  transition: none;
 }
 
 .list {
-  position: absolute;
-  top: calc(100% + 2px);
-  left: 0;
-  right: 0;
-  z-index: 50;
-  max-height: 340px;
+  position: relative;
   margin: 0;
-  padding: 4px 0;
-  overflow-y: auto;
+  padding: 0;
   list-style: none;
-  border: 1px solid var(--crimson);
-  background: var(--panel);
-  box-shadow: var(--plate-lg);
-  animation: wipe-down var(--dur-fast) var(--ease);
-}
-.section {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px 2px;
-  color: var(--amber-dim);
-  font-size: 10px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.section::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--amber-deep);
 }
 .item {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
-  gap: 10px;
+  grid-template-columns: 6ch minmax(0, 1fr) minmax(0, auto);
+  gap: var(--s-3);
   align-items: center;
-  height: var(--row-h);
-  padding: 0 10px;
+  height: var(--row-h-comfy);
+  padding: 0 var(--s-2) 0 var(--s-3);
   cursor: pointer;
-  transition: background-color var(--dur-fast);
 }
-.item:hover {
-  background: var(--panel-hover);
-}
-.itemActive {
-  background: var(--crimson) !important;
-  box-shadow: none;
-  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
-}
-.itemActive .itemLabel {
-  color: var(--amber);
-}
-.itemActive .itemDetail {
-  color: var(--paper);
-}
-.itemActive .itemMeta {
-  color: rgba(244, 239, 230, 0.7);
+.recent {
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 .itemLabel {
+  overflow: hidden;
   color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
   font-weight: 700;
+  letter-spacing: var(--track-code);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recent .itemLabel {
+  font-weight: 500;
 }
 .itemDetail {
-  color: var(--text);
   overflow: hidden;
+  color: var(--text);
+  font-family: var(--font-label);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .itemMeta {
+  max-width: 28ch;
+  overflow: hidden;
   color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
+  letter-spacing: var(--track-label);
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
 .footer {
   display: flex;
-  gap: 12px;
-  padding: 5px 10px 2px;
-  border-top: 1px solid var(--border);
-  margin-top: 4px;
-  color: var(--faint);
+  gap: var(--s-3);
+  align-items: center;
+  height: var(--row-h-comfy);
+  padding: 0 var(--s-2);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--font-label);
   font-size: var(--fs-xs);
+  letter-spacing: var(--track-label);
 }
 .footer kbd {
   margin-right: 2px;
 }
 
-/* CSS modules hash animation names, so the global keyframes are copied here */
-@keyframes wipe-down {
+@keyframes pop-in {
   from {
-    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+    transform: translateY(-4px);
   }
+}
+@keyframes pop-out {
   to {
-    clip-path: inset(0 0 0 0);
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pop {
+    animation: pop-fade var(--dur-1) linear;
+    animation-duration: var(--dur-1) !important;
+  }
+  .bar {
+    transition: none;
+  }
+}
+@keyframes pop-fade {
+  from {
+    opacity: 0;
   }
 }

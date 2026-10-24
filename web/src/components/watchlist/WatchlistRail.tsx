@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ApiError } from '../../api/client'
 import { useLiveQuotes } from '../../functions/mkt/quotes'
 import { useWorkspace } from '../../shell/workspace'
@@ -17,6 +17,28 @@ export default function WatchlistRail() {
   const list = pickActive(q.data, activeId)
   const codes = list?.items.map((i) => i.code) ?? []
   const quotes = useLiveQuotes(codes)
+
+  // rows added after the list first loaded enter with a short slide; a list switch does not animate
+  const codesKey = `${list?.id ?? ''}:${codes.join(',')}`
+  const [seen, setSeen] = useState<{ key: string; listId?: number; codes: string[]; added: string[] }>({
+    key: codesKey,
+    listId: list?.id,
+    codes,
+    added: [],
+  })
+  if (seen.key !== codesKey) {
+    const added = seen.listId === list?.id && seen.codes.length ? codes.filter((c) => !seen.codes.includes(c)) : []
+    setSeen({ key: codesKey, listId: list?.id, codes, added })
+  }
+
+  // one crimson marker that slides to the focused ticker's row
+  const listRef = useRef<HTMLUListElement>(null)
+  const [marker, setMarker] = useState<{ y: number; instant: boolean } | null>(null)
+  const current = ws.focusedTicker
+  useLayoutEffect(() => {
+    const row = current ? listRef.current?.querySelector<HTMLElement>(`[data-code="${CSS.escape(current)}"]`) : null
+    setMarker((m) => (row ? { y: row.offsetTop, instant: m === null } : null))
+  }, [current, codesKey])
 
   // keep the W screen and the rail on the same list
   useEffect(() => {
@@ -61,11 +83,12 @@ export default function WatchlistRail() {
   return (
     <div className={s.rail}>
       <div className={s.head}>
+        <span className={s.title}>Watchlist</span>
         {q.data && q.data.length > 1 ? (
           <select
             className={s.select}
             value={list?.id}
-            aria-label="Watchlist"
+            aria-label="Active watchlist"
             onChange={(e) => {
               const id = Number(e.target.value)
               setActiveId(id)
@@ -79,10 +102,10 @@ export default function WatchlistRail() {
             ))}
           </select>
         ) : (
-          <span className={s.title}>{list?.name ?? 'Watchlist'}</span>
+          list && <span className={s.listName}>{list.name}</span>
         )}
-        <button className={s.link} onClick={() => ws.run('W')} title="Manage watchlists (W)">
-          edit
+        <button type="button" className={s.link} onClick={() => ws.run('W')} title="Manage watchlists (W)">
+          Edit
         </button>
       </div>
 
@@ -90,31 +113,40 @@ export default function WatchlistRail() {
         <Skeleton rows={8} columns={2} />
       ) : q.isError ? (
         <div className={s.msg}>
-          <p>Watchlists need the database, which is not reachable.</p>
-          <button className={s.link} onClick={() => q.refetch()}>
-            retry
+          <p className={s.msgTitle}>Watchlists unavailable</p>
+          <p>They need the database, which is not reachable.</p>
+          <button type="button" className={s.link} onClick={() => q.refetch()}>
+            Retry
           </button>
         </div>
       ) : !codes.length ? (
         <div className={s.msg}>
-          <p className={s.msgTitle}>Empty watchlist</p>
           <p>
-            Type a ticker and press <kbd className="key-go">GO</kbd>, then <kbd>w</kbd> to add it here.
+            No tickers yet. Type a ticker and press <kbd>w</kbd>.
           </p>
         </div>
       ) : (
-        <ul className={s.list}>
+        <ul ref={listRef} className={s.list}>
+          {marker && (
+            <li
+              className={`${s.marker} ${marker.instant ? s.instant : ''}`}
+              style={{ transform: `translateY(${marker.y}px)` }}
+              aria-hidden="true"
+            />
+          )}
           {codes.map((code) => {
             const qt = quotes[code]
             return (
-              <li key={code}>
+              <li key={code} data-code={code} className={seen.added.includes(code) ? s.added : undefined}>
                 <button
-                  className={[s.row, ws.focusedTicker === code && s.current].filter(Boolean).join(' ')}
+                  type="button"
+                  className={[s.row, current === code && s.current].filter(Boolean).join(' ')}
                   onClick={() => ws.run({ code: 'DES', ticker: code, args: [] })}
                   title={qt?.name ?? code}
+                  aria-current={current === code || undefined}
                 >
                   <span className={s.code}>{code}</span>
-                  <Num value={qt?.price} format="price" colorBy={qt?.changePct ?? null} />
+                  <Num value={qt?.price} format="price" flash className={s.last} />
                   <Num value={qt?.changePct} format="pct" signed colored className={s.pct} />
                 </button>
               </li>

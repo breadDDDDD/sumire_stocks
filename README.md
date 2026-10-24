@@ -112,10 +112,6 @@ Details: [docs/forecasting.md](docs/forecasting.md). The baseline forecast is co
 
 FCST and the signal score switch from the baseline to Chronos only once its tracked accuracy beats the baseline.
 
-## Sumire (mascot)
-
-She sits bottom right and reacts to IHSG, alerts, new insights and running research. She wears gym clothes during the session and the school uniform otherwise; `m` hides her. No game art is included: an original placeholder is drawn unless you add your own portraits to `web/public/assets/sumire/` (gitignored). See [docs/mascot.md](docs/mascot.md) for file names, sources and the personal-use note.
-
 ## Publish
 
 ```powershell

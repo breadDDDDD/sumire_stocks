@@ -1,9 +1,10 @@
 import { forwardRef, useEffect, useState } from 'react'
-import { CutText } from '../components/ui'
+import { SumireMark } from '../components/brand/SumireMark'
+import { registry } from '../functions/registry'
 import { sessionState, type SessionState } from '../lib/session'
 import { formatTimeWib } from '../lib/time'
 import { CommandLine, type CommandLineHandle } from './CommandLine'
-import { useWorkspace, type Layout } from './workspace'
+import { currentEntry, useWorkspace, type Layout } from './workspace'
 import s from './TopBar.module.css'
 
 function useNow(ms = 1000) {
@@ -20,16 +21,16 @@ const SESSION_LABEL: Record<SessionState, string> = {
   LIVE: 'Live',
   BREAK: 'Break',
   'PRE-CLOSE': 'Pre-close',
-  POST: 'Post-trading',
+  POST: 'Post',
   CLOSED: 'Closed',
 }
 
-function SessionPill({ state }: { state: SessionState }) {
+function SessionLamp({ state }: { state: SessionState }) {
   const tone = state === 'LIVE' ? s.live : state === 'CLOSED' ? s.closed : s.pending
   return (
-    <span className={`${s.pill} ${tone}`} title={`IDX session (WIB clock): ${SESSION_LABEL[state]}`}>
-      <span className={s.dot} />
-      {state}
+    <span className={`${s.session} ${tone}`} title={`IDX session (WIB clock): ${SESSION_LABEL[state]}`}>
+      <span className={s.lamp} aria-hidden="true" />
+      {SESSION_LABEL[state]}
     </span>
   )
 }
@@ -47,34 +48,40 @@ function Clock({ time }: { time: string }) {
 }
 
 function LayoutIcon({ layout }: { layout: Layout }) {
-  if (layout === 4)
-    return (
-      <span className={s.grid4}>
-        <span className={s.cell} />
-        <span className={s.cell} />
-        <span className={s.cell} />
-        <span className={s.cell} />
-      </span>
-    )
   return (
-    <>
+    <span className={`${s.glyph} ${s[`glyph${layout}`]}`} aria-hidden="true">
       {Array.from({ length: layout }, (_, i) => (
-        <span key={i} className={s.cell} style={{ height: 14 }} />
+        <span key={i} className={s.cell} />
       ))}
-    </>
+    </span>
   )
 }
 
 export const TopBar = forwardRef<CommandLineHandle>(function TopBar(_props, ref) {
   const now = useNow()
-  const { state, dispatch } = useWorkspace()
+  const { state, dispatch, focusedTicker } = useWorkspace()
+  const entry = currentEntry(state.panes[state.focused])
+  const fnName = registry[entry.code]?.name
   return (
     <header className={s.bar}>
       <div className={s.brand}>
-        <CutText text="SUMIRE" className={s.wordmark} />
-        <span className={s.codename}>VIOLET</span>
+        <SumireMark size={16} />
+        <span className={s.wordmark}>Sumire</span>
       </div>
+      {focusedTicker && (
+        <span className={s.security} title="Ticker in the focused pane">
+          {focusedTicker}
+          <span className={s.caret} aria-hidden="true">
+            ▾
+          </span>
+        </span>
+      )}
       <CommandLine ref={ref} />
+      {fnName && (
+        <span className={s.slab} title={`Focused pane ${state.focused + 1}: ${entry.code}`}>
+          {fnName}
+        </span>
+      )}
       <div className={s.right}>
         <button
           type="button"
@@ -86,7 +93,7 @@ export const TopBar = forwardRef<CommandLineHandle>(function TopBar(_props, ref)
           <LayoutIcon layout={state.layout} />
         </button>
         <Clock time={formatTimeWib(now)} />
-        <SessionPill state={sessionState(now)} />
+        <SessionLamp state={sessionState(now)} />
       </div>
     </header>
   )

@@ -1,40 +1,94 @@
 .bar {
   display: flex;
   align-items: center;
-  flex: none;
-  height: 100%;
-  border-right: 1px solid var(--border-strong);
+  height: var(--status-h);
+  padding: 0 var(--s-2);
+  border-top: 1px solid var(--line);
+  background: var(--canvas);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
   white-space: nowrap;
 }
-/* Bloomberg-style hairline separators between status groups */
-.seg {
+
+.lamps {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  align-self: stretch;
-  padding: 0 8px;
-  border-right: 1px solid var(--border);
+  gap: var(--s-3);
+  padding-right: var(--s-3);
+  border-right: 1px solid var(--line);
 }
-.seg:last-child {
-  border-right: 0;
+.lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-family: var(--font-label);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  cursor: default;
+}
+.sq {
+  width: 6px;
+  height: 6px;
+  background: var(--line-strong);
+}
+.lamp[data-tone='ok'] .sq {
+  background: var(--up);
+}
+.lamp[data-tone='warn'] .sq {
+  background: var(--amber);
+}
+.lamp[data-tone='bad'] .sq {
+  background: var(--crimson-hi);
+}
+.lamp[data-tone='bad'] {
+  color: var(--text);
 }
 
+/* hub lamp while the session is live: the only ambient loop besides the session lamp */
+.pulse {
+  animation: lamp-pulse 2s ease-in-out infinite;
+}
+@keyframes lamp-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.research {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+  padding-left: var(--s-3);
+}
 .research button {
   height: 18px;
 }
-
 .runner {
-  max-width: 220px;
+  display: inline-flex;
+  align-items: center;
+  max-width: 260px;
   overflow: hidden;
-  text-overflow: ellipsis;
   color: var(--muted);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-2xs);
+  text-overflow: ellipsis;
 }
 .running {
-  display: inline-block;
-  margin-right: 5px;
-  vertical-align: 1px;
+  flex: none;
   width: 6px;
   height: 6px;
-  background: var(--crimson);
+  margin-right: 5px;
+  background: var(--amber);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
 }

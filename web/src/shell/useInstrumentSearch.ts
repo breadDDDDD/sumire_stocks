@@ -41,5 +41,8 @@ export function useInstrumentSearch(q: string, enabled: boolean): InstrumentHit[
     placeholderData: (prev) => prev,
     select: normalize,
   })
-  return enabled && term ? (data ?? []) : []
+  return enabled && term ? (data ?? EMPTY) : EMPTY
 }
+
+// a stable empty result, so callers that compare by identity don't re-render forever
+const EMPTY: ReturnType<typeof normalize> = []
