@@ -1,5 +1,4 @@
 import { forwardRef, useEffect, useState } from 'react'
-import ResearchUsage from '../components/research/ResearchUsage'
 import { sessionState, type SessionState } from '../lib/session'
 import { formatTimeWib } from '../lib/time'
 import { CommandLine, type CommandLineHandle } from './CommandLine'
@@ -78,7 +77,6 @@ export const TopBar = forwardRef<CommandLineHandle>(function TopBar(_props, ref)
           <small>WIB</small>
         </span>
         <SessionPill state={sessionState(now)} />
-        <ResearchUsage />
       </div>
     </header>
   )
