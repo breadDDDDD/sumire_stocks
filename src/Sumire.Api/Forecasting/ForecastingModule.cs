@@ -11,6 +11,7 @@ public static class ForecastingModule
         services.AddScoped<ForecastService>();
         services.AddScoped<IEodPipelineStep, BaselineForecastStep>();
         services.AddScoped<IEodPipelineStep, ForecastEvaluationStep>();
+        services.AddHostedService<Chronos.ForecastFallbackJob>();
         return services;
     }
 
