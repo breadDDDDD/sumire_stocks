@@ -1,531 +1,643 @@
-# Design direction: "Stolen Terminal"
+# Sumire v2 design direction: "Night Desk"
 
-**Concept.** A Bloomberg terminal on warm phosphor black that a Phantom Thief has broken into overnight. The terminal itself stays strict: amber labels, white values, mono numbers, 20px rows and a 1px pane grid. The intruder leaves **crimson cut paper** on it: slanted tabs, a ribbon on the pane she is "watching", calling cards when an alert fires, and her own bust stuck in the corner.
+This is the implementable spec for the v2 frontend. It replaces the v1 "Stolen Terminal" comic direction completely. Inputs: [v2-references.md](v2-references.md) (visual research), [v2-motion.md](v2-motion.md) (motion system, normative), the board decision **V2 RULES**, and implementation-plan.md §7. Where this file and v2-motion.md overlap, v2-motion.md wins on motion details and this file wins on everything visual.
 
-**The single bold move is crimson cut paper.** Everything crimson has hard, slanted, hand-cut edges and a hard black offset plate. Nothing else on screen gets that treatment, and nothing else is decorated. Data never tilts, rotates, glows or uses display type.
+## 1. Concept
 
-Sources and reasons for every choice are in [references.md](references.md). This doc is the spec: values are final unless marked *optional*.
+**Night Desk** is a terminal on a trading desk after the lights go down: black glass, amber phosphor, white numbers that only move when the market does. It is faithful to Bloomberg in structure (security bar, function codes, colored keys, dense black panes) and differs from it through craft, in three places:
 
-Rules that override everything below (from the board):
-- Visual pass only. Don't change component props, exports, data fetching, keyboard behaviour or localStorage keys. Small markup changes inside a component (an extra `<span>` for a keycap, an extra SVG) are fine.
-- No new npm packages. Fonts come only from the Google Fonts `<link>` in `web/index.html`.
-- Crimson is brand only. Up `#22c55e` and down `#f43f5e` are the only direction colors.
-- Every motion respects `prefers-reduced-motion`. Focus is always visible.
+1. **The security bar.** The top bar shows the loaded ticker in a solid amber field with black text, and the focused function's name on a crimson slab. It is the one loud object on screen and the place where the brand lives.
+2. **Numbers that report.** Prices flash only the cell that ticked, aggregates tween, the IHSG hero rolls its digits, and charts draw in once. Nothing else moves.
+3. **A strict color grammar.** Every hue has one job (section 3.2), so the screen stays quiet until something is abnormal. This is the "quiet and dark" cockpit principle.
 
----
+Sumire appears only as the app icon: a favicon and a 16px mark in the top bar. There is no mascot, comic device or Persona texture anywhere.
 
-## 1. Tokens (`web/src/theme/tokens.css`)
+What makes it not generic: true black panes on a slightly lighter canvas (not tinted near-black everywhere), Bloomberg's own grammar of amber values, white references and cyan group labels, condensed sentence-case labels next to uppercase mono codes, and motion that only appears when data changes.
 
-Replace the whole `:root` block with this. Existing names are kept (with new values) so no component breaks. New names are marked `NEW`.
+## 2. Removal list (v1 to delete)
+
+Everything below goes. A component that is removed is deleted with its CSS module and its exports.
+
+| Remove | Where |
+|---|---|
+| Ransom-note `CutText`, `Starburst`, calling-card alert styling, "Violet alert" copy | components/ui, components/alerts, any function using them |
+| Halftone / screentone (`.halftone`, `--tone-*`) | global.css, Empty, any module |
+| Cut-paper `clip-path` slants, slanted panel headers | Panel, Pane, TopBar, Button, Badge, CommandLine, functions |
+| Ribbon on the active pane (`.ribbon`) | Pane |
+| Offset plates (`--plate*`, hard offset `box-shadow`) | everywhere |
+| `DM Serif Display`, `Anton` (`--font-cut`, `--font-display`) | index.html, tokens, modules |
+| `--ink`, `--paper` usages that draw paper or ink devices | everywhere |
+| Corner mascot (`components/mascot` if present), the `m` shortcut, its HELP and overlay entries | App.tsx, ShortcutOverlay, functions/help/shortcuts.ts |
+| Glasses spinner (the glasses now belong to the icon only) | components/ui/Spinner |
+| "VIOLET" codename in the top bar | TopBar |
+| `--ease-snap`, `slash-in`, `ribbon-drop`, `wipe-down`, `wipe-in`, shimmer | see v2-motion.md §12 |
+
+Copy that used the codename becomes plain: "Alert: BBCA crossed MA200".
+
+## 3. Tokens
+
+### 3.1 Full token block (`web/src/theme/tokens.css`)
+
+This is the complete target block. Area A writes it. The legacy aliases at the bottom keep unmigrated modules compiling, and the last area to finish deletes them (section 12).
 
 ```css
 :root {
-  /* surfaces: warm ink, derived from amber, not cool blue-grey */
-  --bg: #0a0908;
-  --panel: #100e0b;
-  --panel-2: #16130f;
-  --panel-hover: #1f1a13;
-  --border: #2a2218;
-  --border-strong: #4a3a22;
-  --ink: #0a0908;            /* NEW: outlines, plates, text on amber/paper */
-  --paper: #f4efe6;          /* NEW: speech bubble, calling-card body text */
+  /* ── surfaces (neutral, not warm) ───────────────────────── */
+  --canvas: #0c0c0c;        /* app background, pane gutters */
+  --bg: #000000;            /* pane body, tables, inputs */
+  --raise-1: #121212;       /* pane header strip, table header band, hover row */
+  --raise-2: #1a1a1a;       /* buttons, popovers, suggestion list */
+  --raise-3: #242424;       /* button hover, pressed keycap */
+  --line: #222222;          /* hairlines between rows-groups, pane borders */
+  --line-strong: #3a3a3a;   /* control borders, focused-control border */
+  --line-faint: #161616;    /* optional rule every 5 rows */
 
-  /* phosphor */
-  --amber: #ffb000;          /* labels, chrome text */
-  --amber-hi: #ffd27a;       /* NEW: hover on amber things, cursor */
-  --amber-dim: #b37c00;      /* table headers, secondary labels */
-  --amber-deep: #7a4a00;     /* NEW: ledger rules, halftone dots, key edges */
-  --amber-glow: rgba(255, 176, 0, 0.35); /* NEW: only the IHSG hero number */
+  /* ── phosphor ─────────────────────────────────────────── */
+  --amber: #ffa028;         /* labels, codes, primary values, chrome text */
+  --amber-hi: #ffc266;      /* hover on amber, caret */
+  --amber-dim: #b8741a;     /* secondary amber: axis text, units */
+  --amber-field: #ffa028;   /* security bar field (text on it is #000) */
 
-  /* text */
-  --text: #f4efe6;           /* values: warm white, same as paper */
-  --muted: #9a8f7c;
-  --faint: #5e5546;
+  /* ── text ─────────────────────────────────────────────── */
+  --text: #f2f2f2;          /* values, reference numbers, headlines */
+  --muted: #8c8c8c;         /* column headers, descriptions (6.6:1 on #000) */
+  --faint: #6e6e6e;         /* footnotes, disabled (4.1:1 – non-essential only) */
+  --on-fill: #000000;       /* text on amber / yellow fills */
 
-  /* brand: crimson cut paper (never up/down) */
-  --crimson: #c8102e;
-  --crimson-bright: #e8203f;
-  --crimson-ink: #7d0a1c;    /* NEW: shadow tone on crimson, ribbon fold */
-  --crimson-dim: #3a0a12;    /* was #5c0a17: active-row wash on warm black */
-
-  /* market */
+  /* ── semantic hues (one job each, see 3.2) ────────────── */
+  --crimson: #c8102e;       /* focus, active pane, brand */
+  --crimson-hi: #e8203f;    /* focus text on black, error code */
+  --crimson-slab: #8e0c22;  /* function title slab, white text on it (7.9:1) */
+  --crimson-wash: #24060c;  /* keyboard-selected row / suggestion */
+  --cyan: #4fa3e0;          /* navigable links, in-table group labels */
+  --select: #1f5faf;        /* selected tab / chip / segment (white text) */
   --up: #22c55e;
   --down: #f43f5e;
-  --flat: #9a8f7c;
-  --warn: #ffb000;
-  --danger: #f43f5e;
+  --flat: #8c8c8c;
+  --warn: #ffa028;          /* = amber; caution reads as amber */
 
-  /* Bloomberg keycaps (NEW) */
-  --key-fn: #f5c400;         /* yellow function/sector key, black legend */
-  --key-fn-edge: #8a6d00;
-  --key-go: #2e7d32;         /* GO key only; darker than --up so it never reads as "up" */
+  /* ── Bloomberg keys ───────────────────────────────────── */
+  --key-sector: #f5c400;    /* yellow: functions and markets, black legend */
+  --key-sector-edge: #8a6d00;
+  --key-go: #2e7d32;        /* GO / run / confirm, white legend */
   --key-go-edge: #14431a;
-  --key-cancel: var(--crimson);
-  --key-cancel-edge: var(--crimson-ink);
-  --key-dark: #1f1a13;
-  --key-dark-edge: #000;
+  --key-cancel: #c8102e;    /* cancel / Esc / stop, white legend */
+  --key-cancel-edge: #6e0918;
+  --key-plain: #2a2a2a;     /* every other key, #f2f2f2 legend */
+  --key-plain-edge: #000000;
 
-  /* screentone (NEW) */
-  --tone-dot: var(--amber-deep);
-  --tone-size: 6px;
+  /* ── charts ───────────────────────────────────────────── */
+  --chart-top: #10151c;
+  --chart-bottom: #07090c;
+  --chart-grid: #1c232c;
+  --chart-axis: #8c8c8c;
 
-  /* plates: hard offset, never blurred (NEW) */
-  --plate: 3px 3px 0 0 #000;
-  --plate-lg: 5px 5px 0 0 #000;
-  --plate-crimson: 3px 3px 0 0 var(--crimson);
-
-  --focus-ring: 0 0 0 2px var(--crimson);
-  --focus-ring-inset: inset 0 0 0 2px var(--crimson); /* NEW */
-
+  /* ── type ─────────────────────────────────────────────── */
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
-  --font-display: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
-  --font-cut: 'DM Serif Display', 'Georgia', serif;   /* NEW: ransom letters only */
+  --font-label: 'IBM Plex Sans Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --font-prose: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
 
-  --fs-xs: 11px;
-  --fs-sm: 12px;
-  --fs-md: 13px;
-  --fs-lg: 15px;
-  --fs-d1: 15px;   /* NEW: panel title tab */
-  --fs-d2: 22px;   /* NEW: empty-state title, wordmark */
-  --fs-d3: 34px;   /* NEW: hero numbers (IHSG on MKT), calling-card headline */
+  --fs-2xs: 10px;   /* axis ticks, keycap legends, lamp labels */
+  --fs-xs: 11px;    /* column headers, badges, pane-strip labels */
+  --fs-sm: 12px;    /* table data (the default data size) */
+  --fs-md: 13px;    /* command input, prose, buttons */
+  --fs-lg: 15px;    /* pane hero line (DES name + price) */
+  --fs-xl: 20px;    /* quote tile values, MKT secondary heroes */
+  --fs-2xl: 28px;   /* IHSG hero only */
 
-  --row-h: 20px;   /* NEW: every table / list row */
-  --radius: 0;     /* was 2px: nothing is rounded */
-  --radius-key: 1px; /* NEW: keycaps only */
-  --gap: 6px;
-  --topbar-h: 44px;
-  --tape-h: 28px;
-  --rail-w: 220px;
+  --lh-data: 1.5;   /* 12px → 18px rows */
+  --lh-prose: 1.55;
 
-  /* motion (NEW except --ease) */
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-snap: cubic-bezier(0.3, 1.45, 0.5, 1); /* slight overshoot for stamps */
-  --dur-fast: 90ms;
-  --dur: 140ms;
-  --dur-slow: 200ms; /* hard ceiling, nothing is slower */
+  --track-label: 0.01em;   /* condensed labels */
+  --track-code: 0.04em;    /* uppercase mono codes */
+  --track-hero: -0.01em;   /* 20px and up */
+
+  /* ── space (4px base) ─────────────────────────────────── */
+  --s-0: 2px;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+
+  /* ── geometry ─────────────────────────────────────────── */
+  --row-h: 18px;           /* dense rows everywhere */
+  --row-h-comfy: 22px;     /* suggestion list, settings forms */
+  --strip-h: 20px;         /* pane header strip, Panel header */
+  --topbar-h: 32px;
+  --tape-h: 24px;
+  --status-h: 22px;
+  --rail-w: 208px;
+  --gutter: 2px;           /* gap between panes; shows --canvas */
+  --radius: 0;
+  --radius-key: 1px;       /* keycaps only */
+
+  --focus-ring: 0 0 0 1px var(--crimson);
+  --focus-ring-inset: inset 0 0 0 1px var(--crimson);
+
+  /* ── motion (from v2-motion.md §2) ────────────────────── */
+  --dur-1: 80ms;
+  --dur-2: 120ms;
+  --dur-3: 160ms;
+  --dur-4: 240ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-move: cubic-bezier(0.3, 0, 0, 1);
+  --ease-decay: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-wipe: cubic-bezier(0.65, 0, 0.35, 1);
+  --flash-up: rgba(34, 197, 94, 0.32);
+  --flash-down: rgba(244, 63, 94, 0.32);
+
+  /* ── legacy aliases (delete in the cleanup step, section 12) ── */
+  --panel: var(--bg);
+  --panel-2: var(--raise-2);
+  --panel-hover: var(--raise-1);
+  --border: var(--line);
+  --border-strong: var(--line-strong);
+  --amber-deep: var(--line-strong);
+  --crimson-bright: var(--crimson-hi);
+  --crimson-dim: var(--crimson-wash);
+  --crimson-ink: var(--crimson-slab);
+  --danger: var(--down);
+  --ink: #000000;
+  --paper: var(--text);
+  --key-fn: var(--key-sector);
+  --key-fn-edge: var(--key-sector-edge);
+  --key-dark: var(--key-plain);
+  --key-dark-edge: var(--key-plain-edge);
+  --font-display: var(--font-label);
+  --fs-d1: var(--fs-md);
+  --fs-d2: var(--fs-xl);
+  --fs-d3: var(--fs-2xl);
+  --gap: var(--s-1);
+  --plate: none;
+  --plate-lg: none;
+  --plate-crimson: none;
+  --amber-glow: transparent;
+  --ease: var(--ease-out);
+  --dur-fast: var(--dur-1);
+  --dur: var(--dur-2);
+  --dur-slow: var(--dur-4);
 }
 ```
 
-### 1.1 Type
+`--font-cut`, `--tone-dot` and `--tone-size` are not aliased. Their few usages are removed outright with the v1 devices.
 
-| Face | Role | Where it is allowed |
+Approximate contrast on `#000`: amber ~10:1, text ~18:1, muted ~6:1, cyan ~7:1, up ~9:1, down ~5.5:1, crimson-hi ~4.6:1. White on `--select` is ~6.5:1, white on `--crimson-slab` is ≥ 7:1, and black on `--amber-field` is ~10:1. Area A re-checks these with a contrast tool, and any value under 4.5:1 for text is a bug.
+
+### 3.2 Color grammar
+
+| Hue | Means | Never used for |
 |---|---|---|
-| **JetBrains Mono** 400/500/700 | Everything: data, labels, body, inputs | Default `body`. Always `font-variant-numeric: tabular-nums slashed-zero`. |
-| **Anton** 400 | Display: panel title tabs, empty/error titles, wordmark, calling-card headline, hero numbers' labels | Uppercase, `letter-spacing: 0.05em`, never under 15px, never for numbers that update. |
-| **DM Serif Display** 400 + italic | Ransom-note accent letters only (`.cut` class, see 1.2) | At most 3 words per screen. Never in data or body. |
+| amber | labels, function codes, tickers, primary value on a screen, caution | errors, direction |
+| white `--text` | live values, reference values, headlines | labels |
+| muted grey | column headers, descriptions, units | values the user came for |
+| cyan | something you can navigate to (links, related functions) and in-table group labels | status |
+| select blue | the chosen tab, chip or segment within a screen | focus, links |
+| crimson | where the keyboard is: focused pane, focused control, keyboard-selected row; the brand mark and title slab; errors (with a label) | price direction |
+| up / down | price and change direction only, always with a sign or arrow | buttons, errors, status lamps (lamps use their own rule, 6.4) |
 
-`web/index.html` font link becomes:
-`https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap`
+Quiet and dark: in a normal state a screen is amber, white and grey only. Color appears for direction, the focused pane, a selected tab, and abnormal states (stale, down, ARA/ARB, alert).
 
-Scale: 11 (meta) / 12 (secondary) / 13 (body + tables) / 15 (command input, lead text) / 22 / 34. Line heights are 20px for rows, 1.5 for prose (INS, BRIEF, N bodies) and 1 for display. Prose max width is 72ch.
+### 3.3 Type
 
-Labels: uppercase amber with `letter-spacing: 0.04em` (no wider; Bloomberg labels are tight, not tracked out). Values: white. Never mix the two roles.
+Google Fonts link in `web/index.html` (replaces the current one):
 
-### 1.2 Ransom-note lettering (`.cut`)
-
-Used for exactly three things: the `SUMIRE` wordmark, the `VIOLET` label on alerts, and the headline word on the calling card. It's a CSS class on a wrapper whose letters are each wrapped in a `<span>`. A tiny helper `web/src/components/ui/CutText.tsx` (`<CutText text="SUMIRE" />`) splits the text and applies a **deterministic** pattern by letter index `i % 6`:
-
-| i % 6 | font | box | rotate | translateY |
-|---|---|---|---|---|
-| 0 | Anton | white `--paper` bg, `--ink` text | -3deg | 0 |
-| 1 | DM Serif Display italic | `--ink` bg, `--paper` text | 2deg | 1px |
-| 2 | Anton | `--crimson` bg, `--paper` text | -1deg | -1px |
-| 3 | DM Serif Display | none (transparent, inherits color) | 3deg | 0 |
-| 4 | Anton | `--ink` bg, `--amber` text | -2deg | 1px |
-| 5 | DM Serif Display italic | `--paper` bg, `--crimson` text | 1deg | 0 |
-
-Each letter has `padding: 0 2px`, `margin-right: 1px` and `line-height: 1.05`, plus `display: inline-block` and `font-size` from the parent. Serif letters get `font-size: 1.08em` so their x-height matches Anton. The whole word keeps `aria-label` = the plain text, and the letter spans get `aria-hidden`. No randomness, no hover effects.
-
-### 1.3 Keycaps (global, `web/src/theme/global.css`)
-
-Restyle `kbd` and add role classes. A keycap is a hard key with a darker 2px bottom edge, not a pill.
-
-```css
-kbd, .key {
-  display: inline-block; min-width: 18px; height: 16px; padding: 0 4px;
-  border: 0; border-bottom: 2px solid var(--key-dark-edge); border-radius: var(--radius-key);
-  background: var(--key-dark); color: var(--text);
-  font: 700 10px/16px var(--font-mono); letter-spacing: 0.04em; text-transform: uppercase;
-  text-align: center; vertical-align: 1px;
-}
-.key-fn     { background: var(--key-fn);     border-bottom-color: var(--key-fn-edge);     color: var(--ink); }
-.key-go     { background: var(--key-go);     border-bottom-color: var(--key-go-edge);     color: #fff; }
-.key-cancel { background: var(--key-cancel); border-bottom-color: var(--key-cancel-edge); color: #fff; }
+```html
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 ```
 
-Usage: `<kbd className="key-go">GO</kbd>` for Enter, `<kbd className="key-cancel">ESC</kbd>` for Esc, `<kbd className="key-fn">GP</kbd>` for function codes in hints/HELP/rail, and plain `<kbd>` for every other key (`/`, `m`, `Alt`, `1`-`4`).
+| Family | Role | Rules |
+|---|---|---|
+| JetBrains Mono | every number, ticker, function code, keycap legend, command input, table cells, news headlines in lists | `font-variant-numeric: tabular-nums slashed-zero` globally; codes and tickers uppercase with `--track-code`; weights 400 (data), 500 (emphasis), 700 (codes in strips and keycaps only) |
+| IBM Plex Sans Condensed | chrome labels: pane names, column headers, buttons, badges, panel titles, status labels | **sentence case** (`Price chart`, `Last`, `Chg %`), 500 weight, `--track-label`; never all caps |
+| IBM Plex Sans | reading text: insight paragraphs, DES business description, ASK answers, error messages longer than a line | 13px / 1.55, 400, `max-width: 72ch` |
 
-### 1.4 Screentone and starburst (global utilities)
+The case rule is the typographic signature. Uppercase is reserved for things that are codes (BBCA, GP, IHSG, LQ45, WIB). Words people read are in sentence case in the condensed face. This mirrors Bloomberg's own screens ("Govt Benchmark", "Last Yield") and avoids the tracked-caps eyebrow look.
 
-Replace `.halftone` in `global.css`:
+Numbers:
+- Right-align every numeric column. Decimals within a column use one fixed count (prices: IDX prices are integers; percentages: 2 decimals; ratios: 2).
+- Negative numbers use the real minus `−` (U+2212) through `formatNum`, and positive changes get an explicit `+`.
+- Sizes 20px and up use `--track-hero`. The hero is the only place that uses 500 weight at large size, and no number is bold.
 
-```css
-.halftone { position: relative; isolation: isolate; }
-.halftone::before {
-  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background-image: radial-gradient(circle, var(--tone-dot) 1px, transparent 1.3px);
-  background-size: var(--tone-size) var(--tone-size);
-  -webkit-mask-image: linear-gradient(225deg, #000 0%, transparent 55%);
-          mask-image: linear-gradient(225deg, #000 0%, transparent 55%);
-  opacity: 0.55;
-}
-```
+## 4. Surfaces and separators
 
-The tone fades from the **top-right** corner only, like a hand-cut screentone sheet. Don't make it symmetric and don't put it behind numbers.
+- The **canvas** (`--canvas`) is what shows between panes: panes are separated by a `--gutter` (2px) of canvas, not by borders. This makes each pane read as a tile of black glass.
+- **Panes** are `--bg` with a 1px `--line` border. The focused pane keeps the same border and gets the crimson top hairline (section 5).
+- **Inside a pane**, separate by alignment and spacing first. Use a 1px `--line` rule only between sections (for example between the DES header and the stats grid), never between rows. An optional `--line-faint` rule every 5 rows is allowed in long numeric tables (EQS, W).
+- **Header bands** (pane strip, Panel header, table header) are `--raise-1`. No gradients, except the chart background.
+- **Popovers** (suggestions, menus, shortcut overlay) are `--raise-2` with a 1px `--line-strong` border and no shadow. The overlay backdrop is `rgba(0,0,0,.6)` with no blur.
+- No `border-radius` anywhere except keycaps (`--radius-key`). No `box-shadow` except focus rings (which are outlines; see 9.4).
 
-The starburst is a 24-point irregular star (P5 "impact" burst). It's one shared SVG path used in empty states and on the calling card. `viewBox="0 0 60 60"`, polygon points:
+## 5. Shell
 
-```
-30.0,1.0 33.4,17.4 43.5,6.6 40.6,19.4 56.0,15.0 41.6,26.9 56.0,30.0 43.5,33.6 54.2,44.0 37.8,37.8 45.0,56.0 33.9,44.5 30.0,57.0 26.6,42.6 15.5,55.1 21.5,38.5 7.5,43.0 16.5,33.6 2.0,30.0 15.5,26.1 4.0,15.0 20.8,20.8 16.5,6.6 26.9,18.4
-```
-
-Put it in `web/src/components/ui/Starburst.tsx` (`<Starburst size={64} className=... />`, `fill="currentColor"`, `aria-hidden`).
-
-### 1.5 Global resets that change
-
-- `::selection` stays crimson/white.
-- `:focus-visible` uses `outline: 2px solid var(--crimson); outline-offset: 1px;` instead of box-shadow, so it survives `clip-path` and `overflow: hidden`. Inside tables and lists use `--focus-ring-inset`.
-- Scrollbar thumb: `var(--border-strong)` 8px with a 2px `--bg` border (via `border: 2px solid var(--bg)` on the thumb) so it reads as a thin rail. Square, no radius.
-- `body`: add `font-variant-numeric: tabular-nums slashed-zero;`.
-- Delete every `border-radius` value other than `0`, `--radius-key` and `50%` on things that really are circles (glasses lenses, chart markers). Status dots become squares.
-
----
-
-## 2. Shell
+### 5.1 Layout
 
 ```
-┌[SUMIRE]◣VIOLET──[▸│ BBCA GP_                     <GO>]────────── 14:32:07 WIB ■ LIVE  ▦ ┐  44px
-├──────────────┬─────────────────────────────────┬────────────────────────────────────────┤
-│◤WATCHLIST◢   │[1◣ GP  BBCA  Price chart      ‹ › ]│[2◣ INS BBCA  Insight     ▼ribbon ‹ ›]│  22px strip
-│ BBCA 9,875 +│                                  │                                        │
-│ ...          │  (1px grid lines between panes,   no gaps, no card shadows)               │
-├──────────────┴─────────────────────────────────┴────────────────────────────────────────┤
-│[IHSG 7,312 +0.42%]│ LQ45 … │ USDIDR … │ COAL … (scrolling)                     [Sumire]  │  28px
-└──────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐ 32px
+│▣ Sumire │[BBCA ▾]│ bbca gp_                         │ Price chart ││▥│14:32:07 WIB│● Live│
+├──────────┬───────────────────────────────────┬────────────────────────────────┤
+│Watchlist │1 GP  BBCA  Price chart       ‹ ›  │2 INS  BBCA  Insight      ‹ ›   │ 20px strip
+│ Core   ▾ │                                   │                                │
+│BBCA  9,875 +0.51%                            │                                │
+│BBRI  4,310 −1.14%                            │                                │
+│▸ Banks (cyan group)                          │                                │
+│          ├───────────────────────────────────┼────────────────────────────────┤
+│          │3 MKT  Market                 ‹ ›  │4 N  Headlines            ‹ ›   │
+│          │                                   │                                │
+├──────────┴───────────────────────────────────┴────────────────────────────────┤
+│ IHSG 7,312.40 +0.42% ▲ │ LQ45 951.2 −0.10% ▼ │ USDIDR 16,250 │ … (tape)        │ 24px
+├──────────────────────────────────────────────────────────────────────────────┤
+│ ■ Feed 14:31  ■ Hub  ■ DB  ■ EOD  │ Research 9/20 · runner · model           │ 22px
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.1 Top bar (`shell/TopBar.module.css`, `TopBar.tsx`)
-- `.bar`: `background: var(--bg)` (delete the gradient), `border-bottom: 1px solid var(--border-strong)`.
-- `.brand`: keep the crimson plate with `clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%)`. Add `filter: drop-shadow(3px 0 0 #000)` so the slanted edge has a hard black plate. Padding is `0 28px 0 12px`.
-- `.wordmark`: replace the plain text with `<CutText text="SUMIRE" />` at `font-size: 20px`. Remove `skewX`. The cut letters supply the energy.
-- `.codename` `VIOLET`: keep a white tag with crimson text rotated -6deg. Change it to `font-family: var(--font-display); font-size: 10px; letter-spacing: 0.08em; padding: 0 4px; box-shadow: 2px 2px 0 #000;`.
-- `.clock`: white 13px 500, seconds in `--muted`, `WIB` in `--amber-dim`. No glow.
-- `.pill` (session) becomes a **status block**, not a pill: `border-radius: 0; border: 0; padding: 0 6px; height: 18px; line-height: 18px;`. LIVE: `background: var(--up); color: var(--ink)`. BREAK/PRE: `background: var(--amber); color: var(--ink)`. CLOSED: `background: transparent; color: var(--muted); box-shadow: inset 0 0 0 1px var(--border-strong)`. `.dot` is a 6px **square** (`border-radius: 0`) in `--ink`. **Delete the pulse animation**: no ambient loops.
-- `.layoutBtn`: square cells in `--amber-dim`, hover border `--crimson`, radius 0.
+Everything is left-aligned. Numbers are right-aligned in their columns. Nothing in the shell is centered except the boot sequence.
 
-### 2.2 Command line (`shell/CommandLine.module.css`, `CommandLine.tsx`)
-- `.box`: `height: 30px; background: var(--bg); border: 1px solid var(--border-strong);`. On `:focus-within`: `border-color: var(--crimson); box-shadow: var(--plate-crimson);` (hard 3px crimson offset). **Delete the 18px glow.**
-- `.prompt`: crimson plate with a `▸` glyph, `clip-path` 8px right cut, unchanged otherwise.
-- `.input`: amber 15px uppercase; `caret-color: var(--amber-hi)`. Placeholder in `--faint` sentence case: `Type a ticker or function, e.g. BBCA GP`.
-- `.hint` (right end): show `<kbd className="key-go">GO</kbd>` permanently, and `<kbd className="key-cancel">ESC</kbd>` only while the list is open. The text hint becomes these keycaps plus nothing else.
-- `.list` (suggestions): `border: 1px solid var(--crimson); box-shadow: var(--plate-lg); background: var(--panel);`. Opens with `wipe-down` (section 4).
-- `.section` header: `--amber-dim` 10px uppercase, with a 1px `--amber-deep` rule after the text (`display:flex; gap:6px; ::after flex:1 height:1px`).
-- `.item`: `height: var(--row-h); padding: 0 10px; align-items: center`. Label = function or ticker in amber 700, detail white, meta `--muted`.
-- `.itemActive` = **the off-palette selection rule**: `background: var(--crimson) !important; box-shadow: none;`, label `color: var(--amber)`, detail `color: var(--paper)`, meta `color: rgba(244, 239, 230, 0.7)`. Add `clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%)` so the selected row is a cut strip.
-- `.footer`: keycaps (`<kbd>↑</kbd><kbd>↓</kbd>`, `<kbd className="key-go">GO</kbd>`, `<kbd className="key-cancel">ESC</kbd>`) with `--faint` words.
-- `.error`: border `--down`, `.errorText` `--down`.
+### 5.2 Top bar: the security bar (`shell/TopBar.tsx`, `CommandLine.tsx`)
 
-### 2.3 Pane strip and active marker (`shell/Pane.module.css`, `Pane.tsx`)
-- `.pane`: `border: 0; background: var(--panel);`. The 1px grid lines come from the parent grid (2.5). Delete `box-shadow` on focus.
-- `.focused`: `outline: 1px solid var(--crimson); outline-offset: -1px; z-index: 1;`.
-- `.strip` (22px): `background: var(--bg); border-bottom: 1px solid var(--border);`.
-  - `.num`: the pane-number tab. Unfocused: `--panel-2` / `--muted`. Focused: `--crimson` / `#fff`, plus `filter: drop-shadow(2px 0 0 #000)`. Keep the 6px right `clip-path` cut.
-  - Split `.cmd` into a **code keycap + ticker** (small markup change in `Pane.tsx`: render `entry.code` in `<kbd className="key-fn">` and the rest of `formatEntry(entry)` as text). Ticker in white 700. The function name (`registry[...].name`) stays `--muted`.
-  - Unfocused panes: the code keycap uses plain `kbd` (dark key) instead of `key-fn`, so only the focused pane shows yellow. That's a second cue besides the ribbon.
-  - `.navBtn`: `‹ ›` glyphs in `--amber-dim`, hover `--amber-hi` on `--panel-hover`.
-- `.ribbon` (active-pane marker): replace it with a two-tail ribbon hanging from the strip's bottom edge:
-  - `position: absolute; top: 14px; right: 56px; width: 12px; height: 20px; background: var(--crimson);`
-  - `clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);`
-  - Add an `::before` knot: `top: -3px; left: -2px; width: 16px; height: 6px; background: var(--crimson-ink);`
-  - `filter: drop-shadow(1px 2px 0 #000);`
-  - It enters with `ribbon-drop` (section 4) when focus changes.
+Height `--topbar-h` (32px), background `--bg`, 1px `--line` bottom border. Left to right:
 
-### 2.4 Status bar (`shell/StatusBar.module.css`)
-- Segments are separated by `border-right: 1px solid var(--border)` with `padding: 0 8px`. Labels in amber-dim uppercase 11px and values white.
-- The research runner text stays `--muted`. When research is running, prefix it with a 6px crimson square (static, no pulse).
-- Buttons inside use the dark-key button (3.4) at 18px height.
+1. **Brand.** A `SumireMark` at 16px plus the wordmark "Sumire" in Plex Sans Condensed 600, 13px, `--text`, with `--s-2` gap and `--s-3` horizontal padding. A 1px `--line` divider follows. The "VIOLET" codename is removed.
+2. **Loaded security field.** When the focused pane has a ticker, a solid `--amber-field` block shows it: 24px tall, `--s-2` padding, JetBrains Mono 700 13px, `--on-fill`, `--track-code`, followed by a small `▾` glyph. When there is no ticker, the block is absent (no empty amber box). It is display-only and not focusable.
+3. **Command input.** Flexible width, `--bg`, no border of its own, mono 13px, typed text in `--amber`, caret `--amber-hi` (native caret, no blinking block). Placeholder in `--faint`: `Ticker and function, e.g. BBRI GP`. When focused, the whole input region gets a 1px inset crimson outline (`--focus-ring-inset`).
+4. **Function slab.** On the right of the input, a block with `--crimson-slab` background shows the focused pane's function name (`registry[code].name`, e.g. "Price chart") in Plex Sans Condensed 500 13px white, padded `--s-3`, 24px tall. This and the amber field are the two loud objects in the app.
+5. **Layout button.** A 24×24 square button showing the 1/2/4 pane glyph in `--muted` and amber on hover. Its title and behavior are unchanged.
+6. **Clock.** `14:32` in mono 13px `--text`, then `:07` in `--muted`, then `WIB` in Plex Sans Condensed 11px `--muted`.
+7. **Session pill.** A 6px square lamp plus the label, in sentence case: `Live`, `Pre-open`, `Break`, `Pre-close`, `Post`, `Closed`. Lamp colors: `Live` up green with the live pulse (v2-motion §7); `Break`, `Pre-open`, `Pre-close` and `Post` amber; `Closed` `--faint`. There is no pill border, just the lamp and the text.
 
-### 2.5 App frame (`shell/App.module.css`)
-- `.grid`: `gap: 1px; padding: 0; background: var(--border);` so panes sit on hairlines like one instrument.
-- `.rail`: `border-right: 1px solid var(--border-strong); background: var(--panel);`.
-- `.bottom`: `border-top: 1px solid var(--border-strong); background: var(--bg)`.
-- `.overlay`: `background: rgba(10, 9, 8, 0.82);` and **delete `backdrop-filter`**.
-- `.dialog`: `border: 1px solid var(--crimson); box-shadow: var(--plate-lg);` and animation `wipe-in` (section 4).
-- `.toast`: `border: 0; border-left: 4px solid var(--crimson); background: var(--panel-2); box-shadow: var(--plate);`. Animation `slash-in`.
+**Suggestion list** (CommandLine): a popover below the input, aligned to its left edge, min width 420px, `--raise-2`, 1px `--line-strong`. Rows are `--row-h-comfy` (22px) and form three columns:
 
-### 2.6 Ticker tape (`components/tape/TickerTape.module.css`)
-- The first item (IHSG) is **inverted**: `background: var(--amber); color: var(--ink); padding: 0 8px; font-weight: 700;`, with its % change still in up/down color on a `--ink` 1px-padded chip, so green/red stay legible. Break the symmetry once.
-- `.sep`: `border-left: 1px solid var(--amber-deep)`.
-- Code amber, price white, change up/down. Gap 18px. The scroll stays (functional) and pauses on hover/focus. Reduced motion means a static row (already done).
-
-### 2.7 Watchlist rail (`components/watchlist/WatchlistRail.module.css`)
-- `.head`: the title becomes a small slanted crimson tab like the panel title (Anton 13px, `clip-path` 8px cut, `padding: 2px 14px 2px 8px`). The select is square, `--panel-2`, with a 1px `--border-strong` border.
-- `.row`: `height: var(--row-h); padding: 0 8px; align-items: center; border-bottom: 0;`. Every 5th row (`li:nth-child(5n) .row`) gets `border-bottom: 1px solid var(--amber-deep)` (ledger rule).
-- `.current`: `box-shadow: inset 3px 0 0 var(--crimson); background: var(--crimson-dim);` with the code in `--amber-hi`.
-- `.note`: `border: 0; border-left: 3px solid var(--crimson); box-shadow: var(--plate);`.
-
----
-
-## 3. UI kit (`components/ui/`)
-
-### 3.1 Panel (`Panel.module.css`)
-- `.panel`: `border: 0; background: var(--panel);`. Panes already draw the frame.
-- `.header`: `min-height: 26px; background: var(--bg); border-bottom: 1px solid var(--amber-deep);`. **Delete the crimson gradient.**
-- `.title`: crimson tab, Anton `var(--fs-d1)`, `padding: 2px 22px 2px 10px`, `clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%)`, `filter: drop-shadow(3px 0 0 #000)`. Text `--paper`.
-- `.subtitle`: `--muted` 12px. `.actions` right-aligned, 6px gap.
-- `.padded`: `padding: 8px 10px`.
-
-### 3.2 Table (`Table.module.css`)
-- `.table th`: `height: var(--row-h); padding: 0 8px; background: var(--bg); color: var(--amber-dim); font-size: 11px; font-weight: 500; letter-spacing: 0.04em; border-bottom: 1px solid var(--amber-deep);`. `.sorted`: `color: var(--amber)`, with the sort arrow as `▲`/`▼` in 9px.
-- `.table td`: `height: var(--row-h); padding: 0 8px; border-bottom: 0;`. **No zebra striping.** Ledger rule: `tbody tr:nth-child(5n) td { border-bottom: 1px solid var(--amber-deep); }`, plus a faint `1px solid var(--border)` on every other row's bottom only if the screen needs it (default: no).
-- Number cells (`.right`): `font-variant-numeric: tabular-nums slashed-zero;`.
-- `.row:hover td`: `background: var(--panel-hover)`.
-- `.active td`: `background: var(--crimson-dim) !important;`. The first cell keeps `box-shadow: inset 3px 0 0 var(--crimson)`.
-- `.wrap:focus-visible`: `outline: none; box-shadow: var(--focus-ring-inset);`.
-
-### 3.3 Badge (`Badge.module.css`)
-- `border-radius: 0; height: 16px; line-height: 14px; padding: 0 5px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em;`.
-- `default`: `--text` on `--border-strong` outline. `amber`: amber outline. `up`/`down`: colored outline and text. `muted`: `--muted` on `--border`.
-- `solid`: `--ink` on `--amber`.
-- `crimson`: `--paper` on `--crimson`, **cut corner** `clip-path: polygon(0 0, 100% 0, calc(100% - 5px) 100%, 0 100%); padding-right: 8px;`. It's the only badge with a cut, because it is brand.
-
-### 3.4 Button (`Button.module.css`): Bloomberg keys
-- Base (`.button`, dark key): `height: 22px; padding: 0 10px; border: 0; border-bottom: 2px solid #000; border-radius: var(--radius-key); background: var(--key-dark); color: var(--text); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;`. Hover: `background: var(--panel-hover); color: var(--amber-hi);`. `:active`: `transform: translateY(1px); border-bottom-width: 1px;`.
-- `.primary` = **yellow function key**: `background: var(--key-fn); color: var(--ink); border-bottom-color: var(--key-fn-edge);`. Hover: `background: #ffd21f`. This replaces the crimson primary: crimson is cut paper, not a button.
-- `.ghost`: text only `--muted`, hover `--amber`, with an underline offset of 3px and no box.
-- `.active` (toggle on): `background: var(--amber); color: var(--ink); border-bottom-color: var(--amber-deep);`.
-- `:disabled`: `opacity: 0.4`, no transform.
-- Destructive actions (delete alert or watchlist), if a component wants them: add `className="key-cancel"` styles via a local class (`background: var(--key-cancel)`). No new variant prop.
-
-### 3.5 Empty state (`Empty.tsx`, `Empty.module.css`)
-**Left-aligned and asymmetric** (the current centered stack is the templated look).
-
-```
-┌───────────────────────────────────────────── ·:·:· (tone, top-right fade)
-│  ✸ (64px starburst, crimson, rotated -8deg, sits behind/left of title)
-│     NO ALERTS YET            ← Anton 22px --paper, offset 18px right of burst center
-│     ▬▬▬▬ (48×5 crimson slash, skewX(-24deg))
-│     I'll watch BBCA and tell you when it crosses a line you set.   ← --muted 12px, 46ch
-│     [NEW ALERT] (yellow key)
-```
-
-- `.empty`: `align-items: flex-start; justify-content: center; text-align: left; padding: 20px 24px 20px 28px; gap: 6px;`, with `halftone` (new top-right fade) kept.
-- Add `<Starburst size={64} className={s.burst} />` before the title: `.burst { position: absolute; margin: -22px 0 0 -18px; color: var(--crimson); transform: rotate(-8deg); opacity: 0.9; z-index: -1; }`. The title sits on top of it (the title wrapper gets `position: relative`).
-- `.title`: Anton `var(--fs-d2)`, `--paper`, letter-spacing 0.05em, `text-shadow: 2px 2px 0 #000` (hard, no blur).
-- `.slash` stays (48x5 crimson, skew -24deg), placed **under** the title.
-- Copy is in Sumire's voice and names real things (section 7).
-
-### 3.6 Error state (`ErrorState.tsx`)
-The same layout as Empty, but the starburst is **outlined, not filled**: `fill: none; stroke: var(--down); stroke-width: 1.5`. The title is `--paper` and the message `--text` (errors must be read). Retry is a **yellow key** (`variant="primary"`). Keep `describe()` but rewrite its strings (section 7). Pass the outlined variant via a small `tone="error"` prop on the internal `Empty` call only if `Empty` needs it. Empty's public props must not change for other callers, so make it optional.
-
-### 3.7 Spinner (`Spinner.module.css`): glasses
-- The frames stay round (real circles). `stroke: var(--crimson); stroke-width: 2.4; stroke-linecap: square;`. The bridge gets `stroke-linejoin: miter`.
-- Add the temples: a short line from each outer lens edge (`M2 9 l-3 -2` and `M46 9 l3 -2`).
-- The glint is a white dash sweeping round each lens at 1.1s linear (keep the existing logic).
-- Label: `--muted` 12px, sentence case, e.g. `Loading BBCA chart` (callers already pass labels).
-- **Reduced motion**: no sweep. A static white glint arc at the top-left of each lens (`stroke-dasharray: 8 49; stroke-dashoffset: -6`) and the label text are shown. Implement it with an explicit `@media (prefers-reduced-motion: reduce) { .shine { animation: none; stroke-dashoffset: -6; } }`, because the global 0.01ms rule makes it flicker.
-
-### 3.8 Skeleton (`Skeleton.module.css`)
-- **Delete the shimmer** (a looping AI-ish tell). Bars are static: `height: 10px; background: var(--panel-2); border-radius: 0;`.
-- Rows mimic the ledger: `.row` height 20px with a 1px `--border` bottom. Every 5th row gets an `--amber-deep` rule.
-- The first bar of the first row is 28px wide in `--amber-deep` (a "label" stub). The others vary width as now.
-- One blinking amber block cursor (`8x12px`, `--amber`, `steps(1)` 1s) is shown after the last bar. It's the one allowed loop, and it's hidden under reduced motion.
-
-### 3.9 FreshnessBadge / Num
-- FreshnessBadge: uses Badge. Fresh = `muted`, stale = `amber`, very stale = `down` outline. No color invention.
-- Num: no change except ensuring `slashed-zero`.
-
----
-
-## 4. Motion (`global.css` keyframes)
-
-At most 200ms, always directional (things enter from where they come from), no idle loops (only exceptions: ticker tape scroll, spinner, skeleton cursor).
-
-```css
-@keyframes slash-in {   /* toasts, alerts, mascot bubble */
-  from { transform: translateX(-10px) skewX(-8deg); opacity: 0; }
-}
-@keyframes wipe-in {    /* dialogs, overlays: left-to-right cut */
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0 0 0 0); }
-}
-@keyframes wipe-down {  /* command suggestions */
-  from { clip-path: inset(0 0 100% 0); }
-  to   { clip-path: inset(0 0 0 0); }
-}
-@keyframes stamp {      /* VIOLET label on a new alert */
-  from { transform: scale(1.25) rotate(-6deg); opacity: 0; }
-}
-@keyframes ribbon-drop {
-  from { transform: translateY(-8px); }
-}
-```
-
-| Element | Animation |
+| Column | Style |
 |---|---|
-| Dialog (`.dialog`) | `wipe-in var(--dur-slow) var(--ease)` |
-| Command list | `wipe-down var(--dur-fast) var(--ease)` |
-| Toast, alert card, mascot bubble | `slash-in var(--dur) var(--ease)` |
-| VIOLET label inside a new alert | `stamp var(--dur) var(--ease-snap) 60ms both` |
-| Pane ribbon on focus | `ribbon-drop var(--dur) var(--ease-snap)` |
-| Hover, color changes | `transition: background-color var(--dur-fast), color var(--dur-fast)` only |
+| code / ticker | mono 700 12px `--amber`, 6ch, uppercase |
+| name | Plex Sans Condensed 500 12px `--text` |
+| hint (sector, example) | Plex Sans Condensed 400 11px `--muted`, right side, truncated |
 
-Delete: the mascot `bob` loop, the session `pulse`, the skeleton `shimmer`, `pop` scale-ups (replaced by the above).
+The active row is shown by one shared highlight bar (v2-motion §7): `--crimson-wash` background plus a 2px crimson left edge. A footer row shows `Tab accept · ↑↓ move · Enter run · Esc close` with each key as a plain keycap (6.7). Errors appear as one line under the input inside the popover: `--crimson-hi` code `ERR` then the message in `--text`. The input runs the nudge animation.
 
-Reduced motion (`@media (prefers-reduced-motion: reduce)`): keep the existing global 0.01ms rule, and additionally set `animation: none` on the ribbon, the spinner glint (static, see 3.7), the skeleton cursor and the ticker track. Elements must appear in their final state, never stuck at `from`.
+### 5.3 Pane (`shell/Pane.tsx`)
 
----
+**Strip** (`--strip-h` 20px, `--raise-1`, 1px `--line` bottom):
 
-## 5. Mascot (`components/mascot/Portrait.tsx` placeholder, `Mascot.module.css`)
+```
+│1│ GP │ BBCA │ 1Y D       Price chart                         ‹  › │
+ ^   ^    ^      ^          ^                                   ^
+ |   |    |      args       name (label face, muted)            nav
+ |   |    ticker (mono 500, --text)
+ |   code (mono 700, --amber, keycap style when focused)
+ index: 20×20 cell, mono 11px --muted on --bg; focused: --crimson fill, white digit
+```
 
-Replace the `Placeholder` SVG with a **new hand-built bust**. It's still an original drawing (no traced game art), and the PNG override from `web/public/assets/sumire/` keeps working unchanged.
+- Index cell: a square flush with the left edge. It is the only filled crimson block on a pane, and only when the pane is focused.
+- Code: unfocused, plain amber mono 700. Focused, it renders as a `key-sector` keycap (yellow, black legend), which ties the keyboard to the screen.
+- Focus hairline: a 2px crimson line on the top edge of the strip, `scaleX` 0 to 1 from the left (v2-motion §7). It replaces the ribbon.
+- Nav buttons: 20×20, `‹ ›` in `--muted`, `--amber` on hover, `--faint` and `cursor: default` when disabled.
+- **Body** is `--bg` with `overflow: auto` and thin scrollbars (6px thumb `--line-strong` on transparent track). Content enters with `pane-in` as in v2-motion §7.
 
-### 5.1 Art direction
-- **View**: 3/4, facing **left** toward the screen (she sits bottom-right and looks at your panes). Head tilted 4deg clockwise. The face centre is at about x=54 in a 120x120 viewBox, not centered, so she leans into the frame.
-- **Silhouette carriers** (must read as a solid black fill at 48px): (1) long hair falling past the shoulders with a **low ponytail** swinging out to the right edge (x 92-112, y 70-118), (2) **round glasses**, (3) the **ribbon bow** at the ponytail tie (x~94, y~66) with two sharp tails.
-- **Line**: ink `#0a0908`. The outer silhouette is 2.25 stroke and inner lines (hair strands, collar, jaw) are 1.25. `stroke-linejoin: miter; stroke-linecap: square`. No round caps anywhere except the glasses.
-- **Shape language**: hair is built from **sharp, faceted locks**: bangs are 4 pointed locks swept to her left (viewer's right) with tips at y 50-58. Side locks end in points. No blobby curves: use `L` and short `Q` segments, with each lock tip a hard point.
-- **Cel shading**: exactly 2 tones per material (base + one shadow). Shadows are hard-edged shapes (no gradients, no opacity blends), cast from top-left. That's under the bangs, the left jaw edge, under the chin and inside the ponytail.
-- **Palette** (only these):
+**Related functions footer (optional, self-contained).** A pane may render a 20px footer listing 3-5 related functions as cyan links: `GP Price chart   FA Fundamentals   N Headlines`. The code is mono 700 `--text`, and the name is in the label face in `--cyan`. Clicking a link runs `<ticker> <code>` in the same pane. It has no number shortcuts, because digits already belong to the chart. Area B owns it, with the map in `shell/related.ts`.
 
-| Material | Base | Shadow |
-|---|---|---|
-| Hair | `#c8102e` | `#7d0a1c` |
-| Hair highlight (1 sharp sliver on the crown) | `#e8203f` | none |
-| Skin | `#f6dcc8` | `#e2b9a0` |
-| Eyes | `#2b1418` iris, `#f4efe6` 1 square catchlight | none |
-| Glasses | frame `#c8102e`, lens fill `rgba(244,239,230,0.18)`, 1 white glint wedge | none |
-| Ribbon | `#c8102e` with an `#ffb000` 1px edge on one tail (terminal tie-in) | `#7d0a1c` |
-| Uniform blazer | `#1c1a1d` | `#0a0908` |
-| Shirt / collar | `#f4efe6` | `#cfc6b8` |
-| Neck ribbon (uniform) | `#c8102e` | `#7d0a1c` |
-| Gym jacket | `#1c1a1d` with a `#c8102e` zip stripe and `#f4efe6` 1.5px piping on the collar | `#0a0908` |
+### 5.4 Status bar (`shell/StatusBar.tsx`)
 
-- **Backing**: behind the bust, a crimson cut-paper plate: `polygon(14,30 112,18 118,120 4,120)` (a 10deg slanted top edge), with a black copy offset `4,4` behind it. A halftone patch (6px dots `--amber-deep`) is clipped to the plate's top-right triangle only. The bust overlaps the plate's top edge (hair breaks the frame) so the backing doesn't read as a tidy avatar circle.
-- **Drop shadow**: `.figure { filter: drop-shadow(4px 4px 0 #000); }`, which replaces the blurred one.
+Height `--status-h` (22px), `--canvas` background, 1px `--line` top border, mono 10px.
 
-### 5.2 Layer order (back to front)
-1. Black offset plate, 2. crimson plate + halftone, 3. ponytail + ribbon, 4. back hair mass, 5. body/outfit, 6. neck (skin shadow under the chin), 7. face, 8. ears (only the left ear is visible), 9. eyes, 10. glasses, 11. brows, 12. mouth, 13. bangs + side locks (over the glasses' top edge), 14. mood extras.
+Left: **lamps**. Each lamp is a 6×6 square plus a label in Plex Sans Condensed 500 11px `--muted`, with `--s-3` between lamps:
 
-Group the mood-dependent parts (`<g data-part="brows|eyes|mouth|extra">`) so that **only these change between moods**. The silhouette and hair never move.
-
-### 5.3 Moods (`neutral | smiling | worried | determined | surprised`)
-
-| Mood | Brows | Eyes | Mouth | Extra |
+| Lamp | Green | Amber | Red (`--crimson-hi`) | Grey |
 |---|---|---|---|---|
-| neutral | flat, slight inner lift | open ovals, catchlight top-left | short flat line, 1.25 ink, slightly off-centre left | none |
-| smiling | raised and arched | closed upward arcs (`^`), 2px ink | open smile: wedge shape, `#8a2a32` fill, ink outline | 2 short ink hatch lines on each cheek (blush as **hatching**, not pink ovals) |
-| worried | inner ends raised steeply | ovals, smaller pupils, catchlight lower | small wavy line | one angular sweat drop (a teardrop made of 3 straight segments, `#f4efe6` fill, ink outline) at the right temple |
-| determined | angled down toward the centre, thick (2.5) | narrowed: top lid flattened by a straight ink line | firm line with a downturned left corner | a white glint wedge across the left lens (a 3-point polygon), the glasses "flash" (P5 look) |
-| surprised | high, short | wide circles, small pupils | small open "o" (ink ring, `#8a2a32` fill) | 3 short ink "shock" lines radiating above the head at -30deg, 0deg and 30deg |
+| `Feed` + age (`Feed 14:31`) | fresh | stale (FreshnessBadge rule) | very stale | no data |
+| `Hub` | connected (pulse while session is Live) | reconnecting | disconnected | — |
+| `DB` | ok | — | down (title has the error) | unknown |
+| `EOD` | bars current | running or stale | last run failed | — |
+| `API` | — | — | `/api/status` failed | — |
 
-### 5.4 Outfits
-- **uniform** (Shujin-like): dark blazer with sharp notched lapels as 2 triangles, a white collar point on each side, and a crimson neck ribbon tied as a flat bow with two pointed tails.
-- **gym**: a dark track jacket zipped to the collarbone, a high collar with white piping, a crimson vertical zip stripe, and the shoulder line slightly raised (sporty). No ribbon at the neck. The hair ribbon stays.
-- An auto-switch rule already exists in `Mascot.tsx`. Don't touch it.
+Lamp green is `--up`. This is the one place green means "healthy" rather than "up", and it is acceptable because a lamp is a square, never a number. The lamp label stays muted, and only the square carries color. The hover title keeps the current explanatory text.
 
-### 5.5 Speech bubble (`Mascot.module.css .bubble`)
-A **jagged P5 callout**, not a rounded bubble:
-- `background: var(--paper); color: var(--ink); border: 0; padding: 8px 12px 9px 10px; font-size: 12px; line-height: 1.4; max-width: 260px;`
-- `clip-path: polygon(0 6%, 100% 0, 97% 82%, 100% 100%, 88% 88%, 4% 96%);`, so the bottom-right spike (100% 100%) is the tail pointing down-right at her.
-- Hard plate: since clip-path cuts box-shadow, wrap the bubble's background in a `::before` copy at `transform: translate(4px, 4px)` in `--ink`, or apply `filter: drop-shadow(4px 4px 0 #000)` to the button (preferred: one line).
-- A crimson 3px rule along the left edge inside (`box-shadow: inset 3px 0 0 var(--crimson)`).
-- `transform: rotate(-1.5deg)`, entering with `slash-in`.
-- **Alert variant** (when the bubble shows an alert): `background: var(--crimson); color: var(--paper);`, with the first word replaced by `<CutText text="VIOLET" />` at 13px. That's the only other place ransom letters appear.
-- `.outfit` toggle button: a dark keycap (`--key-dark`, radius-key), visible on hover/focus as now.
-- **Delete** the `bob` animation.
+Right: **research**: `ResearchUsage` (for example `Research 9/20`), then runner and model in `--muted`. The running indicator is a 6px amber square, static, with no spin.
 
-### 5.6 Small variant (favicon / future collapsed state)
-Head only in 2 colors (crimson hair silhouette with ponytail + ink glasses circles) on transparent. *Optional*: replace `web/public/favicon.svg` with it if one exists. Otherwise skip.
+### 5.5 Ticker tape (`components/tape/TickerTape.tsx`)
 
----
-
-## 6. Violet alerts: the calling card (`components/alerts/AlertToaster.module.css`)
-
-Alerts currently use purple `#8b5cf6` / `#a78bfa`, which is an AI-default tell. **Remove all purple.** "Violet" is her codename, not a color.
+24px, `--bg`, 1px `--line` top and bottom. Each item:
 
 ```
-   ┌─────────────────────────────────────┐▌  (hard black plate 4px)
-   │ ✸ V I O L E T   (cut letters)  14:32│   ← crimson card, slight -1deg tilt
-   │ ┌─────────────────────────────────┐ │   ← inner 1px --ink border inset 4px
-   │ │ [BBCA] crossed MA200 at 9,875   │ │   ← mono 12px --paper, ticker in yellow key
-   │ └─────────────────────────────────┘ │
-   └─────────────────────────────────────┘
+IHSG 7,312.40 +0.42% ▲ │
 ```
 
-- `.toast`: `background: var(--crimson); border: 0; box-shadow: none; filter: drop-shadow(4px 4px 0 #000); clip-path: polygon(0 4px, 100% 0, 99% 100%, 1% calc(100% - 3px)); transform: rotate(-1deg);` with `slash-in` entry.
-- Inner frame: `.body { margin: 4px; outline: 1px solid rgba(10,9,8,0.6); outline-offset: -1px; padding: 6px 9px; }`.
-- `.brand` (the "Violet" label): `<CutText text="VIOLET" />` at 13px with `stamp` entry. The time is right-aligned, `--paper` at 0.75 opacity, mono 11px.
-- Message: mono 12px `--paper`, with the ticker rendered as `<kbd className="key-fn">BBCA</kbd>` (if the message is a plain string, leave it as text, but don't parse it with regexes).
-- Dismiss button: `ESC`-style crimson-ink dark keycap in the top right.
-- A small 18px `Starburst` in `--paper` before the label.
+- The code is mono 700 12px `--amber`. The price is mono 400 12px `--text` with `<Num flash>`. The change is mono 12px in up or down with sign and arrow. Inside an item the gap is `--s-2`. Items are separated by a 1px × 12px `--line` divider with `--s-3` on each side.
+- Index and macro items (IHSG, LQ45, USDIDR, GOLD…) come first and use the same style. There is no special badge.
+- Motion is constant-speed scroll at 48 px/s, pausing on hover or focus. Under reduced motion it becomes a static scrollable strip (v2-motion §5).
+- The left and right edges have no gradient fade. The strip is clipped hard, like a hardware display.
 
----
+### 5.6 Watchlist rail (`components/watchlist/WatchlistRail.tsx`)
 
-## 7. Copy (Sumire's voice, sentence case, specific)
+Width `--rail-w` (208px), `--bg`, 1px `--line` right border.
 
-Empty and error messages speak as her, briefly, naming the real thing and the next action. Examples to use where the strings currently are generic:
+- Header (`--strip-h`, `--raise-1`): "Watchlist" in the label face 500 12px `--amber`, followed by the list name in a native `select` styled flat (`--raise-2`, 1px `--line-strong`, 18px tall).
+- Rows (`--row-h`, 18px, padding 0 `--s-2`) form three columns: code (mono 500 12px `--amber`, 6ch), last (`<Num flash>`, `--text`, right-aligned), and chg% (signed, colored, right-aligned, 7ch).
+- Group labels: cyan label-face rows (`Banks`, `Coal`), 18px, with no box and a `--s-2` top margin.
+- The current ticker is shown by the shared 2px crimson marker on the left (v2-motion §8). Hover is `--raise-1`. The keyboard-selected row is `--crimson-wash`.
+- Empty: "No tickers yet. Type a ticker and press `w`." in muted text, with `w` as a plain keycap.
 
-| Where | Title | Message |
+### 5.7 Boot sequence (`components/boot/Boot.tsx`)
+
+Follow v2-motion §9 exactly. Visual layout, centered on `--bg`:
+
+```
+            ▣  Sumire                       (mark 32px + label 600 20px --text)
+
+            Link   /hubs/quotes .......... OK
+            Feed   Yahoo · 247 symbols ... OK
+            IDX    Session 2 13:30–15:50 WIB
+            DB     ....................... Offline
+```
+
+The lines are mono 12px. The key column is `--amber` (8ch), the dot leaders are `--faint`, and the result is `--up` for OK, `--amber` for Offline or Retry, and `--text` for information. It is skipped under reduced motion and on any key press. It runs once per session (`sessionStorage['sumire.boot']`).
+
+## 6. UI kit (`components/ui/`)
+
+Props and exports are unchanged unless stated.
+
+### 6.1 Panel
+
+- Header: `--strip-h`, `--raise-1`, `--s-2` horizontal padding, flex row. The title is Plex Sans Condensed 600 12px `--amber`, in sentence case. The subtitle is the label face 400 11px `--muted`, `--s-2` after the title. Actions are pushed right, as small buttons or segment controls.
+- There is no slant, ribbon or underline. The panel has a 1px `--line` border only when it is nested in a pane body next to other panels (class `.boxed`); the default is borderless, with the header band doing the separation.
+- Body: `padded` means `--s-2 --s-3`.
+
+### 6.2 Table
+
+- Header row: `--row-h`, `--raise-1`, label face 500 11px `--muted`, sentence case. Numeric columns are right-aligned. The sortable column header shows `▲`/`▼` in `--amber`, and the sorted column's header text becomes `--text`.
+- Body rows: `--row-h` (18px), mono 12px, padding 0 `--s-2`. There is no zebra striping and no row borders. Hover is `--raise-1`. The keyboard-selected row is `--crimson-wash` plus a 2px crimson inset on the left (`box-shadow: inset 2px 0 0 var(--crimson)`). Selection never changes text colors.
+- Cell defaults: ticker or code cells are `--amber` 500, values are `--text`, changes are signed and colored, units and secondary data are `--muted`.
+- Group rows: a full-width cell with cyan label-face 500 12px text and a `--s-2` top gap. These replace boxed sub-tables.
+- **Depth bars (optional per column)**: for volume, value, score or strength columns, draw a bar behind the number with `background: linear-gradient(to left, <tint> var(--pct), transparent var(--pct))` where the tint is `rgba(255,160,40,.12)` (amber) by default, or up or down at `.14` for signed values. The bar grows from the right edge. Expose it as `Column.bar?: (row) => { pct: number; tone?: 'amber'|'up'|'down' }`, an additive prop.
+- Row enter stagger and FLIP reorder per v2-motion §8.
+
+### 6.3 Num
+
+Unchanged visually: tabular mono with sign and color for `direction`. It gains the `flash` prop, `useTweened` and `Odometer` (v2-motion §4). Area B owns these files.
+
+### 6.4 Badge
+
+Height 16px, padding 0 `--s-1`, label face 500 11px, sentence case, 0 radius, 1px border. Tones:
+
+| Tone | Text | Border | Fill |
+|---|---|---|---|
+| default | `--text` | `--line-strong` | none |
+| amber | `--amber` | `--amber-dim` | none |
+| crimson | `--crimson-hi` | `--crimson` | none |
+| up / down | `--up` / `--down` | same at 50% | none |
+| muted | `--muted` | `--line` | none |
+| solid | `--on-fill` | none | `--amber` |
+
+Badges never pulse. A badge that carries a direction must also carry a sign or arrow in its text.
+
+**Filled state cells** (ARA, ARB, hit target, suspended) are a cell style rather than a badge: a full-cell fill with text at AA contrast. ARA is `--up` fill with black text, ARB is `--down` fill with black text, and suspended is `--raise-3` fill with `--text`. Expose `.cell-ara`, `.cell-arb` and `.cell-halt` as globals in global.css (area A).
+
+### 6.5 Button
+
+| Variant | Rest | Hover | Active / pressed |
+|---|---|---|---|
+| default | `--raise-2` fill, 1px `--line-strong`, `--text` | `--raise-3` | `transform: translateY(1px)` |
+| primary | `--amber` fill, `--on-fill` text, no border | `--amber-hi` | translateY(1px) |
+| ghost | transparent, `--amber` text | `--raise-1` fill | translateY(1px) |
+| `active` prop | `--select` fill, white text, 1px `--select` border | same | — |
+
+All variants are 22px tall, padded 0 `--s-2`, label face 500 12px, sentence case. Disabled is `--faint` text with no hover and `cursor: default`. Focus-visible is a 1px crimson outline with 1px offset. The press state applies on `:active` with no transition (v2-motion §3). A button with a key binding shows its keycap after the label: `Refresh  [r]`.
+
+**Segmented control** (timeframes, presets): adjacent default buttons with -1px overlap, where the selected one uses `active`. This is how GP's `1D 1W 1M 3M 1Y 5Y` and EQS presets look.
+
+### 6.6 Empty, ErrorState, Spinner, Skeleton
+
+These are terminal messages, not illustrations. They are left-aligned at the top-left of the pane body, padded `--s-3`, with a maximum width of 60ch.
+
+```
+No forecast for BBCA yet                       ← label face 600 13px --amber
+Forecasts run after the daily close (16:15 WIB). Queue one now or check back.
+                                               ← prose 13px --muted
+[INS!] Queue research   [Esc] Back             ← keycaps + label-face actions
+```
+
+- **Empty**: as above. There is no halftone, slash or icon. `children` render as the action row, using Buttons or keycap plus text.
+- **ErrorState** (`tone="error"`): a 2px crimson left border on the block. The first line shows `ERR 503` in mono 700 `--crimson-hi`, then the title in `--text`. The message is in prose `--text` (full contrast, `role="alert"`). Retry is a primary Button. The copy stays the plain, specific messages already in `describe()`.
+- **Spinner**: the glasses are removed. It is an indeterminate 2px × 48px `--amber` bar moving across a 120px `--line` track (transform `translateX`, 900ms linear, iterating only while mounted), followed by the label (default "Loading") in the label face `--muted`. The `size` prop scales the track width (`size * 3px`). Under reduced motion it is a static bar at 30% plus the label. This is the one allowed loop besides the live lamp, and it exists only while something is loading.
+- **Skeleton**: static `--raise-1` bars at row height with the widths of the real columns. It has no shimmer and appears after 150ms (v2-motion §8).
+
+### 6.7 Keycaps (`kbd`, global classes)
+
+16px tall, min width 16px, padding 0 `--s-1`, mono 700 10px, `--radius-key`, and a 2px bottom edge in the `-edge` color (the only "depth" in the UI).
+
+| Class | Fill | Legend | Used for |
+|---|---|---|---|
+| `kbd` (plain) | `--key-plain` | `--text` | all ordinary keys: `/`, `Tab`, `j`, `Alt` |
+| `.key-fn` / `.key-sector` | `--key-sector` | black | function codes (GP, DES, MKT) and the focused pane code |
+| `.key-go` | `--key-go` | white | Enter / run / confirm |
+| `.key-cancel` | `--key-cancel` | white | Esc / cancel / stop |
+
+When a shortcut fires (for example `Esc` in HELP or the command footer), the matching visible keycap may invert for 80ms (fill becomes `--text`, legend becomes the fill color). This is press feedback, not decoration. Optional: area C does it in CheatSheet, and area B in the command footer.
+
+### 6.8 FreshnessBadge
+
+The same thresholds are kept. Copy: `Delayed 14:32:05` (muted), `Stale 14:12:05` (amber), `Stale 13:40:00` (crimson), `No data yet` (muted). The time is mono and the word is in the label face.
+
+## 7. Alerts, insight, research
+
+### 7.1 Alert toasts (`components/alerts/AlertToaster.tsx`)
+
+Toasts are stacked bottom-right above the status bar, 320px wide, `--raise-2`, with a 1px `--line-strong` border and a 2px left bar colored by kind: alert rule hit `--amber`, ARA/ARB `--up`/`--down`, research done `--cyan`, error `--crimson`.
+
+```
+Alert · BBCA crossed MA200                 14:32
+9,875  +1.02% ▲   MA200 9,790                     ← mono 12px
+[Enter] Open GP   [Esc] Dismiss
+```
+
+The first line uses the label face 600 12px with the kind word in `--amber`. Motion follows v2-motion §3 (120ms in, 80ms out). There is no calling-card shape, stamp or violet. A toast auto-dismisses after 8s unless it is hovered or focused.
+
+### 7.2 Insight (`components/insight/*`, `functions/ins/InsightView.tsx`)
+
+- The headline is prose 500 15px `--text`. The meta line holds the ticker (amber mono), the generated time, the runner, and a FreshnessBadge.
+- The summary is prose 13px `--text` with a `max-width` of 72ch.
+- **Driver chain** rows (`factor → ticker`) are mono 12px: the factor in `--cyan`, a `→` in `--faint`, the ticker as a `TickerChip`, then the live move with `<Num flash>`. These are 18px rows forming one table, not cards.
+- `TickerChip`: mono 500 12px `--amber`, 1px `--line-strong` border, 16px tall, and `--raise-1` on hover. Click or Enter opens DES.
+- Source chips: label face 11px `--muted` showing `Publisher · 23 Oct`, with a 1px `--line` border. They are links, so they turn `--cyan` on hover.
+- `SentimentMeter`: a 120×6px track in `--line`, with a single 2px vertical needle in `--text` at the score position, and the endpoints labeled `Bearish` / `Bullish` in 10px `--muted`. The score number sits to the right, signed and colored. There are no gradients.
+
+### 7.3 Research (`components/research/*`)
+
+`ResearchUsage` is mono 11px `9/20` with a 40×4px usage bar (fill `--amber`, or `--crimson` at 90% or more of the cap) using `scaleX`. The job list in RQ is a standard Table with status in the label face: `Queued` muted, `Running` amber with a static square, `Done` `--text`, `Failed` `--crimson-hi`.
+
+## 8. Function screens (`web/src/functions/`)
+
+Shared rules: every screen opens with a **hero line**: the ticker in amber mono 500 15px, the name in the label face 500 15px `--text`, then the last price with `<Num flash>` and the change. After that come dense sections with Panel headers. Sections are separated by `--s-3` and a 1px `--line` rule. There are no cards inside panes.
+
+| Screen | Specifics |
+|---|---|
+| MKT | IHSG hero 28px with `Odometer` plus a tweened change line. Breadth bar: one 6px track, green advancing `scaleX` from the left, red declining from the right, unchanged as a gap, counts above it in mono. Movers tables with FLIP. Macro strip as a dense 2-column table, not tiles. Sparkline 1px `--text` line, shutter reveal, no fill under 40px height. |
+| DES | Hero line, then a two-column grid: the left holds the description (prose) and the profile; the right holds a "Snapshot" label/value table (label face `--muted` left, mono `--text` right, 18px rows, group labels cyan). |
+| GP | The chart fills the pane. A toolbar row above it holds the segmented timeframes, the indicator menu button and `f`/`v` toggles as small buttons with keycaps. The legend is overlaid top-left on the chart in mono 11px: `BBCA  O 9,850 H 9,900 L 9,825 C 9,875`. The forecast cone uses an amber line plus a `rgba(255,160,40,.10)` band, never crimson. |
+| FA | Valuation table: company vs sector median, with the deviation as a depth bar (up or down tint). |
+| FCST | Ranges table, signal-score breakdown as depth bars, and the track record as a mono hit-rate table. |
+| INS | Section 7.2. `INS!` shows a queued state as an Empty with the job id and `[RQ] Open queue`. |
+| REL | Graph nodes: 1px `--line-strong` square nodes with amber mono labels. The focused ticker node is filled `--amber` with black text. Edges are 1px `--line-strong`, positive relations `--up` at 60%, negative `--down` at 60%. The list view is a Table with cyan group rows per relation type. |
+| N | Headline list: time (mono `--muted` 5ch), source code (mono `--text` 4ch), headline (mono 12px `--amber`, truncated), tickers (TickerChips). Unread rows are `--text`; read rows are `--amber-dim`. |
+| W | Table with group rows, depth bars on volume, and the `--line-faint` rule every 5 rows. |
+| EQS | Presets as a segmented control. Filter form fields are 22px, `--bg`, 1px `--line-strong`, mono, crimson outline on focus. The results table follows W. |
+| SECT | Treemap tiles with 1px `--bg` gaps (no borders). Fill: a diverging scale from `--down` (at −3% or below) through `#1a1a1a` (0) to `--up` (at +3% or above), in 7 steps. The label is mono with black text on fills at ≥ 50% lightness and `--text` otherwise. The rotation chart uses 1px lines, the current point as a 4px square, and quadrant labels in the label face `--muted`. |
+| COMP | Up to 4 series in fixed order: amber `#ffa028`, cyan `#4fa3e0`, white `#f2f2f2`, then grey `#8c8c8c` dashed. No purple. The legend is mono, with each series color shown as an 8×2px swatch. |
+| ALRT | Rules table plus a create form in the same style as EQS. Triggered state is a filled `cell-ara`/`cell-arb`-style cell, or an amber badge. |
+| ASK, BRIEF | Prose screens: label-face section headers, prose 13px at 72ch, numbers inline in mono, tickers as TickerChips. |
+| RQ | Section 7.3. |
+| HELP | A two-column cheat sheet. Function codes are `.key-fn` keycaps with the name in the label face. Shortcut rows have keycaps on the left and the action in the label face `--text`. The `m` mascot entry is removed. |
+
+### 8.1 Chart colors (`components/chart/useChart.ts`)
+
+```ts
+export const CHART_COLORS = {
+  bgTop: '#10151c',
+  bgBottom: '#07090c',
+  bg: '#07090c',           // shutter overlay + fallback
+  grid: '#1c232c',
+  border: '#222222',
+  text: '#8c8c8c',
+  amber: '#ffa028',
+  line: '#f2f2f2',         // single-series line
+  crimson: '#c8102e',
+  up: '#22c55e',
+  down: '#f43f5e',
+  upAlpha: 'rgba(34, 197, 94, 0.35)',
+  downAlpha: 'rgba(244, 63, 94, 0.35)',
+}
+```
+
+- Background: `{ type: ColorType.VerticalGradient, topColor: bgTop, bottomColor: bgBottom }`.
+- Grid: `style: LineStyle.Dotted` on both axes, `grid` color.
+- Crosshair: dashed lines in `--muted` (`#8c8c8c`). The label background is `#242424` with `--text` labels, not crimson.
+- Price scale: border `#222`. The last-value label is colored by direction (the library default for candlesticks; set it for line series by comparing the last value to the previous close).
+- Candles: up body `up`, down body `down`, wicks the same color, and no borders.
+- Volume: `upAlpha`/`downAlpha` histogram on its own scale, 20% of the height.
+- Font: JetBrains Mono 11px.
+- Reveal: `revealChart` shutter and `lastPriceAnimation` follow v2-motion §6.
+
+## 9. Global CSS (`web/src/theme/global.css`)
+
+1. `body`: `--canvas` background, `--amber` color, `--font-mono`, `--fs-sm`, `line-height: var(--lh-data)`, `tabular-nums slashed-zero`. `overflow: hidden` is kept.
+2. Utility classes are kept with their names: `.muted`, `.value` (`--text`), `.up`, `.down`, `.display` (now the label face 600 15px, sentence case), plus the new `.label` (label face 500 11px `--muted`), `.prose` (prose 13px/1.55, 72ch), `.cyan`, `.cell-ara`, `.cell-arb` and `.cell-halt`.
+3. `kbd`, `.key-fn`, `.key-sector`, `.key-go` and `.key-cancel` follow 6.7.
+4. Focus: `:focus-visible { outline: 1px solid var(--crimson); outline-offset: 1px; }`. Inside dense tables and lists, use the inset variant `outline-offset: -1px`.
+5. Scrollbars: `scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent;` plus a WebKit equivalent with a 6px thumb.
+6. `::selection` is `--select` with white text.
+7. The reduced-motion block from v2-motion §11 applies.
+8. `.halftone` and all v1 utilities are deleted.
+
+## 10. The Sumire app icon
+
+The icon is a geometric bust on a black tile: a crimson hair disc with a ponytail sweeping right, a pale face under the fringe, black round glasses, and a small amber hair tie. It was rendered at 16, 24, 32 and 64px on dark and white backgrounds. At 16px it still reads as "red-haired girl with round glasses". An earlier "crimson tile with two amber lenses" draft was rejected because at small sizes it read as a creature face, not a person.
+
+`web/public/favicon.svg` (the same paths are in `components/brand/SumireMark.tsx`):
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#000"/>
+  <path d="M24 7c6 3 8 11 6 20-2-4-4-6-7-7z" fill="#8E0C22"/>
+  <circle cx="15" cy="15" r="12.5" fill="#C8102E"/>
+  <path d="M6 25V17c3-1 5-3 6-6 2 3 7 5 12 5v9c0 4-4 7-9 7s-9-3-9-7z" fill="#F2D3BE"/>
+  <rect x="25" y="5" width="4.5" height="3" fill="#FFA028" transform="rotate(40 27 6.5)"/>
+  <circle cx="10.5" cy="21" r="3.6" fill="none" stroke="#000" stroke-width="2"/>
+  <circle cx="19.5" cy="21" r="3.6" fill="none" stroke="#000" stroke-width="2"/>
+  <path d="M14 20.5h2" stroke="#000" stroke-width="1.6"/>
+</svg>
+```
+
+- `SumireMark({ size = 16, label })` renders the same SVG inline. Without `label` it is `aria-hidden`; with `label` it is `role="img"`. Use it in the top bar (16px) and the boot sequence (32px) only.
+- `index.html`: `<meta name="theme-color" content="#000000">`, and the title is `Sumire`. Area B may set `document.title` to `IHSG 7,312 +0.42% · Sumire` while the market is live.
+- Skin `#F2D3BE` is the only non-token color in the app, and it appears only inside the icon.
+
+## 11. Motion mapped to components
+
+Durations and easings come from section 3.1. The behavior is specified in v2-motion.md.
+
+| Component | Effect | Owner |
 |---|---|---|
-| Alerts empty | No alerts yet | I'll watch a price or MA cross for you. Add one with New alert. |
-| Watchlist empty | Empty watchlist | Type a ticker and press <GO>, then `W` to add it here. |
-| News empty | No news for BBCA | Nothing in the feeds since 07:00 WIB. |
-| Insight empty | No notes on BBCA yet | Queue research with `BBCA ASK` <GO>. |
-| Error: server down | Server not reachable | The Sumire server at localhost:5080 isn't answering. Start it, then retry. |
-| Error: 404 | Not found | There's no data for this ticker yet. |
-| Error: 5xx | Server error (503) | {message} |
-| Spinner labels | | `Loading BBCA chart`, `Reading the news` |
+| `ui/Num` | `flash` tick overlay, `useTweened`, `Odometer` | B |
+| `tape/TickerTape` | constant-speed scroll, pause, `<Num flash>` | B |
+| `watchlist/WatchlistRail` | shared crimson marker slide, row enter, `<Num flash>` | B |
+| `shell/Pane` | focus hairline, `pane-in`, back/fwd direction, delayed Suspense fallback | B |
+| `shell/CommandLine` | list open/close, shared highlight bar, error nudge | B |
+| `shell/StatusBar`, `TopBar` | live lamp pulse (only loop) | B |
+| `boot/Boot` | boot sequence | B |
+| `alerts/AlertToaster` | toast in/out | C |
+| `ui/Table` | row enter stagger (prop-free: on first data) | C |
+| `ui/Spinner`, `ui/Skeleton` | indeterminate bar; delayed static skeleton | C |
+| `research/ResearchUsage` | usage bar `scaleX` transition | C |
+| `chart/useChart` + `chart/reveal.ts` | shutter reveal, `lastPriceAnimation`, refetch dim | D |
+| `mkt/*` | odometer usage, breadth `scaleX`, movers FLIP, sparkline shutter | D |
+| `lib/motion.ts` | `reducedMotion()` helper | A |
 
-Implementers: change only the strings, not the logic. Use real keycaps (`<kbd>`) where a key is named. Errors don't apologize.
+Every `.module.css` that animates defines its own `@keyframes` (CSS modules hash keyframe names).
 
----
+## 12. Implementer checklists
 
-## 8. Per-area checklist
+The areas can run in parallel because every area codes against the token names in 3.1. Area A lands first if possible, and the aliases keep everything building in the meantime. Each area verifies with `cd web && npm run build && npm run lint`. No commits (the lead commits), no new npm dependencies, no AI or tool names in code. Do not change props, exports, data fetching, keyboard behavior (except removing `m`) or localStorage keys.
 
-Each implementer owns one row. Tokens (section 1) land first. Everything else reads tokens and must not hardcode hex values except inside the mascot SVG.
+### A. Theme and icon
 
-### A. Theme + fonts (`web/index.html`, `web/src/theme/tokens.css`, `web/src/theme/global.css`)
-- [ ] Replace the tokens (section 1), font link (1.1), keycaps (1.3), halftone (1.4), focus/scrollbar/selection (1.5) and keyframes (section 4).
-- [ ] Add `components/ui/CutText.tsx` + `CutText.module.css` (1.2) and `components/ui/Starburst.tsx` (1.4). Export both from `components/ui/index.ts`.
+Files: `web/src/theme/tokens.css`, `web/src/theme/global.css`, `web/index.html`, `web/public/favicon.svg`, `web/src/lib/motion.ts` (new), `web/src/components/brand/SumireMark.tsx` (new).
 
-### B. Shell (`web/src/shell/*.module.css`, small markup in `TopBar.tsx`, `CommandLine.tsx`, `Pane.tsx`, `ShortcutOverlay.tsx`)
-- [ ] TopBar (2.1): no gradient, CutText wordmark, square status block, no pulse.
-- [ ] CommandLine (2.2): no glow, crimson plate on focus, keycap hints, cut selected row.
-- [ ] Pane (2.3): key-fn code chip on the focused pane, new ribbon, outline focus.
-- [ ] App (2.5): 1px grid, no backdrop blur, plate shadows, new animations.
-- [ ] StatusBar (2.4).
-- [ ] ShortcutOverlay / HELP cheat sheet: every key shown as `kbd` with the role classes (GO/ESC/function codes).
+- [ ] Replace tokens.css with section 3.1 exactly, including the legacy aliases.
+- [ ] Replace the Google Fonts link (section 3.3) and set theme-color to `#000000`.
+- [ ] global.css per section 9: body, utilities (keep names, add `.label .prose .cyan .cell-ara .cell-arb .cell-halt`), keycaps (6.7, with `.key-sector` as an alias of `.key-fn`), focus, scrollbars, `::selection`, and the reduced-motion block. Delete `.halftone` and the other v1 utilities.
+- [ ] `lib/motion.ts`: `export const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches`.
+- [ ] Favicon and `SumireMark` per section 10. Check them at 16px.
+- [ ] Grep that `--font-cut` and `--tone-*` have no remaining users after C and D finish (report any to the lead).
 
-### C. UI kit + alerts + mascot (`web/src/components/ui/*`, `components/alerts/*`, `components/mascot/*`)
-- [ ] Panel, Table, Badge, Button, Empty, ErrorState, Spinner, Skeleton (section 3).
-- [ ] AlertToaster calling card (section 6). Zero purple left (`grep -ri "8b5cf6\|a78bfa\|violet" *.css` returns nothing color-related).
-- [ ] New Portrait placeholder SVG (5.1-5.4), bubble (5.5), figure drop shadow, no bob.
+### B. Shell, tape, watchlist, motion hooks
 
-### D. Feature components + screens (`components/insight|research|tape|watchlist/*`, `web/src/functions/**/*.module.css`)
-- [ ] TickerTape (2.6), WatchlistRail (2.7).
-- [ ] InsightCard: the summary left rule stays crimson 4px. Source chips become Badge-style (radius 0, 16px). The `.warnings` block becomes `border-left: 3px solid var(--warn); background: transparent;`. The headline of a brief uses Anton `--fs-d2` `--paper`. TickerChip: radius 0, amber code, white price.
-- [ ] Research: progress/usage bars are square, the fill is `--amber` and the track is `--panel-2`. No gradients.
-- [ ] Every `functions/**/*.module.css`:
-  - remove `border-radius` (except real circles), `linear-gradient`/`radial-gradient` used as decoration, blurred `box-shadow` (use `var(--plate)` or nothing), and `backdrop-filter`;
-  - replace hardcoded colors with tokens (cool greys go to `--panel*`/`--border*`, purple/blue to `--amber` or `--crimson` by role);
-  - set table-like lists to `--row-h` rows and ledger rules;
-  - section headings inside screens: amber-dim 11px uppercase with a trailing 1px `--amber-deep` rule (the same as the command-list section header), **not** another crimson tab (only the Panel title is a crimson tab);
-  - MKT: the IHSG hero value at `--fs-d3` mono 700 white with `text-shadow: 0 0 2px var(--amber-glow)`. That's the only glow in the app. Breadth bars may use block characters (`█▌░`) in up/down colors;
-  - charts (GP/COMP/FCST/SECT): grid lines `--border`, axis text `--amber-dim`, crosshair `--amber`, series colors unchanged for up/down. Forecast bands are `--amber` at 0.12 alpha (no blue);
-  - EQS form inputs: square, `--bg` background, `--border-strong` border, focus `outline: 2px solid var(--crimson)`.
+Files: `web/src/shell/**`, `web/src/components/tape/**`, `web/src/components/watchlist/**`, `web/src/components/boot/**` (new), `web/src/components/ui/Num.tsx` (+ `Num.module.css`), `web/src/components/ui/useTweened.ts` (new), `web/src/components/ui/Odometer.tsx` (+ css, new), `web/src/components/ui/index.ts` (add exports only).
 
-### Verification (every implementer)
-- `cd web && npm run build` and `npm run lint` pass. Don't start the API server.
-- `grep -rnE "border-radius: *[1-9]|backdrop-filter|#8b5cf6|#a78bfa|shimmer|rgba\(0, ?0, ?0, ?0\.[0-9]+\) *[0-9]" web/src --include=*.css` returns nothing (the only exception is `--radius-key` and 50% circles).
-- Keyboard: Tab through the top bar, command line and a pane. A crimson focus outline is visible everywhere, including on clipped elements.
-- Reduced motion (DevTools > Rendering > emulate): nothing animates except instant state changes. The spinner shows a static glint and a label.
+- [ ] TopBar: brand mark and wordmark, amber loaded-security field, crimson function slab, layout button, clock, and session lamp (5.2). Remove "VIOLET".
+- [ ] CommandLine: input styling, three-column suggestion list, shared highlight bar, keycap footer, error line plus nudge (5.2, v2-motion §7).
+- [ ] Pane: strip anatomy, crimson index cell, keycap code when focused, focus hairline, `pane-in`, back/fwd direction, delayed Suspense fallback (5.3). Delete the ribbon. Add the optional related-functions footer (`shell/related.ts`).
+- [ ] App: 2px pane gutters on `--canvas`, toast styling, and removal of the `m` handler and any mascot mount.
+- [ ] ShortcutOverlay: `--raise-2` popover, keycaps, no `m`.
+- [ ] StatusBar: lamps table (5.4) and the research segment.
+- [ ] TickerTape (5.5) and WatchlistRail (5.6) with motion per v2-motion §5 and §8.
+- [ ] Num `flash` prop, `useTweened`, `Odometer` (v2-motion §4). Export the new ones from `ui/index.ts`.
+- [ ] Boot sequence (5.7, v2-motion §9).
+- [ ] Check: no `clip-path`, no `box-shadow` except focus and the 2px row inset, and no `border-radius` in shell modules.
 
----
+### C. UI kit, alerts, insight, research
 
-## 9. Self-review against the brief
+Files: `web/src/components/ui/**` except the B-owned files above, `web/src/components/alerts/**`, `web/src/components/insight/**`, `web/src/components/research/**`.
 
-- *Is any of this the default dark dashboard?* The cool blue-grey surfaces, rounded 2px boxes, gradient headers, glow focus and purple alerts all were. Each is replaced by a warm phosphor ink, a hard plate, or crimson cut paper.
-- *Is crimson overused?* Crimson only appears on: wordmark plate, panel title tabs, pane number (focused), ribbon, selected command row, active-row bar, calling cards and the mascot. Buttons moved to the yellow Bloomberg key so crimson stays rare.
-- *Density kept?* Rows are 20px, header strips 22-26px, padding 6-10px, panes on 1px lines. Nothing grew.
-- *One memorable thing?* Crimson cut paper with hard black plates. The ransom letters are limited to 3 words app-wide so they stay a surprise.
+- [ ] Panel (6.1), Table (6.2 including the optional `bar` column prop and the row-enter stagger), Badge (6.4), Button (6.5, including the segmented-control pattern via `active`), Empty, ErrorState, Spinner and Skeleton (6.6), FreshnessBadge copy (6.8).
+- [ ] Remove the glasses Spinner, the halftone and slash in Empty, and any `CutText` or `Starburst` component and export.
+- [ ] AlertToaster (7.1): remove the calling card and "Violet". Define its keyframes inside the module.
+- [ ] Insight components (7.2) and research components (7.3).
+- [ ] Update `components/ui/README.md` to describe the v2 kit in a few lines.
+
+### D. Function screens and chart colors
+
+Files: `web/src/functions/**`, `web/src/components/chart/**` (`useChart.ts`, new `reveal.ts`).
+
+- [ ] `CHART_COLORS` and chart options per 8.1. `revealChart` plus `reveal()` on `useChart`, `lastPriceAnimation`, refetch dim (v2-motion §6).
+- [ ] Every screen per section 8: hero line, Panel sections, no cards, sentence-case labels, cyan group rows, depth bars where listed.
+- [ ] MKT: Odometer (from B; if B hasn't landed yet, use `Num` and leave a TODO for the lead), breadth bar, movers FLIP, sparkline shutter.
+- [ ] HELP: remove the `m` entry in `help/shortcuts.ts`. Function codes as `.key-fn` keycaps.
+- [ ] SECT diverging scale and COMP series colors as specified (no purple).
+- [ ] Remove all v1 devices in function modules: clip-path slants, plates, `--font-display` headline styling, halftone, `--tone-*`, `--ease-snap`, and global keyframe references.
+
+### Cleanup (last, lead or area A)
+
+- [ ] Remove the legacy alias block from tokens.css once `grep -rn "var(--panel\b\|--panel-2\|--border\b\|--ink\|--paper\|--plate\|--font-display\|--key-fn\b\|--dur-fast" web/src` is empty, renaming the remaining usages to the v2 names.
+
+## 13. Acceptance
+
+A screenshot of the 4-pane layout passes when:
+
+1. The only filled crimson objects are the brand mark, the function slab, the focused pane's index cell and focus hairline, and the keyboard-selected row wash.
+2. The only filled amber object is the loaded-security field (plus primary buttons, if visible).
+3. Every number is mono, right-aligned and tabular, and every change has a sign.
+4. Labels are sentence case in the condensed face, and codes are uppercase mono. No tracked all-caps labels appear.
+5. No rounded corners, soft shadows, gradients (except the chart background), halftone, slants, serif display type or mascot.
+6. On a quote push, only the changed cells flash, and nothing else on screen moves except the tape and the live lamp.
