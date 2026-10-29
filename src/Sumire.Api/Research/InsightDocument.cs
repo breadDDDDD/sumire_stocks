@@ -49,13 +49,21 @@ public sealed record InsightDocument(
             "med" or "medium" => "med",
             _ => "low",
         };
+        // Models leave out fields or send nulls inside lists; the validator and the UI expect no nulls anywhere.
+        static List<string> Strings(List<string>? list) => (list ?? []).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
         return doc with
         {
-            Drivers = (doc.Drivers ?? []).Select(d => d with { Linked = d.Linked ?? [], SourceIds = d.SourceIds ?? [], Evidence = d.Evidence ?? "" }).ToList(),
-            Connections = (doc.Connections ?? []).Select(c => c with { To = c.To ?? [] }).ToList(),
-            Catalysts = doc.Catalysts ?? [],
-            Risks = doc.Risks ?? [],
-            Sources = doc.Sources ?? [],
+            Drivers = (doc.Drivers ?? []).OfType<InsightDriver>()
+                .Select(d => d with { Claim = d.Claim ?? "", Evidence = d.Evidence ?? "", Linked = Strings(d.Linked), SourceIds = Strings(d.SourceIds) })
+                .Where(d => d.Claim != "" || d.Evidence != "").ToList(),
+            Connections = (doc.Connections ?? []).OfType<InsightConnection>()
+                .Select(c => c with { From = c.From ?? "", To = Strings(c.To), Text = c.Text ?? "" }).ToList(),
+            Catalysts = (doc.Catalysts ?? []).OfType<InsightCatalyst>()
+                .Select(c => c with { Date = c.Date ?? "", Event = c.Event ?? "" }).Where(c => c.Event != "").ToList(),
+            Risks = Strings(doc.Risks),
+            Sources = (doc.Sources ?? []).OfType<InsightSource>()
+                .Select(x => x with { Id = x.Id ?? "", Title = x.Title ?? "", Url = x.Url ?? "", Publisher = x.Publisher ?? "", PublishedAt = x.PublishedAt ?? "" })
+                .ToList(),
             Sentiment = double.IsFinite(doc.Sentiment) ? Math.Clamp(doc.Sentiment, -1, 1) : 0,
             Confidence = confidence,
             WhatWouldChangeThisView = doc.WhatWouldChangeThisView ?? "",

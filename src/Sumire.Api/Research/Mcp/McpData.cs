@@ -13,6 +13,8 @@ public interface IMcpData
     /// <summary>The job, tracked: changes are written by <see cref="SaveAsync"/>.</summary>
     Task<ResearchJob?> FindJobAsync(long id, CancellationToken ct);
     Task SaveAsync(CancellationToken ct);
+    /// <summary>Atomically marks the job running for MCP if it is pending (or already MCP's); false when another runner took it.</summary>
+    Task<bool> TryClaimAsync(long id, DateTimeOffset now, CancellationToken ct);
     Task<long> AddInsightAsync(Insight insight, CancellationToken ct);
     Task<EnqueueResult> EnqueueAsync(EnqueueRequest request, CancellationToken ct);
     /// <summary>Packet inputs without headlines (snapshots and overview are quick reads, no RSS).</summary>
@@ -40,6 +42,12 @@ public sealed class McpData(
     public Task<ResearchJob?> FindJobAsync(long id, CancellationToken ct) => db.ResearchJobs.FirstOrDefaultAsync(j => j.Id == id, ct);
 
     public Task SaveAsync(CancellationToken ct) => db.SaveChangesAsync(ct);
+
+    public async Task<bool> TryClaimAsync(long id, DateTimeOffset now, CancellationToken ct) =>
+        await db.ResearchJobs
+            .Where(j => j.Id == id && (j.Status == "pending" || (j.Status == "running" && j.Runner == SumireMcpTools.Runner)))
+            .ExecuteUpdateAsync(s => s.SetProperty(j => j.Status, "running").SetProperty(j => j.Runner, SumireMcpTools.Runner)
+                .SetProperty(j => j.StartedAt, now), ct) == 1;
 
     public async Task<long> AddInsightAsync(Insight insight, CancellationToken ct)
     {

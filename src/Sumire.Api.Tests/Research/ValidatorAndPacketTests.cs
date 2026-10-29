@@ -114,6 +114,29 @@ public class ValidatorTests
     }
 
     [Fact]
+    public void Document_with_nulls_inside_lists_validates_without_throwing()
+    {
+        var doc = InsightDocument.TryParse(JsonNode.Parse("""
+            { "summary": "Coal names rallied.",
+              "drivers": [ null, { "claim": null, "evidence": "ADRO up", "linked": ["ADRO", null], "sourceIds": null } ],
+              "connections": [ { "from": null, "to": null, "text": null } ],
+              "catalysts": [ { "date": null, "event": null } ],
+              "risks": [ null, "Coal price reversal" ],
+              "sources": [ null, { "id": null, "title": null, "url": null, "publisher": null, "publishedAt": null } ] }
+            """), out var error);
+        Assert.Null(error);
+        Assert.Single(doc!.Drivers);
+        Assert.Equal(["ADRO"], doc.Drivers[0].Linked);
+        Assert.Equal(["Coal price reversal"], doc.Risks);
+        Assert.Empty(doc.Catalysts);
+
+        var issues = Validate(doc);
+        Assert.Contains(issues, i => i.Code == "driver_unsourced");
+        Assert.Contains(issues, i => i.Code == "source_url_invalid");
+        Assert.NotNull(doc.BodyJson());
+    }
+
+    [Fact]
     public void Body_json_keeps_everything_but_sources_and_lists_linked_tickers()
     {
         var body = JsonNode.Parse(Doc().BodyJson())!;

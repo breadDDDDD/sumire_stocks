@@ -24,6 +24,13 @@ sealed class FakeMcpData : IMcpData
 
     public Task SaveAsync(CancellationToken ct) { Saves++; return Task.CompletedTask; }
 
+    /// <summary>Simulates the web worker claiming the job between the read and the claim.</summary>
+    public bool LoseClaimRace { get; set; }
+
+    public Task<bool> TryClaimAsync(long id, DateTimeOffset now, CancellationToken ct) =>
+        Task.FromResult(!LoseClaimRace && Jobs.FirstOrDefault(j => j.Id == id) is { } j
+            && (j.Status == "pending" || (j.Status == "running" && j.Runner == "mcp")));
+
     public Task<long> AddInsightAsync(Insight insight, CancellationToken ct)
     {
         insight.Id = Insights.Count + 1;
@@ -125,6 +132,15 @@ public class McpToolsTests
     {
         Assert.Contains("agy", (string?)Parse(await _tools.GetResearchJobAsync(4, default))["error"]);
         Assert.NotNull(Parse(await _tools.GetResearchJobAsync(999, default))["error"]);
+    }
+
+    [Fact]
+    public async Task Job_claimed_by_the_worker_in_the_meantime_is_refused()
+    {
+        _data.LoseClaimRace = true;
+        Assert.Contains("another runner", (string?)Parse(await _tools.GetResearchJobAsync(1, default))["error"]);
+        Assert.Equal("pending", _data.Jobs[0].Status);
+        Assert.Equal(0, _data.Saves);
     }
 
     [Fact]

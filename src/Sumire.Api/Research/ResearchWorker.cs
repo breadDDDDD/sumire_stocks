@@ -55,7 +55,16 @@ public sealed class ResearchWorker(
             if (pick.Entry is null) { StoppedReason = pick.BlockedReason; break; }
             var job = await queue.ClaimNextAsync(ct);
             if (job is null) break;
-            if (!await RunJobAsync(job, ct)) break;
+            try
+            {
+                if (!await RunJobAsync(job, ct)) break;
+            }
+            catch (Exception ex)
+            {
+                // Without this the job would sit in 'running' until stale recovery picks it up.
+                await ReleaseAsync(job, ex, ct.IsCancellationRequested);
+                throw;
+            }
             processed++;
         }
         return processed;
@@ -182,6 +191,37 @@ public sealed class ResearchWorker(
             await FinishAsync(job, "done", issues.Count > 0 ? $"{issues.Count} validator warning(s)" : null, ct);
             await notifier.InsightReadyAsync(new InsightReady(job.Kind, job.Subject, insight.Id), ct);
             return true;
+        }
+    }
+
+    /// <summary>Shutdown puts the job back without counting the attempt; a crash requeues it once, then fails it.</summary>
+    async Task ReleaseAsync(ResearchJob job, Exception ex, bool cancelled)
+    {
+        try
+        {
+            if (cancelled)
+            {
+                job.Status = "pending";
+                job.Attempts = Math.Max(0, job.Attempts - 1);
+                job.StartedAt = null;
+            }
+            else if (job.Attempts < 2)
+            {
+                job.Status = "pending";
+                job.Error = Db.ShortError(ex);
+            }
+            else
+            {
+                job.Status = "failed";
+                job.Error = Db.ShortError(ex);
+                job.FinishedAt = clock.GetUtcNow();
+                job.Packet = null;
+            }
+            await db.SaveChangesAsync(CancellationToken.None);
+        }
+        catch (Exception saveError) when (saveError is not OutOfMemoryException)
+        {
+            logger.LogWarning("Could not release research job {Id}: {Error}", job.Id, Db.ShortError(saveError));
         }
     }
 

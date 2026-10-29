@@ -47,6 +47,10 @@ public sealed partial class SumireMcpTools(IMcpData data, IInsightNotifier notif
         if (job.Status is "done" or "failed" or "skipped") return Error($"Job {id} is already {job.Status}.");
         if (job.Status == "running" && job.Runner != Runner) return Error($"Job {id} is being run by {job.Runner}; pick another one.");
 
+        // The web worker claims jobs with FOR UPDATE SKIP LOCKED; claim atomically too, so both never run the same job.
+        if (!await data.TryClaimAsync(job.Id, clock.GetUtcNow(), ct))
+            return Error($"Job {id} was just taken by another runner; pick another one.");
+
         var question = Question(job);
         var packet = StoredPacket(job);
         if (packet is null || job.Runner != Runner)

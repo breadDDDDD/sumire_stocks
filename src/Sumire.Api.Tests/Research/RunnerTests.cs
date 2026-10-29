@@ -164,6 +164,51 @@ public class RunnerTests
         Assert.Equal("xyz", output.Stdout.Trim());
     }
 
+    [Fact]
+    public async Task Process_runner_times_out_when_the_process_never_reads_stdin()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        // Far more than a pipe buffer: the write blocks until the process is killed.
+        var cmd = new RunnerCommand("ping.exe", ["-n", "30", "127.0.0.1"], new string('x', 1_000_000), Path.GetTempPath());
+        var output = await ProcessRunner.RunAsync(cmd, TimeSpan.FromSeconds(1), CancellationToken.None).WaitAsync(TimeSpan.FromSeconds(20));
+        Assert.True(output.TimedOut);
+    }
+
+    [Fact]
+    public async Task Process_runner_runs_batch_files_from_a_path_with_spaces()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var dir = Path.Combine(Path.GetTempPath(), "sumire runner " + Guid.NewGuid().ToString("N")[..8]);
+        Directory.CreateDirectory(dir);
+        try
+        {
+            var bat = Path.Combine(dir, "echo args.cmd");
+            await File.WriteAllTextAsync(bat, "@echo %*\r\n");
+            var cmd = new RunnerCommand(bat, ["--output-format", "json", "-p", "reply with the JSON object only."], null, dir);
+            var output = await ProcessRunner.RunAsync(cmd, TimeSpan.FromSeconds(20), CancellationToken.None);
+            Assert.Equal(0, output.ExitCode);
+            Assert.Equal("--output-format json -p \"reply with the JSON object only.\"", output.Stdout.Trim());
+        }
+        finally { Directory.Delete(dir, recursive: true); }
+    }
+
+    [Theory]
+    [InlineData("a & calc")]
+    [InlineData("100%")]
+    [InlineData("line one\nline two")]
+    public void Batch_file_arguments_cmd_would_interpret_are_refused(string arg)
+    {
+        Assert.Throws<ArgumentException>(() => ProcessRunner.CmdLine(@"C:\npm\gemini.cmd", ["-p", arg]));
+    }
+
+    [Fact]
+    public void Batch_file_command_line_quotes_paths_and_json()
+    {
+        Assert.Equal("""
+            "C:\Program Files\npm\claude.cmd" -p --json-schema "{\"type\":\"object\"}"
+            """, ProcessRunner.CmdLine(@"C:\Program Files\npm\claude.cmd", ["-p", "--json-schema", """{"type":"object"}"""]));
+    }
+
     static IResearchRunner Runner(string name) => name switch
     {
         "agy" => new AgyRunner(),

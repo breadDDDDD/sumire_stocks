@@ -15,7 +15,15 @@ public sealed class ResearchQueue(SumireDbContext db, TimeProvider clock, Resear
 {
     public const string PausedKey = "research.paused";
     public const string ExhaustedKey = "research.exhausted";
-    static readonly TimeSpan RunningTimeout = TimeSpan.FromMinutes(15);
+    /// <summary>A job recovered this many times (a run that keeps crashing the process) fails instead of looping.</summary>
+    const int MaxAttempts = 3;
+
+    /// <summary>
+    /// How long a job may stay 'running' before it counts as abandoned. One job can take two full runs (the validator
+    /// retry) plus quick quota fallbacks, so this stays well above the runner timeout.
+    /// </summary>
+    public static TimeSpan StaleAfter(ResearchOptions options) =>
+        TimeSpan.FromTicks(Math.Max(TimeSpan.FromMinutes(15).Ticks, options.Timeout.Ticks * 3 + TimeSpan.FromMinutes(1).Ticks));
 
     public static string NormalizeSubject(string kind, string subject) => kind switch
     {
@@ -68,7 +76,7 @@ public sealed class ResearchQueue(SumireDbContext db, TimeProvider clock, Resear
     {
         var now = clock.GetUtcNow();
         var claimed = await db.ResearchJobs.FromSqlInterpolated($"""
-            UPDATE sumire.research_jobs SET status = 'running', started_at = {now}, attempts = attempts + 1
+            UPDATE sumire.research_jobs SET status = 'running', started_at = {now}, attempts = attempts + 1, runner = NULL, model = NULL
             WHERE id = (
                 SELECT id FROM sumire.research_jobs
                 WHERE status = 'pending' AND kind <> 'batch'
@@ -77,14 +85,26 @@ public sealed class ResearchQueue(SumireDbContext db, TimeProvider clock, Resear
             RETURNING *
             """).AsNoTracking().ToListAsync(ct);
         if (claimed.Count == 0) return null;
-        return await db.ResearchJobs.FirstAsync(j => j.Id == claimed[0].Id, ct);
+        // A job this context already tracks (e.g. timed out and requeued earlier in the same run) would otherwise keep
+        // its old status and attempts, since tracked entities are not refreshed by queries.
+        if (db.ResearchJobs.Local.FirstOrDefault(j => j.Id == claimed[0].Id) is { } tracked)
+        {
+            await db.Entry(tracked).ReloadAsync(ct);
+            return tracked;
+        }
+        db.ResearchJobs.Attach(claimed[0]);
+        return claimed[0];
     }
 
-    /// <summary>Jobs stuck in 'running' (a crashed process) go back to pending.</summary>
-    public Task<int> RecoverStaleAsync(CancellationToken ct)
+    /// <summary>Jobs stuck in 'running' (a crashed process) go back to pending, or fail after <see cref="MaxAttempts"/> tries.</summary>
+    public async Task<int> RecoverStaleAsync(CancellationToken ct)
     {
-        var cutoff = clock.GetUtcNow() - RunningTimeout;
-        return db.ResearchJobs.Where(j => j.Status == "running" && j.StartedAt < cutoff)
+        var now = clock.GetUtcNow();
+        var cutoff = now - StaleAfter(options);
+        var failed = await db.ResearchJobs.Where(j => j.Status == "running" && j.StartedAt < cutoff && j.Attempts >= MaxAttempts)
+            .ExecuteUpdateAsync(s => s.SetProperty(j => j.Status, "failed").SetProperty(j => j.Error, "abandoned while running too many times")
+                .SetProperty(j => j.Packet, (string?)null).SetProperty(j => j.FinishedAt, now), ct);
+        return failed + await db.ResearchJobs.Where(j => j.Status == "running" && j.StartedAt < cutoff)
             .ExecuteUpdateAsync(s => s.SetProperty(j => j.Status, "pending"), ct);
     }
 

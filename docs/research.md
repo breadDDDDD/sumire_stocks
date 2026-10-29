@@ -10,7 +10,7 @@ How Sumire runs AI research through the agent CLIs on your own plans (plan §6.3
 4. **Validation** (`InsightValidator`): every driver has a source id that exists, linked tickers exist (factor codes like COAL and USDIDR are allowed), sources are dated and no older than `RESEARCH_SOURCE_MAX_AGE_DAYS`, URLs are http(s), and a % move or Rp price stated for a single packet ticker matches the packet (tolerance max(0.6pp, 20%); YTD and yearly figures are skipped). On any issue the runner gets one retry with the issues as feedback. After that the insight is stored with `warnings`.
 5. **Store and push**: the insight is saved, the job is marked `done` (its packet is cleared), and `insightReady` goes out over SignalR.
 
-Jobs run one at a time. A timeout (`RESEARCH_TIMEOUT_SECONDS`, default 240 s) kills the process tree and requeues the job once. A quota error marks that runner:model exhausted until the reset time the CLI reports (otherwise until the next WIB midnight) and moves the same job to the next entry. When every entry is exhausted, the job goes back to pending and the queue stops.
+Jobs run one at a time. A timeout (`RESEARCH_TIMEOUT_SECONDS`, default 240 s) kills the process tree and requeues the job once. A quota error marks that runner:model exhausted until the reset time the CLI reports (otherwise until the next WIB midnight) and moves the same job to the next entry. When every entry is exhausted, the job goes back to pending and the queue stops. A job left in `running` by a crashed process goes back to pending after max(15 min, 3 × timeout + 1 min), and fails after 3 attempts; stopping the app mid-job puts it back without counting the attempt. The web worker claims jobs with `FOR UPDATE SKIP LOCKED` and the MCP `get_research_job` claims with a conditional update, so the two never run the same job.
 
 ## Schedule
 
@@ -58,7 +58,7 @@ Checked with `--version`, `--help` and `agy models`, plus one tiny smoke prompt.
 
 **claude 2.1.308 (Claude Code)**: installed. Sumire runs `claude -p --output-format json --json-schema '<inline schema>' --model <m> --tools WebSearch,WebFetch --allowedTools WebSearch,WebFetch --strict-mcp-config` with the prompt on stdin. The parser reads `structured_output`, falls back to a JSON block inside `result`, and treats `is_error: true` with "usage limit" / "hit your limit" text as quota. Not exercised here, to save quota.
 
-**gemini (Gemini CLI)**: not installed. `GeminiCliRunner` runs `gemini --model <m> --output-format json -p "<short instruction>"` with the prompt and schema on stdin, and reads `response` / `error.message`. npm `.cmd` shims are started through `cmd.exe`.
+**gemini (Gemini CLI)**: not installed. `GeminiCliRunner` runs `gemini --model <m> --output-format json -p "<short instruction>"` with the prompt and schema on stdin, and reads `response` / `error.message`. npm `.cmd` shims are started through `cmd.exe /d /s /c` (so a path with spaces works). Arguments containing `% & | < > ^ !` or line breaks are refused for batch files, because cmd.exe would interpret them; prompts for such runners must go on stdin (agy is an `.exe`, so its `-p` prompt is unaffected).
 
 ## Notes for other tasks
 
