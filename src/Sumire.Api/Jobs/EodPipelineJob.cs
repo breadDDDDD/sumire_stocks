@@ -20,6 +20,7 @@ public sealed class EodPipelineJob(
 {
     public static readonly TimeOnly RunAt = new(16, 30);
     static readonly TimeSpan RetryDelay = TimeSpan.FromMinutes(15);
+    const int MaxBehindRetries = 3;
     static readonly SemaphoreSlim RunLock = new(1, 1);
 
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -34,13 +35,44 @@ public sealed class EodPipelineJob(
         await Task.Delay(TimeSpan.FromSeconds(3), clock, ct);
 
         var caughtUp = await TryCatchUpAsync(ct);
+        var behindRetries = 0;
         while (!ct.IsCancellationRequested)
         {
+            // Yahoo sometimes publishes the day's bar late: a run that leaves IHSG behind is retried a few times.
+            if (caughtUp && behindRetries < MaxBehindRetries && await IsBehindAsync(ct))
+            {
+                behindRetries++;
+                caughtUp = false;
+                logger.LogInformation("Bars still behind after the EOD run; retry {Retry} of {Max} in {Delay}",
+                    behindRetries, MaxBehindRetries, RetryDelay);
+            }
+
             var next = caughtUp ? NextRun(calendar.NowWib) : clock.GetUtcNow() + RetryDelay;
             status.NextEodRun = Wib.ToWib(next);
             var wait = next - clock.GetUtcNow();
             if (wait > TimeSpan.Zero) await Task.Delay(wait, clock, ct);
-            caughtUp = caughtUp ? await TryRunAsync(ct) : await TryCatchUpAsync(ct);
+            if (caughtUp)
+            {
+                behindRetries = 0;
+                caughtUp = await TryRunAsync(ct);
+            }
+            else caughtUp = await TryCatchUpAsync(ct);
+        }
+    }
+
+    async Task<bool> IsBehindAsync(CancellationToken ct)
+    {
+        try
+        {
+            using var scope = scopes.CreateScope();
+            var market = scope.ServiceProvider.GetRequiredService<MarketDataService>();
+            var ihsg = catalog.Find("IHSG")?.Code ?? catalog.Core.First().Code;
+            return await market.LastBarDateAsync(ihsg, ct) < market.LastCompletedTradingDay();
+        }
+        catch (Exception ex) when (!ct.IsCancellationRequested)
+        {
+            logger.LogDebug("EOD freshness check failed: {Error}", Db.ShortError(ex));
+            return false;
         }
     }
 

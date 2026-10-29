@@ -147,7 +147,7 @@ public sealed class AnalyticsStore(
             var fundamentals = await db.Fundamentals.AsNoTracking().ToDictionaryAsync(f => f.Code, ct);
             var metrics = await db.ForecastMetrics.AsNoTracking().ToListAsync(ct);
 
-            var since = DateOnly.FromDateTime(clock.GetUtcNow().UtcDateTime).AddDays(-10);
+            var since = calendar.TodayWib.AddDays(-10);
             var recent = await db.Forecasts.AsNoTracking()
                 .Where(f => f.Model != BaselineForecaster.ModelName && f.AsOf >= since)
                 .ToListAsync(ct);
@@ -288,7 +288,7 @@ public sealed class AnalyticsStore(
         if (!Db.IsConfigured) return ([], []);
         try
         {
-            var since = DateOnly.FromDateTime(clock.GetUtcNow().UtcDateTime).AddDays(-10);
+            var since = calendar.TodayWib.AddDays(-10);
             var forecasts = await db.Forecasts.AsNoTracking()
                 .Where(f => f.Code == code && f.Model != BaselineForecaster.ModelName && f.AsOf >= since).ToListAsync(ct);
             var newsSince = clock.GetUtcNow().AddDays(-SignalScorer.NewsDecayDays).ToUniversalTime();

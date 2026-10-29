@@ -3,7 +3,22 @@ namespace Sumire.Api.Analytics.Core;
 /// <summary>Small numeric helpers shared by the analytics and forecasting code.</summary>
 public static class SeriesMath
 {
-    public const int TradingDaysPerYear = 252;
+    /// <summary>IDX sessions per year (weekdays minus ~15-20 bursa holidays), used to annualize daily statistics.</summary>
+    public const int TradingDaysPerYear = 242;
+
+    /// <summary>
+    /// Index of the last bar dated on or before one calendar year before the last bar, or -1 when the history does
+    /// not reach back that far. Calendar based, so it doesn't depend on how many sessions a year had.
+    /// </summary>
+    public static int YearAgoIndex(IReadOnlyList<Bar> bars)
+    {
+        if (bars.Count < 2) return -1;
+        var target = bars[^1].Date.AddYears(-1);
+        if (bars[0].Date > target) return -1;
+        for (var i = bars.Count - 2; i >= 0; i--)
+            if (bars[i].Date <= target) return i;
+        return -1;
+    }
 
     /// <summary>Daily log returns of AdjClose; result[i] is the return into bars[i + 1].</summary>
     public static double[] LogReturns(IReadOnlyList<Bar> bars)
@@ -12,6 +27,16 @@ public static class SeriesMath
         var r = new double[bars.Count - 1];
         for (var i = 1; i < bars.Count; i++)
             r[i - 1] = LogReturn(bars[i - 1].AdjClose, bars[i].AdjClose);
+        return r;
+    }
+
+    /// <summary>Daily simple returns of AdjClose; result[i] is the return into bars[i + 1].</summary>
+    public static double[] SimpleReturns(IReadOnlyList<Bar> bars)
+    {
+        if (bars.Count < 2) return [];
+        var r = new double[bars.Count - 1];
+        for (var i = 1; i < bars.Count; i++)
+            r[i - 1] = bars[i - 1].AdjClose > 0 && bars[i].AdjClose > 0 ? (double)(bars[i].AdjClose / bars[i - 1].AdjClose) - 1 : 0;
         return r;
     }
 

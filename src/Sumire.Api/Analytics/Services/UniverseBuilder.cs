@@ -152,7 +152,7 @@ public static class UniverseBuilder
             if (s.Bars.Count < 200) continue;
             var last = s.Bars[^1].AdjClose;
             decimal hi = decimal.MinValue, lo = decimal.MaxValue;
-            for (var i = Math.Max(0, s.Bars.Count - 252); i < s.Bars.Count - 1; i++)
+            for (var i = SeriesMath.YearAgoIndex(s.Bars) + 1; i < s.Bars.Count - 1; i++)
             {
                 hi = Math.Max(hi, s.Bars[i].AdjClose);
                 lo = Math.Min(lo, s.Bars[i].AdjClose);

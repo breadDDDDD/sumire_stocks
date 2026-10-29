@@ -32,6 +32,12 @@ public static class SectorIndexBuilder
             .Distinct().Order().TakeLast(Days + 1).ToList();
         if (dates.Count < 2) return null;
 
+        // Each member's return runs from its last known close, so a missing bar (Yahoo gaps, suspensions) moves the
+        // index on the member's next bar instead of dropping that move.
+        var prev = new decimal?[members.Count];
+        for (var i = 0; i < members.Count; i++)
+            prev[i] = LastOnOrBefore(members[i].Bars, dates[0]);
+
         var levels = new List<Bar>(dates.Count);
         var level = 1000.0;
         Add(dates[0], level);
@@ -40,11 +46,13 @@ public static class SectorIndexBuilder
             double sum = 0, wsum = 0;
             for (var i = 0; i < members.Count; i++)
             {
-                if (closes[i].TryGetValue(dates[t], out var c) && closes[i].TryGetValue(dates[t - 1], out var p) && p > 0)
+                if (!closes[i].TryGetValue(dates[t], out var c) || c <= 0) continue;
+                if (prev[i] is { } p && p > 0)
                 {
                     sum += weights[i] * (double)(c / p - 1);
                     wsum += weights[i];
                 }
+                prev[i] = c;
             }
             if (wsum > 0) level *= 1 + sum / wsum;
             Add(dates[t], level);
@@ -80,6 +88,13 @@ public static class SectorIndexBuilder
         if (known.Count == 0) return (Enumerable.Repeat(1.0, members.Count).ToArray(), "equal");
         var median = known[known.Count / 2];
         return (caps.Select(c => c ?? median).ToArray(), "marketCap");
+    }
+
+    static decimal? LastOnOrBefore(IReadOnlyList<Bar> bars, DateOnly date)
+    {
+        for (var i = bars.Count - 1; i >= 0; i--)
+            if (bars[i].Date <= date && bars[i].AdjClose > 0) return bars[i].AdjClose;
+        return null;
     }
 
     static double? Pct(double? fraction) => fraction is { } f ? Math.Round(f * 100, 2) : null;

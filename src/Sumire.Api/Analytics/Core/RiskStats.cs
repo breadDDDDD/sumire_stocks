@@ -50,7 +50,10 @@ public static class RiskStats
             }
         }
 
-        return new PeriodReturns(Back(1), Back(5), Back(21), Back(63), ytd, Back(252));
+        var yearAgo = SeriesMath.YearAgoIndex(bars);
+        double? y1 = yearAgo >= 0 ? Simple(bars[yearAgo].AdjClose, last.AdjClose) : null;
+
+        return new PeriodReturns(Back(1), Back(5), Back(21), Back(63), ytd, y1);
     }
 
     /// <summary>Simple return between the last close and the close <paramref name="days"/> bars earlier.</summary>
@@ -82,15 +85,18 @@ public static class RiskStats
         return (beta, corr);
     }
 
-    /// <summary>Annualized Sharpe ratio of daily log returns over the window, against an annual risk-free rate.</summary>
+    /// <summary>
+    /// Annualized Sharpe ratio of daily simple returns over the window, against an annual risk-free rate. Simple, not
+    /// log, returns: the log mean is lower by about half the variance, which would bias volatile stocks downwards.
+    /// </summary>
     public static double? Sharpe(IReadOnlyList<Bar> bars, double riskFree = DefaultRiskFree, int window = DefaultWindow)
     {
-        var r = SeriesMath.LogReturns(bars);
+        var r = SeriesMath.SimpleReturns(bars);
         var span = r.AsSpan(Math.Max(0, r.Length - window));
         if (span.Length < 20) return null;
         var sd = SeriesMath.StdDev(span);
         if (!(sd > 0)) return null;
-        var excess = SeriesMath.Mean(span) - riskFree / SeriesMath.TradingDaysPerYear;
+        var excess = SeriesMath.Mean(span) - (Math.Pow(1 + riskFree, 1.0 / SeriesMath.TradingDaysPerYear) - 1);
         return excess / sd * Math.Sqrt(SeriesMath.TradingDaysPerYear);
     }
 

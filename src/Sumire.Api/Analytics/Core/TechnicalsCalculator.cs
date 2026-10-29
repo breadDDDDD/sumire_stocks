@@ -122,7 +122,8 @@ public static class TechnicalsCalculator
         double? avgVol20 = n >= 20 ? bars.Skip(n - 20).Average(b => (double)b.Volume) : null;
         decimal? avgValue20 = n >= 20 ? bars.Skip(n - 20).Average(b => b.Close * b.Volume) : null;
 
-        var year = q.AsSpan(Math.Max(0, n - SeriesMath.TradingDaysPerYear));
+        // 52 weeks by calendar: the bars after the one dated a year before the last (all bars when history is shorter).
+        var year = q.AsSpan(SeriesMath.YearAgoIndex(bars) + 1);
         decimal? hi52 = n >= 2 ? Max(year, x => x.High) : null;
         decimal? lo52 = n >= 2 ? Min(year, x => x.Low) : null;
 

@@ -48,7 +48,8 @@ public class RiskStatsTests
         Assert.Equal(last / 394 - 1, r.W1!.Value, 9);
         Assert.Equal(last / 378 - 1, r.M1!.Value, 9);
         Assert.Equal(last / 336 - 1, r.M3!.Value, 9);
-        Assert.Equal(last / 147 - 1, r.Y1!.Value, 9);
+        var yearAgo = bars.Last(b => b.Date <= bars[^1].Date.AddYears(-1));
+        Assert.Equal(last / (double)yearAgo.AdjClose - 1, r.Y1!.Value, 9);
 
         var lastPrevYear = bars.Last(b => b.Date.Year < bars[^1].Date.Year);
         Assert.Equal(last / (double)lastPrevYear.AdjClose - 1, r.Ytd!.Value, 9);
@@ -56,6 +57,27 @@ public class RiskStatsTests
         var shortR = RiskStats.Returns(bars.Take(3).ToList());
         Assert.Null(shortR.W1);
         Assert.Null(shortR.Ytd);
+    }
+
+    [Fact]
+    public void One_year_return_is_calendar_based_and_needs_a_full_year()
+    {
+        // 242 weekday bars cover less than a calendar year; 300 cover more.
+        Assert.Null(RiskStats.Returns(SyntheticBars.Linear(242)).Y1);
+
+        var bars = SyntheticBars.Linear(300, start: 100, step: 1);
+        var target = bars[^1].Date.AddYears(-1);
+        var i = SeriesMath.YearAgoIndex(bars);
+        Assert.True(bars[i].Date <= target && bars[i + 1].Date > target);
+    }
+
+    [Fact]
+    public void Sharpe_uses_simple_returns()
+    {
+        // +10% / -9.09% alternating: the log mean is zero, the simple mean is positive.
+        var closes = Enumerable.Range(0, 101).Select(i => i % 2 == 0 ? 1000.0 : 1100.0);
+        var sharpe = RiskStats.Sharpe(SyntheticBars.FromCloses(closes), riskFree: 0);
+        Assert.True(sharpe > 0.5);
     }
 
     [Fact]

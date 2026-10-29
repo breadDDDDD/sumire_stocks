@@ -117,6 +117,8 @@ public static class Screener
 
     public static Func<StockAnalytics, bool> Compile(ScreenFilter f)
     {
+        if (f is null || string.IsNullOrWhiteSpace(f.Field) || string.IsNullOrWhiteSpace(f.Op))
+            throw new ScreenerException("Each filter needs 'field', 'op' and 'value'");
         if (TextFields.TryGetValue(f.Field, out var text))
         {
             if (f.Value.ValueKind != JsonValueKind.String) throw new ScreenerException($"'{f.Field}' needs a string value");

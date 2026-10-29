@@ -16,6 +16,11 @@ are **percent** (−1.9 = −1.9 %). `divYield`, `roe`, `npm`, `der`, `revenueGr
 `dirAccuracy`, `mape`, `coverage80` are **fractions** (0.0722 = 7.22 %). In `technicals`, `hv20/hv60` are annualized
 fractions while `atrPct`, `changePct`, `roc20`, `pctFrom52wHigh/Low` are percent. GARCH `annualizedVol` is a fraction.
 
+**Conventions.** Daily statistics are annualized with 242 IDX sessions a year. `returns.d1/w1/m1/m3` look back 1/5/21/63
+sessions; `y1` and the 52-week high/low are calendar based (the close on or before the same date last year), and
+`ytd` runs from the last close of the previous year. Volatility, beta and correlation use daily log returns; `sharpe`
+uses daily simple returns minus a 5 % annual risk-free rate. Risk stats cover the last 242 sessions.
+
 ## GET /api/stocks/{code}/profile
 
 Instrument info, business summary (Yahoo, cached 24 h; `null` if unavailable) and key stats. Works for indexes too

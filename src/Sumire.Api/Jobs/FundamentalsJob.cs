@@ -47,7 +47,8 @@ public sealed class FundamentalsJob(IServiceScopeFactory scopes, InstrumentCatal
             {
                 if (await service.RefreshAsync(code, save: true, ct) is not null) ok++;
             }
-            catch (Exception ex) when (ex is HttpRequestException or YahooException or TaskCanceledException && !ct.IsCancellationRequested)
+            // One bad payload must not stop the rest of the batch.
+            catch (Exception ex) when (!ct.IsCancellationRequested)
             {
                 failed++;
                 logger.LogDebug("Fundamentals for {Code} failed: {Error}", code, ex.Message);
