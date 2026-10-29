@@ -26,6 +26,18 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: "1"
       DOTNET_NOLOGO: "1"
     steps:
+      # Fails fast with a clear message instead of a .NET error later. Never prints the value.
+      - name: Check secrets
+        run: |
+          if [ -z "${SUPABASE_CONNECTION_STRING// /}" ]; then
+            echo "::error title=Missing secret::SUPABASE_CONNECTION_STRING repository secret is not set. Add it under Settings > Secrets and variables > Actions (use the Supabase pooler URI, port 5432 or 6543)."
+            exit 1
+          fi
+          if printf '%s' "$SUPABASE_CONNECTION_STRING" | grep -Eqi '(@|host=)db\.[a-z0-9]+\.supabase\.co'; then
+            echo "::error title=Direct host::SUPABASE_CONNECTION_STRING uses the IPv6-only direct host db.<ref>.supabase.co, which GitHub runners cannot reach. Use the pooler URI (aws-...pooler.supabase.com) instead."
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-dotnet@v4

@@ -97,10 +97,23 @@ timeout. A private repo gets 2,000 free minutes a month; a run takes ~5–10 min
 
 GitHub → your repo → **Settings → Secrets and variables → Actions → New repository secret**:
 
-- `SUPABASE_CONNECTION_STRING`: the **pooler** connection string (port 6543), ideally for the restricted role below.
-- `HF_TOKEN`: only if you mirror into a private HF repo.
+- `SUPABASE_CONNECTION_STRING` (required): the **pooler** URI (`aws-0-<region>.pooler.supabase.com`, port 5432 session
+  or 6543 transaction), ideally for the restricted role below. The direct host `db.<ref>.supabase.co` is IPv6-only and
+  GitHub runners can't reach it either.
+- `HF_TOKEN` (optional): only if you mirror the model into a private HF repo.
 
-Secrets are never in the repo or the logs.
+Add them as **repository** secrets (not environment secrets or variables): the job has no `environment:`, so it only
+sees repository secrets. Secrets are also not passed to runs triggered from forks.
+
+Secrets are never in the repo or the logs. The workflow's first step, **Check secrets**, fails with a clear annotation
+when `SUPABASE_CONNECTION_STRING` is missing or points at the direct host, without printing it. If the run instead ends
+with `Cannot forecast: SUPABASE_CONNECTION_STRING is not set`, the secret is missing or empty: add it as above and
+re-run the workflow.
+
+### CI
+
+`.github/workflows/ci.yml` runs on pushes and pull requests to `main`: `dotnet build` + `dotnet test` on the solution,
+and `npm ci` + `npm run build` in `web/`. It needs no secrets; the tests never touch the database or network.
 
 ### A restricted Postgres role for the Action
 

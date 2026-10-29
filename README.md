@@ -107,7 +107,7 @@ Headless runs happen in an empty `research-workspace/` folder with only web sear
 Details: [docs/forecasting.md](docs/forecasting.md). The baseline forecast is computed locally after each EOD run. Chronos-2 runs nightly on GitHub Actions (`.github/workflows/forecast.yml`, ~17:00 WIB on trading days, plus a manual "Run workflow" button):
 
 1. Create the restricted Postgres role `sumire_forecaster` with the SQL in docs/forecasting.md (read bars, write forecasts only).
-2. Add the repository secret `SUPABASE_CONNECTION_STRING`: the **pooler** string (port 6543) for that role.
+2. Add the repository secret `SUPABASE_CONNECTION_STRING` (Settings → Secrets and variables → Actions): the **pooler** string (port 6543) for that role. Without it the run stops at the "Check secrets" step.
 3. Optional: `FORECAST_LOCAL_FALLBACK=true` runs `forecast --once` locally at 18:00 WIB when the Action wrote nothing that day.
 
 FCST and the signal score switch from the baseline to Chronos only once its tracked accuracy beats the baseline.
