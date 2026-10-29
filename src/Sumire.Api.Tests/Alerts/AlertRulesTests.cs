@@ -151,4 +151,45 @@ public class AlertRulesTests
         AlertsEndpoints.Reorder(items, ["tlkm", "BBCA"]);
         Assert.Equal(["TLKM", "BBCA", "BBRI"], items.OrderBy(i => i.Sort).Select(i => i.Code));
     }
+
+    [Fact]
+    public void Changing_params_re_arms_a_fired_alert()
+    {
+        var fired = Wib(22, 10);
+        var alert = new Alert { Code = "BBCA", Type = AlertRules.PriceAbove, Params = """{"price": 9000}""", LastTriggeredAt = fired };
+
+        // Same params (jsonb reformats the stored text) keep today's cooldown.
+        Assert.Null(AlertsEndpoints.ApplyUpdate(alert, Body("""{"price":9000}""")));
+        Assert.Equal(fired, alert.LastTriggeredAt);
+
+        Assert.Null(AlertsEndpoints.ApplyUpdate(alert, Body("""{"price":9500}""")));
+        Assert.Null(alert.LastTriggeredAt);
+        Assert.Equal("""{"price":9500}""", alert.Params);
+    }
+
+    [Fact]
+    public void Invalid_update_leaves_the_alert_unchanged()
+    {
+        var alert = new Alert { Code = "BBCA", Type = AlertRules.PriceAbove, Params = """{"price":9000}""", Active = false, LastTriggeredAt = Wib(22, 10) };
+
+        Assert.NotNull(AlertsEndpoints.ApplyUpdate(alert, Body("""{"price":-1}""", active: true)));
+        Assert.Equal(("""{"price":9000}""", false), (alert.Params, alert.Active));
+        Assert.NotNull(alert.LastTriggeredAt);
+
+        Assert.Null(AlertsEndpoints.ApplyUpdate(alert, Body(null, active: true)));
+        Assert.True(alert.Active);
+        Assert.Null(alert.LastTriggeredAt);
+    }
+
+    static AlertsEndpoints.AlertBody Body(string? json, bool? active = null) =>
+        new(null, null, json is null ? null : System.Text.Json.JsonDocument.Parse(json).RootElement.Clone(), active);
+
+    [Fact]
+    public void Only_quotes_from_today_can_fire()
+    {
+        var now = Wib(23, 8); // pre-open
+        Assert.False(AlertRules.IsTodays(Q(9100) with { Time = Wib(22, 16) }, now));
+        Assert.False(AlertRules.IsTodays(Q(9100), now)); // no time
+        Assert.True(AlertRules.IsTodays(Q(9100) with { Time = Wib(23, 9) }, now.AddHours(1)));
+    }
 }

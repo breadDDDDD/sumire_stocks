@@ -58,7 +58,7 @@ Free-form JSON values by key (UI layout, research settings, mascot…). Keys: 1�
 Body `{ "code": "BBCA", "type": "price_above", "params": { "price": 9000 }, "active": true }` → 201 with the alert.
 
 ### PUT /api/alerts/{id}
-Body `{ "params": { … }, "active": false }` (both optional) → 200. Switching an inactive alert back on re-arms it for today.
+Body `{ "params": { … }, "active": false }` (both optional) → 200. Switching an inactive alert back on, or changing its params, re-arms it for today.
 
 ### DELETE /api/alerts/{id}
 → 204.

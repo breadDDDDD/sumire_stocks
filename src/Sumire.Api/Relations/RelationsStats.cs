@@ -84,8 +84,9 @@ public sealed class RelationsStatsStep(SumireDbContext db, InstrumentCatalog cat
         var bars = rows.GroupBy(b => b.Code).ToDictionary(g => g.Key,
             g => (IReadOnlyList<Bar>)g.Select(b => new Bar(b.Date, b.Open, b.High, b.Low, b.Close, b.AdjClose, b.Volume)).ToList());
 
-        var stockBars = bars.Where(kv => stocks.Contains(kv.Key)).ToDictionary();
-        var proxyBars = bars.Where(kv => proxies.Contains(kv.Key)).ToDictionary();
+        var fresh = StatisticalLinks.Fresh(bars, tradingDate);
+        var stockBars = fresh.Where(kv => stocks.Contains(kv.Key)).ToDictionary();
+        var proxyBars = fresh.Where(kv => proxies.Contains(kv.Key)).ToDictionary();
         var snapshot = new StatisticalSnapshot(tradingDate, Wib.Now(clock),
             StatisticalLinks.CorrelationClusters(stockBars),
             StatisticalLinks.LeadLags(stockBars, proxyBars));

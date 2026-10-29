@@ -31,6 +31,13 @@ public static class StatisticalLinks
     /// <summary>Global markets, currencies and commodities that trade before or overnight relative to IDX.</summary>
     public static readonly string[] ProxyCodes = ["SPX", "N225", "HSI", "STI", "SSE", "USDIDR", "US10Y", "WTI", "BRENT", "GOLD"];
 
+    /// <summary>Calendar days a series may lag the as-of date before it is left out (suspended or delisted).</summary>
+    public const int MaxStaleDays = 10;
+
+    /// <summary>Series whose last bar is within <see cref="MaxStaleDays"/> of <paramref name="asOf"/>, so links reflect current trading.</summary>
+    public static Dictionary<string, IReadOnlyList<Bar>> Fresh(IReadOnlyDictionary<string, IReadOnlyList<Bar>> series, DateOnly asOf, int maxStaleDays = MaxStaleDays) =>
+        series.Where(kv => kv.Value.Count > 0 && kv.Value[^1].Date >= asOf.AddDays(-maxStaleDays)).ToDictionary(kv => kv.Key, kv => kv.Value);
+
     public static double Pearson(ReadOnlySpan<double> x, ReadOnlySpan<double> y)
     {
         var n = Math.Min(x.Length, y.Length);

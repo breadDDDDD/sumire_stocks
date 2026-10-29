@@ -47,10 +47,14 @@ public sealed class AlertService(
             .Where(a => AlertRules.CanFire(a, now)).ToList();
         if (alerts.Count == 0) return 0;
 
-        var quotes = (await market.GetQuotesAsync(alerts.Select(a => a.Code!).Distinct(), ct)).ToDictionary(q => q.Code);
+        // GetQuotesAsync serves at most MaxCodesPerConnection codes per call.
+        var quotes = new Dictionary<string, Quote>();
+        foreach (var chunk in alerts.Select(a => a.Code!).Distinct().Chunk(QuoteSubscriptions.MaxCodesPerConnection))
+            foreach (var q in await market.GetQuotesAsync(chunk, ct))
+                quotes[q.Code] = q;
         var fired = 0;
         foreach (var alert in alerts)
-            if (quotes.TryGetValue(alert.Code!, out var q) && AlertRules.EvaluateQuote(alert, q) is { } message)
+            if (quotes.TryGetValue(alert.Code!, out var q) && AlertRules.IsTodays(q, now) && AlertRules.EvaluateQuote(alert, q) is { } message)
                 fired += await FireAsync(alert, message, now, ct);
         return fired;
     }

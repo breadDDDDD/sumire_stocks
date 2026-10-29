@@ -60,9 +60,28 @@ public static class AlertRules
         return null;
     }
 
+    /// <summary>True when two params strings hold the same JSON (jsonb reformats the stored text).</summary>
+    public static bool SameParams(string? a, string? b)
+    {
+        try
+        {
+            using var da = JsonDocument.Parse(string.IsNullOrWhiteSpace(a) ? "{}" : a);
+            using var db = JsonDocument.Parse(string.IsNullOrWhiteSpace(b) ? "{}" : b);
+            return JsonElement.DeepEquals(da.RootElement, db.RootElement);
+        }
+        catch (JsonException) { return false; }
+    }
+
     /// <summary>True unless the alert already fired today (WIB).</summary>
     public static bool CanFire(Alert alert, DateTimeOffset now) =>
         alert.Active && (alert.LastTriggeredAt is not { } last || Wib.ToWib(last).Date != Wib.ToWib(now).Date);
+
+    /// <summary>
+    /// True when the quote traded today (WIB). In pre-open Yahoo still reports yesterday's price and change,
+    /// which must not fire today's alerts.
+    /// </summary>
+    public static bool IsTodays(Quote quote, DateTimeOffset now) =>
+        quote.Time is { } t && Wib.ToWib(t).Date == Wib.ToWib(now).Date;
 
     /// <summary>Message when a quote alert's condition holds, else null.</summary>
     public static string? EvaluateQuote(Alert alert, Quote quote)

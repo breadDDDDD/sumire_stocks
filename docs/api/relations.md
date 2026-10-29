@@ -12,6 +12,8 @@ Two kinds of links, each marked with `source`:
   - `leadLag`: correlation of the stock's return on day t with a proxy's return on the previous common trading day,
     over 120 days, kept when |t| >= 2.6 and |rho| >= 0.2 (up to 3 per stock). Proxies: `SPX`, `N225`, `HSI`, `STI`, `SSE`,
     `USDIDR`, `US10Y`, `WTI`, `BRENT`, `GOLD`.
+  - Returns are taken on dates both series traded. Series with no bar in the 10 days before the as-of date (suspended,
+    delisted, missing data) are left out.
   - Stored in memory and in `%LOCALAPPDATA%/Sumire/cache/relations-stats.json`. When none exist yet they are computed on the
     first request (needs the DB); without the DB the lists are empty and `statsAsOf` is `null`.
 

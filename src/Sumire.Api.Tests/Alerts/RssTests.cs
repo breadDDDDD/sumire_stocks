@@ -48,6 +48,7 @@ public class RssTests
     [InlineData("Thu, 22 Oct 2026 20:40:00 +0700", 13)]
     [InlineData("Thu, 22 Oct 2026 13:40:00 GMT", 13)]
     [InlineData("2026-10-22T20:40:00+07:00", 13)]
+    [InlineData("2026-10-22 20:40:00", 13)] // no offset: WIB, whatever the machine's time zone
     public void Parses_rss_date_formats(string s, int utcHour) =>
         Assert.Equal(utcHour, RssParser.ParseDate(s)!.Value.UtcDateTime.Hour);
 

@@ -141,4 +141,19 @@ public class StatisticalLinksTests
             File.Delete(path);
         }
     }
+
+    [Fact]
+    public void Stale_series_are_left_out()
+    {
+        var bars = FromReturns(Noise(80, 7));
+        var asOf = bars[^1].Date;
+        var series = new Dictionary<string, IReadOnlyList<Bar>>
+        {
+            ["LIVE"] = bars,
+            ["SUSP"] = bars.Take(50).ToList(), // stopped trading 30 days before asOf
+            ["EMPTY"] = [],
+        };
+
+        Assert.Equal(["LIVE"], StatisticalLinks.Fresh(series, asOf).Keys);
+    }
 }

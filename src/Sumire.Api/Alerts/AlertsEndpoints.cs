@@ -187,20 +187,29 @@ public static partial class AlertsEndpoints
         {
             var alert = await db.Alerts.FirstOrDefaultAsync(a => a.Id == id, ct);
             if (alert is null) return NotFound("Alert not found");
-            if (body.Params is { } p) alert.Params = p.GetRawText();
-            if (body.Active is { } active)
-            {
-                // Re-arming an alert lets it fire again today.
-                if (active && !alert.Active) alert.LastTriggeredAt = null;
-                alert.Active = active;
-            }
-            if (AlertRules.Validate(alert) is { } error) return Bad(error);
+            if (ApplyUpdate(alert, body) is { } error) return Bad(error);
             await db.SaveChangesAsync(ct);
             return Results.Ok(ToDto(alert));
         });
 
         api.MapDelete("/alerts/{id:long}", async (SumireDbContext db, long id, CancellationToken ct) =>
             await db.Alerts.Where(a => a.Id == id).ExecuteDeleteAsync(ct) > 0 ? Results.NoContent() : NotFound("Alert not found"));
+    }
+
+    /// <summary>
+    /// Applies a PUT body. Switching an alert back on or changing its params re-arms it, so it can fire again today.
+    /// Returns an error message (and leaves the alert unchanged) when the result is invalid.
+    /// </summary>
+    public static string? ApplyUpdate(Alert alert, AlertBody body)
+    {
+        var updated = new Alert { Code = alert.Code, Type = alert.Type, Params = body.Params?.GetRawText() ?? alert.Params, Active = body.Active ?? alert.Active };
+        if (AlertRules.Validate(updated) is { } error) return error;
+
+        var paramsChanged = !AlertRules.SameParams(updated.Params, alert.Params);
+        if (updated.Active && (!alert.Active || paramsChanged)) alert.LastTriggeredAt = null;
+        alert.Params = updated.Params;
+        alert.Active = updated.Active;
+        return null;
     }
 
     static AlertDto ToDto(Alert a) => new(a.Id, a.Code, a.Type, JsonDocument.Parse(a.Params).RootElement.Clone(), a.Active,
