@@ -23,13 +23,14 @@ public static class ForecastCommand
     public static async Task<int> RunOnceAsync(IServiceProvider services, string[] args, CancellationToken ct)
     {
         var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("Sumire.Forecast");
-        var mode = (Environment.GetEnvironmentVariable("FORECAST_MODE") is { Length: > 0 } m ? m : "actions").Trim().ToLowerInvariant();
+        var mode = Mode(Environment.GetEnvironmentVariable("FORECAST_MODE"));
         if (mode == "off")
         {
             logger.LogInformation("FORECAST_MODE=off: nothing to do");
             return 0;
         }
-        if (args.Contains("--skip-holidays") && services.GetRequiredService<MarketCalendar>() is var cal && !cal.IsTradingDay(cal.TodayWib))
+        var cal = services.GetRequiredService<MarketCalendar>();
+        if (args.Contains("--skip-holidays") && !cal.IsTradingDay(cal.TodayWib))
         {
             logger.LogInformation("{Date} is not an IDX trading day: nothing to do", cal.TodayWib);
             return 0;
@@ -48,7 +49,7 @@ public static class ForecastCommand
             var codes = ParseCodes(args) ?? catalog.Core.Where(i => !i.IsIndex).Select(i => i.Code).Append("IHSG").ToList();
 
             var sw = Stopwatch.StartNew();
-            var since = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-HistoryDays);
+            var since = cal.TodayWib.AddDays(-HistoryDays);
             var wanted = codes.Concat(CovariateCodes).Distinct().ToList();
             var rows = await db.DailyBars.AsNoTracking()
                 .Where(b => wanted.Contains(b.Code) && b.Date >= since)
@@ -82,6 +83,9 @@ public static class ForecastCommand
             return 1;
         }
     }
+
+    /// <summary>FORECAST_MODE normalized: off | actions (default) | local.</summary>
+    public static string Mode(string? raw) => string.IsNullOrWhiteSpace(raw) ? "actions" : raw.Trim().ToLowerInvariant();
 
     /// <summary>Kept out of line so ONNX Runtime is only loaded when a forecast actually runs.</summary>
     [MethodImpl(MethodImplOptions.NoInlining)]

@@ -23,7 +23,7 @@ public sealed class ForecastFallbackJob(
 
     public static bool Enabled =>
         string.Equals(Environment.GetEnvironmentVariable("FORECAST_LOCAL_FALLBACK"), "true", StringComparison.OrdinalIgnoreCase)
-        && !string.Equals(Environment.GetEnvironmentVariable("FORECAST_MODE"), "off", StringComparison.OrdinalIgnoreCase)
+        && ForecastCommand.Mode(Environment.GetEnvironmentVariable("FORECAST_MODE")) != "off"
         && Db.IsConfigured;
 
     protected override async Task ExecuteAsync(CancellationToken ct)

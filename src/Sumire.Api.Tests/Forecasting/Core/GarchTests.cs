@@ -1,3 +1,4 @@
+using Sumire.Api.Analytics.Core;
 using Sumire.Api.Forecasting;
 using Sumire.Api.Tests.Analytics;
 
@@ -70,7 +71,7 @@ public class GarchTests
     {
         var bars = SyntheticBars.RandomWalk(800, seed: 4, sigma: 0.015);
         var fit = Garch.Fit(bars)!;
-        Assert.Equal(504, fit.ConditionalVol.Length);
+        Assert.Equal(2 * SeriesMath.TradingDaysPerYear, fit.ConditionalVol.Length);
         Assert.InRange(fit.AnnualizedVol, 0.15, 0.35);
         Assert.True(fit.Persistence < 1);
     }

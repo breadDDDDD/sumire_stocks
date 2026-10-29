@@ -46,6 +46,18 @@ public class ChronosForecasterTests
         Assert.Equal(1400f, rows[1][4]);
     }
 
+    [Fact]
+    public void Non_positive_target_prices_are_masked()
+    {
+        var target = SyntheticBars.Linear(4, start: 10, step: 1);
+        target[1] = target[1] with { AdjClose = 0 };
+
+        var row = ChronosForecaster.BuildRows(target, [], contextLength: 4)[0];
+        Assert.Equal(10f, row[0]);
+        Assert.True(float.IsNaN(row[1]));
+        Assert.Equal(13f, row[3]);
+    }
+
     /// <summary>Quantiles of a lognormal-ish forecast centred on <paramref name="median"/>, widening with the step.</summary>
     static float[] FakeQuantiles(double median, double spreadPerStep = 0.01)
     {

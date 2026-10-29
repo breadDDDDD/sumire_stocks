@@ -28,7 +28,7 @@ public static class ChronosForecaster
     static readonly int Q = Levels.Length;
 
     /// <summary>
-    /// Rows for one target: the target's AdjClose, then each covariate aligned on the target's trading days
+    /// Rows for one target: the target's AdjClose (NaN when not positive), then each covariate aligned on the target's trading days
     /// (NaN where the covariate has no bar). Truncated to the last <paramref name="contextLength"/> days and
     /// left-padded with NaN.
     /// </summary>
@@ -40,7 +40,8 @@ public static class ChronosForecaster
 
         var rows = new float[1 + covariates.Count][];
         rows[0] = Padded(contextLength);
-        for (var i = 0; i < n; i++) rows[0][pad + i] = (float)target[start + i].AdjClose;
+        for (var i = 0; i < n; i++)
+            if (target[start + i].AdjClose > 0) rows[0][pad + i] = (float)target[start + i].AdjClose;
 
         for (var c = 0; c < covariates.Count; c++)
         {
