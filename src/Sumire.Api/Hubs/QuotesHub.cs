@@ -25,8 +25,9 @@ public sealed class QuotesHub(QuoteSubscriptions subscriptions, MarketDataServic
     }
 
     /// <summary>Adds codes to this connection and immediately sends their current (cached or last close) quotes.</summary>
-    public async Task Subscribe(string[] codes)
+    public async Task Subscribe(string[]? codes)
     {
+        codes ??= [];
         subscriptions.Subscribe(Context.ConnectionId, codes);
         try
         {
@@ -39,9 +40,9 @@ public sealed class QuotesHub(QuoteSubscriptions subscriptions, MarketDataServic
         }
     }
 
-    public Task Unsubscribe(string[] codes)
+    public Task Unsubscribe(string[]? codes)
     {
-        subscriptions.Unsubscribe(Context.ConnectionId, codes);
+        subscriptions.Unsubscribe(Context.ConnectionId, codes ?? []);
         return Task.CompletedTask;
     }
 }

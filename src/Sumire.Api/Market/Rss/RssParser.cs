@@ -58,6 +58,9 @@ public static partial class RssParser
         if (m.Success) s = s[..m.Index] + m.Groups[1].Value + m.Groups[2].Value + ":" + m.Groups[3].Value;
         s = s.Replace(" GMT", " +00:00").Replace(" WIB", " +07:00");
         if (DateTimeOffset.TryParseExact(s, DateFormats, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var d)) return d;
+        // A date without an offset is local time of an Indonesian feed (WIB), not of the machine running the parser.
+        if (DateTime.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var local) && local.Kind == DateTimeKind.Unspecified)
+            return new DateTimeOffset(local, TimeSpan.FromHours(7));
         return DateTimeOffset.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out d) ? d : null;
     }
 

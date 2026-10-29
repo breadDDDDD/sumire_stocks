@@ -5,7 +5,9 @@ namespace Sumire.Api.Market;
 /// <summary>Parses Yahoo Finance chart / quote / quoteSummary JSON.</summary>
 public static class YahooParser
 {
-    public static ChartData ParseChart(string json)
+    public static ChartData ParseChart(string json) => Guard(() => ParseChartCore(json));
+
+    static ChartData ParseChartCore(string json)
     {
         using var doc = JsonDocument.Parse(json);
         var chart = doc.RootElement.GetProperty("chart");
@@ -21,24 +23,21 @@ public static class YahooParser
         var bars = new List<PriceBar>();
         if (r.TryGetProperty("timestamp", out var ts) && ts.ValueKind == JsonValueKind.Array)
         {
-            var q = r.GetProperty("indicators").GetProperty("quote")[0];
-            JsonElement? adj = r.GetProperty("indicators").TryGetProperty("adjclose", out var a) && a.GetArrayLength() > 0
+            var indicators = r.GetProperty("indicators");
+            var quotes = indicators.GetProperty("quote");
+            var q = quotes.GetArrayLength() > 0 ? quotes[0] : default;
+            JsonElement? adj = indicators.TryGetProperty("adjclose", out var a) && a.GetArrayLength() > 0
                 ? a[0].GetProperty("adjclose") : null;
-            var open = q.GetProperty("open");
-            var high = q.GetProperty("high");
-            var low = q.GetProperty("low");
-            var close = q.GetProperty("close");
-            var volume = q.GetProperty("volume");
 
             for (var i = 0; i < ts.GetArrayLength(); i++)
             {
-                var c = Dec(close[i]);
-                if (c is null) continue; // Yahoo pads missing intervals with nulls
-                var o = Dec(open[i]) ?? c.Value;
-                var h = Dec(high[i]) ?? Math.Max(o, c.Value);
-                var l = Dec(low[i]) ?? Math.Min(o, c.Value);
+                var c = Dec(At(q, "close", i));
+                if (c is null || ts[i].ValueKind != JsonValueKind.Number) continue; // Yahoo pads missing intervals with nulls
+                var o = Dec(At(q, "open", i)) ?? c.Value;
+                var h = Dec(At(q, "high", i)) ?? Math.Max(o, c.Value);
+                var l = Dec(At(q, "low", i)) ?? Math.Min(o, c.Value);
                 var adjClose = adj is { } ad && i < ad.GetArrayLength() ? Dec(ad[i]) ?? c.Value : c.Value;
-                var vol = volume[i].ValueKind == JsonValueKind.Number ? volume[i].GetInt64() : 0;
+                var vol = At(q, "volume", i) is { ValueKind: JsonValueKind.Number } v ? (long)v.GetDouble() : 0;
                 var time = DateTimeOffset.FromUnixTimeSeconds(ts[i].GetInt64()).ToOffset(offset);
                 bars.Add(new PriceBar(time, o, h, l, c.Value, adjClose, vol));
             }
@@ -72,7 +71,9 @@ public static class YahooParser
             events);
     }
 
-    public static List<YahooQuote> ParseQuotes(string json)
+    public static List<YahooQuote> ParseQuotes(string json) => Guard(() => ParseQuotesCore(json));
+
+    static List<YahooQuote> ParseQuotesCore(string json)
     {
         using var doc = JsonDocument.Parse(json);
         if (doc.RootElement.TryGetProperty("finance", out var finance)) ThrowIfError(finance);
@@ -104,7 +105,9 @@ public static class YahooParser
     }
 
     /// <summary>Returns quoteSummary.result[0] (cloned) for the caller to read modules from.</summary>
-    public static JsonElement ParseQuoteSummary(string json)
+    public static JsonElement ParseQuoteSummary(string json) => Guard(() => ParseQuoteSummaryCore(json));
+
+    static JsonElement ParseQuoteSummaryCore(string json)
     {
         using var doc = JsonDocument.Parse(json);
         if (doc.RootElement.TryGetProperty("finance", out var finance)) ThrowIfError(finance);
@@ -123,6 +126,21 @@ public static class YahooParser
         if (v.ValueKind == JsonValueKind.Object && v.TryGetProperty("raw", out var raw)) v = raw;
         return v.ValueKind == JsonValueKind.Number ? v.GetDouble() : null;
     }
+
+    /// <summary>An HTML error page or a reshaped payload becomes a YahooException, which callers already treat as an outage.</summary>
+    static T Guard<T>(Func<T> parse)
+    {
+        try { return parse(); }
+        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or IndexOutOfRangeException or FormatException)
+        {
+            throw new YahooException("BadResponse", $"Unexpected Yahoo response: {ex.Message}");
+        }
+    }
+
+    /// <summary>Element i of an indicator array, or an undefined element when the array is missing or short.</summary>
+    static JsonElement At(JsonElement quote, string name, int i) =>
+        quote.ValueKind == JsonValueKind.Object && quote.TryGetProperty(name, out var arr) && arr.ValueKind == JsonValueKind.Array && i < arr.GetArrayLength()
+            ? arr[i] : default;
 
     static void ThrowIfError(JsonElement e)
     {

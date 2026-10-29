@@ -80,4 +80,27 @@ public class YahooParserTests
         var ex = Assert.Throws<YahooException>(() => YahooParser.ParseQuotes(Fixture("quote-unauthorized.json")));
         Assert.Equal("Unauthorized", ex.Code);
     }
+
+    [Theory]
+    [InlineData("<html>Will be right back</html>")]
+    [InlineData("""{"chart":{"result":[{"timestamp":[1],"indicators":{}}]}}""")]
+    [InlineData("""{"unexpected":true}""")]
+    public void Malformed_chart_becomes_a_yahoo_exception(string body) =>
+        Assert.Equal("BadResponse", Assert.Throws<YahooException>(() => YahooParser.ParseChart(body)).Code);
+
+    [Fact]
+    public void Malformed_quotes_become_a_yahoo_exception() =>
+        Assert.Throws<YahooException>(() => YahooParser.ParseQuotes("<html></html>"));
+
+    [Fact]
+    public void Short_or_missing_indicator_arrays_are_tolerated()
+    {
+        const string json = """
+            {"chart":{"result":[{"meta":{"symbol":"X.JK","gmtoffset":25200},"timestamp":[1761098400,1761184800,1761271200],
+             "indicators":{"quote":[{"close":[100,101,102],"open":[99,100]}]}}]}}
+            """;
+        var chart = YahooParser.ParseChart(json);
+        Assert.Equal(3, chart.Bars.Count);
+        Assert.Equal((102m, 102m, 0L), (chart.Bars[2].Close, chart.Bars[2].Open, chart.Bars[2].Volume));
+    }
 }
