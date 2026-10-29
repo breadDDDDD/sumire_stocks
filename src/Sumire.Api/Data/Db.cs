@@ -23,10 +23,11 @@ public static partial class Db
     public static string ConnectionString(string? raw = null)
     {
         raw ??= Environment.GetEnvironmentVariable(EnvVar);
-        if (string.IsNullOrWhiteSpace(raw)) return "";
+        raw = Unquote(raw);
+        if (raw == "") { ConfigError = null; return ""; }
         try
         {
-            var csb = Parse(raw.Trim());
+            var csb = Parse(raw);
             if (csb.Port == 6543)
             {
                 csb.MaxAutoPrepare = 0;
@@ -42,27 +43,40 @@ public static partial class Db
         }
     }
 
+    // Secrets pasted into CI or .env sometimes keep their surrounding quotes or a trailing newline.
+    static string Unquote(string? raw)
+    {
+        var s = raw?.Trim() ?? "";
+        while (s.Length >= 2 && (s[0] == '"' || s[0] == '\'') && s[^1] == s[0]) s = s[1..^1].Trim();
+        return s;
+    }
+
     static NpgsqlConnectionStringBuilder Parse(string raw)
     {
         if (!raw.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase) && !raw.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase))
             return new NpgsqlConnectionStringBuilder(raw);
 
-        // postgresql://user:password@host:port/database?sslmode=require (password may contain '@')
+        // postgresql://user:password@host:port/database?sslmode=require
+        // The password may contain unescaped '@', ':', '/' or '?', so split at the last '@' first.
         var rest = raw[(raw.IndexOf("://", StringComparison.Ordinal) + 3)..];
-        var query = "";
-        var q = rest.IndexOf('?');
-        if (q >= 0) { query = rest[(q + 1)..]; rest = rest[..q]; }
         var at = rest.LastIndexOf('@');
         var userInfo = at >= 0 ? rest[..at] : "";
         var hostPart = at >= 0 ? rest[(at + 1)..] : rest;
+        var query = "";
+        var q = hostPart.IndexOf('?');
+        if (q >= 0) { query = hostPart[(q + 1)..]; hostPart = hostPart[..q]; }
         var slash = hostPart.IndexOf('/');
         var database = slash >= 0 ? hostPart[(slash + 1)..] : "";
         var hostPort = slash >= 0 ? hostPart[..slash] : hostPart;
+        // [ipv6]:port keeps its colons inside the brackets
         var colon = hostPort.LastIndexOf(':');
+        if (colon >= 0 && hostPort.StartsWith('[') && colon < hostPort.IndexOf(']')) colon = -1;
+        var host = (colon >= 0 ? hostPort[..colon] : hostPort).TrimStart('[').TrimEnd(']');
+        if (host == "") throw new FormatException("missing host");
 
         var csb = new NpgsqlConnectionStringBuilder
         {
-            Host = colon >= 0 ? hostPort[..colon] : hostPort,
+            Host = host,
             Port = colon >= 0 ? int.Parse(hostPort[(colon + 1)..]) : 5432,
             Database = database == "" ? "postgres" : Uri.UnescapeDataString(database),
         };
@@ -121,6 +135,8 @@ public static partial class Db
         while (inner.InnerException is not null && inner is not NpgsqlException && inner is not PostgresException) inner = inner.InnerException;
         var message = inner.Message.Split('\n')[0].Trim();
         message = QuotedRegex().Replace(message, "\"…\"");
+        message = HostPortRegex().Replace(message, "…");
+        message = HostNameRegex().Replace(message, "…");
         if (message.Length > 160) message = message[..160] + "…";
         var hint = inner is System.Net.Sockets.SocketException || inner.InnerException is System.Net.Sockets.SocketException
             ? " (use the Supabase pooler connection string; the direct db host is IPv6-only)"
@@ -130,6 +146,14 @@ public static partial class Db
 
     [GeneratedRegex("\"[^\"]*\"|'[^']*'")]
     private static partial Regex QuotedRegex();
+
+    // e.g. "Failed to connect to [2406:da18::1]:5432" or "10.0.0.1:6543"
+    [GeneratedRegex(@"(\[[0-9A-Fa-f:.]+\]|[\w.-]+):\d{2,5}\b")]
+    private static partial Regex HostPortRegex();
+
+    // dotted names and IPv4 addresses, e.g. db.abc.supabase.co
+    [GeneratedRegex(@"\b[\w-]+(\.[\w-]+){2,}\b")]
+    private static partial Regex HostNameRegex();
 }
 
 /// <summary>Used by dotnet-ef; works without database access.</summary>
