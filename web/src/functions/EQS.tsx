@@ -87,7 +87,8 @@ export default function EQS({ args }: FunctionProps) {
   const isText = (field: string) => meta.data?.textFields.includes(field) ?? false
 
   const build = (p: string | null, fs: Filter[], lim: number): ScreenRequest => {
-    const valid = fs.filter((x) => x.field && x.value.trim() !== '')
+    // a numeric field with a non-number value would be sent as null and rejected with a 400
+    const valid = fs.filter((x) => x.field && x.value.trim() !== '' && (isText(x.field) || Number.isFinite(Number(x.value))))
     return {
       ...(p ? { preset: p } : {}),
       ...(valid.length
@@ -197,6 +198,8 @@ export default function EQS({ args }: FunctionProps) {
               value={x.value}
               inputMode={isText(x.field) ? 'text' : 'decimal'}
               placeholder={isText(x.field) ? 'text' : 'number'}
+              aria-invalid={!isText(x.field) && x.value.trim() !== '' && !Number.isFinite(Number(x.value))}
+              title={!isText(x.field) && x.value.trim() !== '' && !Number.isFinite(Number(x.value)) ? 'Not a number; this filter is ignored' : undefined}
               onChange={(e) => update(x.id, { value: e.target.value })}
               aria-label="Value"
             />
