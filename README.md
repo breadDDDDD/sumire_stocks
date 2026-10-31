@@ -43,6 +43,8 @@ Other symptoms:
 
 ## Using it
 
+For a complete walkthrough of all workflows, multi-pane controls, and features, see the **[User Guide](docs/user-guide.md)**.
+
 Type a ticker and/or a function into the command line (`/` or `Ctrl+K`, or just start typing): `BBCA`, `BBRI GP`, `ADRO INS!`, `COMP BBCA BBRI BMRI`, `ASK why did banks drop?`. A function typed alone uses the ticker in the focused pane.
 
 | Code | Function | Example |
@@ -82,7 +84,7 @@ Type a ticker and/or a function into the command line (`/` or `Ctrl+K`, or just 
 
 The layout and each pane's history are saved in the browser and synced to `/api/settings/ui-layout` (when the DB is up), so they follow you between browsers.
 
-The status bar (bottom left) shows data freshness ("Delayed · as of 14:32 WIB", red once stale), DB and live-connection problems, and research usage (`RQ 9/20 · agy · gemini-3.8-flash-medium`, click for RQ).
+The status bar (bottom left) shows data freshness ("Delayed · as of 14:32 WIB", red once stale), DB and live-connection problems, and research usage (`RQ 9/20 · agy · gemini-3.8-flash-low`, click for RQ).
 
 ## Free-data limits
 
@@ -96,7 +98,7 @@ The status bar (bottom left) shows data freshness ("Delayed · as of 14:32 WIB",
 Details: [docs/research.md](docs/research.md), [docs/mcp.md](docs/mcp.md).
 
 1. Sign in to the agent CLI once: `agy` (Antigravity, the default), and optionally `claude` (Claude Code) or `gemini`. `agy models` lists the models you can use.
-2. Choose runners and caps in `.env`: `RESEARCH_RUNNERS` (fallback order, e.g. `agy:gemini-3.8-flash-medium,agy:claude-sonnet-4-6,claude-code:sonnet`), `RESEARCH_DAILY_CAP` (20), `RESEARCH_BATCH_CAP` (8), `RESEARCH_MODEL_CAPS` (e.g. `claude-*:6`). When a quota error hits, the next runner/model takes over; when all are exhausted, research pauses cleanly. RQ shows all of this, with a pause button.
+2. Choose runners and caps in `.env`: `RESEARCH_RUNNERS` (fallback order, e.g. `agy:gemini-3.8-flash-low,agy:claude-sonnet-4-6,claude-code:sonnet`), `RESEARCH_DAILY_CAP` (20), `RESEARCH_BATCH_CAP` (8), `RESEARCH_MODEL_CAPS` (e.g. `claude-*:6`). When a quota error hits, the next runner/model takes over; when all are exhausted, research pauses cleanly. RQ shows all of this, with a pause button.
 3. Schedule with the UI closed: `Sumire install-schedule` (or `dotnet run --project src/Sumire.Api -- install-schedule`). This registers the morning brief (07:45 WIB), the post-close catch-up (16:35), the closing recap (16:45) and the Sunday week-ahead (19:00) in Task Scheduler. `uninstall-schedule` removes them. With the app open, the built-in scheduler runs the same batches.
 4. From inside Antigravity / Gemini CLI / Claude Code: register `Sumire mcp` (see [docs/mcp.md](docs/mcp.md)) and run the `/sumire-research` workflow to clear the queue with the model you have selected.
 

@@ -32,7 +32,7 @@ Jobs run one at a time. A timeout (`RESEARCH_TIMEOUT_SECONDS`, default 240 s) ki
 | Variable | Default | Notes |
 |---|---|---|
 | `RESEARCH_ENABLED` | `true` | `false` pauses everything (the RQ pause button sets the `research.paused` setting) |
-| `RESEARCH_RUNNERS` | `agy:gemini-3.8-flash-medium, agy:claude-sonnet-4-6, claude-code:sonnet` | Ordered fallback list of `runner:model`. Runners: `agy`, `gemini-cli`, `claude-code` |
+| `RESEARCH_RUNNERS` | `agy:gemini-3.8-flash-low, agy:claude-sonnet-4-6, claude-code:sonnet` | Ordered fallback list of `runner:model`. Runners: `agy`, `gemini-cli`, `claude-code` |
 | `RESEARCH_DAILY_CAP` | `20` | Jobs per WIB day, across all runners |
 | `RESEARCH_BATCH_CAP` | `8` | Jobs queued per scheduled batch |
 | `RESEARCH_MODEL_CAPS` | (none) | e.g. `claude-*:6, agy:gemini-*:15`. The glob matches the model, or `runner:model` when it contains `:`. Each cap is one pool shared by every entry it matches |

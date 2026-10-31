@@ -47,7 +47,7 @@ Queue and usage for the `RQ` screen and the status bar.
   "current": { "runner": "agy", "model": "claude-sonnet-4-6" },
   "blockedReason": null,
   "runners": [
-    { "runner": "agy", "model": "gemini-3.8-flash-medium", "installed": true, "used": 6, "cap": null,
+    { "runner": "agy", "model": "gemini-3.8-flash-low", "installed": true, "used": 6, "cap": null,
       "exhaustedUntil": "2026-10-25T07:53:00+07:00" },
     { "runner": "agy", "model": "claude-sonnet-4-6", "installed": true, "used": 3, "cap": { "pattern": "claude-*", "cap": 6 },
       "exhaustedUntil": null },
