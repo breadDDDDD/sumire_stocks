@@ -12,6 +12,7 @@ public static class ResearchKinds
     public const string Batch = "batch";
 
     public static readonly string[] All = [Stock, BriefOpen, BriefClose, BriefWeek, Sector, Ask];
+    public static readonly string[] Briefs = [BriefOpen, BriefClose, BriefWeek];
 
     public static bool IsValid(string kind) => All.Contains(kind);
     public static bool IsBrief(string kind) => kind is BriefOpen or BriefClose or BriefWeek;

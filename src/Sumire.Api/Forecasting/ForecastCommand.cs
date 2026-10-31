@@ -75,6 +75,8 @@ public static class ForecastCommand
 
             await SaveAsync(db, forecasts, ct);
             logger.LogInformation("Wrote {Rows} {Model} rows; total {Seconds:0.0}s", forecasts.Count, ChronosForecaster.ModelName, total.Elapsed.TotalSeconds);
+            // This nightly run is the one writer that still fires when the web app is down.
+            await services.GetRequiredService<StorageGuard>().TryEnforceAsync(ct);
             return 0;
         }
         catch (Exception ex) when (!ct.IsCancellationRequested)

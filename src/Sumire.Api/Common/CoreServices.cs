@@ -11,6 +11,8 @@ public static class CoreServices
         services.AddSingleton(TimeProvider.System);
         services.AddMemoryCache();
         services.AddSumireDb();
+        services.AddScoped<StorageGuard>();
+        services.AddScoped<IEodPipelineStep, StorageGuardStep>();
         services.AddSingleton(sp => IdxRules.Load(clock: sp.GetRequiredService<TimeProvider>()));
         services.AddSingleton(sp => MarketCalendar.Load(sp.GetRequiredService<IdxRules>(), clock: sp.GetRequiredService<TimeProvider>()));
         return services;

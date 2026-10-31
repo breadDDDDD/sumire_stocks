@@ -12,6 +12,7 @@ public static class EodOrder
     public const int BaselineForecasts = 200;
     public const int ForecastEvaluation = 300;
     public const int SignalScores = 400;
+    public const int StorageGuard = 1000;
 }
 
 /// <summary>Rebuilds the analytics snapshot (indicators, GARCH, baseline, breadth, sectors) from the new bars.</summary>

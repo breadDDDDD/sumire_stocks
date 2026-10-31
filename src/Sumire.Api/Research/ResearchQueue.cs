@@ -205,8 +205,7 @@ public sealed class ResearchQueue(SumireDbContext db, TimeProvider clock, Resear
             .ExecuteUpdateAsync(s => s.SetProperty(j => j.Status, "skipped").SetProperty(j => j.Error, "expired before it could run")
                 .SetProperty(j => j.Packet, (string?)null).SetProperty(j => j.FinishedAt, now), ct);
         await db.ResearchJobs.Where(j => j.CreatedAt < now.AddDays(-30)).ExecuteDeleteAsync(ct);
-        string[] briefs = [ResearchKinds.BriefOpen, ResearchKinds.BriefClose, ResearchKinds.BriefWeek];
-        await db.Insights.Where(i => !briefs.Contains(i.Kind) && i.CreatedAt < now.AddDays(-90)).ExecuteDeleteAsync(ct);
-        await db.Insights.Where(i => briefs.Contains(i.Kind) && i.CreatedAt < now.AddYears(-1)).ExecuteDeleteAsync(ct);
+        await db.Insights.Where(i => !ResearchKinds.Briefs.Contains(i.Kind) && i.CreatedAt < now.AddDays(-90)).ExecuteDeleteAsync(ct);
+        await db.Insights.Where(i => ResearchKinds.Briefs.Contains(i.Kind) && i.CreatedAt < now.AddYears(-1)).ExecuteDeleteAsync(ct);
     }
 }

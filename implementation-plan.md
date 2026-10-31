@@ -164,6 +164,8 @@ All tables go in a dedicated schema **`sumire`**, not `public`, which Supabase e
 
 **Size check:** ~150 core stocks × 3 years ≈ 110k bar rows, plus on-demand stocks: a few MB to a few dozen MB. Insights are kept for 90 days (stock ones) or 1 year (briefs). Forecasts are pruned after one year once they have been scored.
 
+**Storage guard:** after each EOD pipeline and each `forecast --once`, `Data/StorageGuard` checks `pg_database_size`. Over `DB_STORAGE_LIMIT_MB` (default 250, half the free-tier 500 MB quota; 0 turns it off) it runs `VACUUM FULL`, then deletes in order until the size is back under the limit: finished research jobs over 7 days, bars outside the 3-year window, forecasts over 400 days, stock insights over 30 days, forecasts over 270 days, briefs over 180 days, forecasts over 180 days. Those ages are floors: it never goes below them, and logs a warning if the database is still over.
+
 **Not stored:** ticks, intraday bars, raw news articles, full statements, indicator values (recomputed), and raw AI responses (only the validated, structured result is saved).
 
 **Connection notes:** use Supabase's **pooler** connection string (the direct host is IPv6-only on the free tier). For the transaction pooler (port 6543), add `Max Auto Prepare=0;No Reset On Close=true` in code. The free tier pauses projects after ~7 days of inactivity.

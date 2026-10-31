@@ -21,7 +21,7 @@ public sealed record ModelCap(string Pattern, int Cap)
 /// <summary>Research settings from the environment (.env). Pause state and exhaustion live in the settings table.</summary>
 public sealed class ResearchOptions
 {
-    public static readonly RunnerEntry[] DefaultRunners = [new("agy", "gemini-3.8-flash-medium"), new("agy", "claude-sonnet-4-6"), new("claude-code", "sonnet")];
+    public static readonly RunnerEntry[] DefaultRunners = [new("agy", "gemini-3.8-flash-low"), new("agy", "claude-sonnet-4-6"), new("claude-code", "sonnet")];
 
     public IReadOnlyList<RunnerEntry> Runners { get; init; } = DefaultRunners;
     public bool Enabled { get; init; } = true;
